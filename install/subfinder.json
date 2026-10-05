@@ -1,0 +1,19 @@
+{
+  "tool": "subfinder",
+  "install_methods": [
+    {
+      "platform": "Linux (Go)",
+      "label": "Install via Go",
+      "command": "go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest",
+      "icon": "download",
+      "class": "bg-red-600 hover:bg-red-700"
+    },
+    {
+      "platform": "Kali Linux",
+      "label": "Install via APT",
+      "command": "sudo apt update && sudo apt install subfinder -y",
+      "icon": "download",
+      "class": "bg-blue-600 hover:bg-blue-700"
+    }
+  ]
+}

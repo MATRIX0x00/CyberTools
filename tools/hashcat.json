@@ -1,0 +1,218 @@
+{
+  "name": "Hashcat",
+  "version": "6.2.6",
+  "executable": "hashcat",
+  "description": "Hashcat is the world's fastest and most advanced password recovery utility.",
+  "tabs": [
+    {
+      "id": "attack-mode",
+      "name": "Attack Mode & Hash",
+      "inputs": [
+        {
+          "id": "attack_mode_select",
+          "label": "Attack Mode (-a):",
+          "type": "select",
+          "flag": "-a",
+          "options": [
+            { "value": "", "label": "None (Default: 0)", "selected": true },
+            { "value": "0", "label": "0: Straight (Wordlist)", "selected": false },
+            { "value": "1", "label": "1: Combinator", "selected": false },
+            { "value": "2", "label": "2: Toggle-Case", "selected": false },
+            { "value": "3", "label": "3: Brute-force (Mask)", "selected": false },
+            { "value": "6", "label": "6: Hybrid Wordlist + Mask", "selected": false },
+            { "value": "7", "label": "7: Hybrid Mask + Wordlist", "selected": false }
+          ],
+          "help": "Specify the attack mode."
+        },
+        {
+          "id": "hash_type_entry",
+          "label": "Hash Type (-m):",
+          "type": "number",
+          "flag": "-m",
+          "placeholder": "e.g., 0 (MD5), 1000 (NTLM), 2500 (WPA)",
+          "help": "Hash type ID to crack. See hashcat documentation for full list."
+        },
+        {
+          "id": "hash_file_path",
+          "label": "Hash File Path:",
+          "type": "text",
+          "flag": "",
+          "placeholder": "e.g., hashes/mypass.hash",
+          "help": "Path to the file containing hashes."
+        },
+        {
+          "id": "hash_file_upload",
+          "label": "Upload Hash File:",
+          "type": "file",
+          "flag": "",
+          "help": "Upload a file containing hashes."
+        }
+      ]
+    },
+    {
+      "id": "wordlist-mask",
+      "name": "Wordlist & Mask",
+      "inputs": [
+        {
+          "id": "wordlist_file_path",
+          "label": "Wordlist File Path:",
+          "type": "text",
+          "flag": "",
+          "placeholder": "e.g., /usr/share/wordlists/rockyou.txt",
+          "help": "Path to the wordlist file."
+        },
+        {
+          "id": "wordlist_file_upload",
+          "label": "Upload Wordlist File:",
+          "type": "file",
+          "flag": "",
+          "help": "Upload a wordlist file."
+        },
+        {
+          "id": "mask_entry",
+          "label": "Mask (Required for -a 3, 6, 7):",
+          "type": "text",
+          "flag": "",
+          "placeholder": "e.g., ?l?d?d?d?d?d?d?d",
+          "help": "Define the mask for brute-force/hybrid attacks."
+        },
+        {
+          "id": "dictionary_path",
+          "label": "Dictionary Path (-D):",
+          "type": "text",
+          "flag": "-D",
+          "placeholder": "e.g., /path/to/dict/",
+          "help": "Path to a directory containing wordlists/dictionaries."
+        }
+      ]
+    },
+    {
+      "id": "rules-options",
+      "name": "Rules & Misc Options",
+      "inputs": [
+        {
+          "id": "rule_file_path",
+          "label": "Rule File Path (-r):",
+          "type": "text",
+          "flag": "-r",
+          "placeholder": "e.g., rules/best64.rule",
+          "help": "Apply password candidate modification rules from a file."
+        },
+        {
+          "id": "increment_var",
+          "label": "Increment (--increment)",
+          "type": "checkbox",
+          "flag": "--increment",
+          "help": "Enable mask increment mode."
+        },
+        {
+          "id": "keyspace_var",
+          "label": "Print Keyspace (--keyspace)",
+          "type": "checkbox",
+          "flag": "--keyspace",
+          "help": "Print the total keyspace and exit."
+        },
+        {
+          "id": "session_entry",
+          "label": "Session Name (--session):",
+          "type": "text",
+          "flag": "--session",
+          "placeholder": "e.g., my_crack_session",
+          "help": "Define a custom session name."
+        },
+        {
+          "id": "force_var",
+          "label": "Force (--force)",
+          "type": "checkbox",
+          "flag": "--force",
+          "help": "Force hashcat to run even if critical checks fail (e.g., on VM)."
+        }
+      ]
+    },
+    {
+      "id": "performance",
+      "name": "Performance & Device",
+      "inputs": [
+        {
+          "id": "slow_down_entry",
+          "label": "Workload Profile (-w):",
+          "type": "radio",
+          "flag": "-w",
+          "options": [
+            { "value": "", "label": "None (Default: 2)", "selected": true },
+            { "value": "1", "label": "1 (Low)", "selected": false },
+            { "value": "2", "label": "2 (Default)", "selected": false },
+            { "value": "3", "label": "3 (High)", "selected": false },
+            { "value": "4", "label": "4 (Aggressive)", "selected": false }
+          ],
+          "help": "Configure the workload profile for your device."
+        },
+        {
+          "id": "threads_entry",
+          "label": "Threads (--threads):",
+          "type": "number",
+          "flag": "--threads",
+          "placeholder": "e.g., 256",
+          "help": "Specify the number of threads per GPU block."
+        },
+        {
+          "id": "gpu_temp_retain_entry",
+          "label": "GPU Temp Retain (--gpu-temp-retain):",
+          "type": "number",
+          "flag": "--gpu-temp-retain",
+          "placeholder": "e.g., 95",
+          "help": "Set the temperature threshold (in Celsius) before a speed decrease is applied."
+        },
+        {
+          "id": "optimized_kernel_var",
+          "label": "Optimized Kernel (--optimized-kernel)",
+          "type": "checkbox",
+          "flag": "--optimized-kernel",
+          "help": "Optimize the kernel execution speed."
+        },
+        {
+          "id": "cpu_only_var",
+          "label": "CPU Only (--gpu-skip)",
+          "type": "checkbox",
+          "flag": "--gpu-skip 1:999",
+          "help": "Skip all GPU devices (effectively running on CPU if device count is 0)."
+        }
+      ]
+    },
+    {
+      "id": "output-advanced",
+      "name": "Output & Advanced",
+      "inputs": [
+        {
+          "id": "outfile_entry",
+          "label": "Output File (--outfile):",
+          "type": "text",
+          "flag": "--outfile",
+          "placeholder": "e.g., cracked.txt",
+          "help": "Write cracked passwords to this file."
+        },
+        {
+          "id": "status_var",
+          "label": "Show Status (--status)",
+          "type": "checkbox",
+          "flag": "--status",
+          "help": "Continuously display cracking status in the terminal."
+        },
+        {
+          "id": "quiet_var",
+          "label": "Quiet (--quiet)",
+          "type": "checkbox",
+          "flag": "--quiet",
+          "help": "Suppress status updates and warnings."
+        },
+        {
+          "id": "additional_args_entry",
+          "label": "Additional Arguments:",
+          "type": "textarea",
+          "flag": "",
+          "help": "Any other hashcat arguments not covered by the GUI. Enter them exactly as you would on the command line (e.g., '--skip 1000 --limit 500')."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+[
+  {
+    "name": "Basic Directory Brute-force",
+    "description": "Fuzzes a website to find common directories and files.",
+    "options": {
+      "target_url_entry": "http://testphp.vulnweb.com/FUZZ",
+      "wordlist_path_entry": "/usr/share/wordlists/dirb/common.txt",
+      "hide_status_codes_entry": "404"
+    },
+    "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Wfuzz 3.1.0 - The Web Fuzzer\n\u001b[1m\u001b[34m[INFO]\u001b[0m Starting scan at 2025-07-29 10:00:00\n\nID      Response   Lines      Words         Chars          Payload\n\u001b[1m\u001b[32m00001\u001b[0m   \u001b[1m\u001b[36m200\u001b[0m        12         53            215             index.php\n\u001b[1m\u001b[32m00002\u001b[0m   \u001b[1m\u001b[36m301\u001b[0m        11         49            198             admin\n\u001b[1m\u001b[32m00003\u001b[0m   \u001b[1m\u001b[36m200\u001b[0m        8          32            150             robots.txt\n\n\u001b[1m\u001b[34m[INFO]\u001b[0m Scan finished in 1.25 seconds."
+  },
+  {
+    "name": "Advanced File Brute-force",
+    "description": "Searches for files with multiple extensions using a more advanced wordlist.",
+    "options": {
+      "target_url_entry": "http://testphp.vulnweb.com/FUZZ.php",
+      "wordlist_path_entry": "/usr/share/wordlists/rockyou.txt",
+      "hide_status_codes_entry": "404",
+      "hide_size_entry": "123"
+    },
+    "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Wfuzz 3.1.0 - The Web Fuzzer\n\u001b[1m\u001b[34m[INFO]\u001b[0m Starting scan at 2025-07-29 10:01:00\n\nID      Response   Lines      Words         Chars          Payload\n\u001b[1m\u001b[32m00001\u001b[0m   \u001b[1m\u001b[36m200\u001b[0m        12         53            215             index\n\u001b[1m\u001b[32m00002\u001b[0m   \u001b[1m\u001b[36m200\u001b[0m        15         61            240             contact\n\u001b[1m\u001b[32m00003\u001b[0m   \u001b[1m\u001b[36m200\u001b[0m        10         40            180             login\n\n\u001b[1m\u001b[34m[INFO]\u001b[0m Scan finished in 2.30 seconds."
+  },
+  {
+    "name": "Form Authentication Brute-force",
+    "description": "Fuzzes a login form to test for weak passwords.",
+    "options": {
+      "target_url_entry": "http://testphp.vulnweb.com/login.php",
+      "data_entry": "user=admin&pass=FUZZ",
+      "wordlist_path_entry": "/usr/share/wordlists/rockyou.txt",
+      "hide_status_codes_entry": "200"
+    },
+    "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Wfuzz 3.1.0 - The Web Fuzzer\n\u001b[1m\u001b[34m[INFO]\u001b[0m Starting scan at 2025-07-29 10:02:00\n\nID      Response   Lines      Words         Chars          Payload\n\u001b[1m\u001b[32m00001\u001b[0m   \u001b[1m\u001b[36m302\u001b[0m        1          1             1               'password'\n\u001b[1m\u001b[32m00002\u001b[0m   \u001b[1m\u001b[36m200\u001b[0m        15         70            305             '12345'\n\n\u001b[1m\u001b[34m[INFO]\u001b[0m Scan finished in 0.95 seconds."
+  },
+  {
+    "name": "Hidden Parameter Discovery",
+    "description": "Discovers hidden URL parameters using a wordlist.",
+    "options": {
+      "target_url_entry": "http://example.com/?param=FUZZ",
+      "wordlist_path_entry": "/usr/share/wordlists/sec-lists/Discovery/Web-Content/burp-parameter-names.txt",
+      "hide_status_codes_entry": "404"
+    },
+    "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Wfuzz 3.1.0 - The Web Fuzzer\n\u001b[1m\u001b[34m[INFO]\u001b[0m Starting scan at 2025-07-29 10:03:00\n\nID      Response   Lines      Words         Chars          Payload\n\u001b[1m\u001b[32m00001\u001b[0m   \u001b[1m\u001b[36m200\u001b[0m        10         40            180             'id'\n\u001b[1m\u001b[32m00002\u001b[0m   \u001b[1m\u001b[36m200\u001b[0m        8          32            150             'view'\n\n\u001b[1m\u001b[34m[INFO]\u001b[0m Scan finished in 1.15 seconds."
+  },
+  {
+    "name": "Username Enumeration",
+    "description": "Fuzzes a login page to enumerate valid usernames.",
+    "options": {
+      "target_url_entry": "http://testphp.vulnweb.com/login.php",
+      "data_entry": "user=FUZZ&pass=test",
+      "wordlist_path_entry": "/usr/share/wordlists/metasploit/users.txt",
+      "hide_lines_entry": "25"
+    },
+    "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Wfuzz 3.1.0 - The Web Fuzzer\n\u001b[1m\u001b[34m[INFO]\u001b[0m Starting scan at 2025-07-29 10:04:00\n\nID      Response   Lines      Words         Chars          Payload\n\u001b[1m\u001b[32m00001\u001b[0m   \u001b[1m\u001b[36m200\u001b[0m        25         75            350             'invalid_user'\n\u001b[1m\u001b[32m00002\u001b[0m   \u001b[1m\u001b[36m302\u001b[0m        1          1             1               'admin'\n\u001b[1m\u001b[32m00003\u001b[0m   \u001b[1m\u001b[36m200\u001b[0m        25         75            350             'another_user'\n\n\u001b[1m\u001b[34m[INFO]\u001b[0m Scan finished in 1.05 seconds."
+  },
+  {
+    "name": "SQL Injection Fuzzing",
+    "description": "Uses a payload list to test for SQL injection vulnerabilities.",
+    "options": {
+      "target_url_entry": "http://testphp.vulnweb.com/listproducts.php?cat=FUZZ",
+      "wordlist_path_entry": "/usr/share/wordlists/sqlmap/sql.txt",
+      "hide_status_codes_entry": "404",
+      "hide_lines_entry": "20"
+    },
+    "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Wfuzz 3.1.0 - The Web Fuzzer\n\u001b[1m\u001b[34m[INFO]\u001b[0m Starting scan at 2025-07-29 10:05:00\n\nID      Response   Lines      Words         Chars          Payload\n\u001b[1m\u001b[32m00001\u001b[0m   \u001b[1m\u001b[36m200\u001b[0m        20         80            320             1\n\u001b[1m\u001b[32m00002\u001b[0m   \u001b[1m\u001b[31m500\u001b[0m        35         150           650             1'\n\n\u001b[1m\u001b[34m[INFO]\u001b[0m Scan finished in 1.55 seconds."
+  },
+  {
+    "name": "Custom Header Fuzzing",
+    "description": "Injects payloads into a custom HTTP header.",
+    "options": {
+      "target_url_entry": "http://testphp.vulnweb.com/",
+      "wordlist_path_entry": "/usr/share/wordlists/dirb/common.txt",
+      "hide_status_codes_entry": "404",
+      "additional_args_entry": "-H 'X-Forwarded-For: FUZZ'"
+    },
+    "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Wfuzz 3.1.0 - The Web Fuzzer\n\u001b[1m\u001b[34m[INFO]\u001b[0m Starting scan at 2025-07-29 10:06:00\n\nID      Response   Lines      Words         Chars          Payload\n\u001b[1m\u001b[32m00001\u001b[0m   \u001b[1m\u001b[36m200\u001b[0m        12         53            215             index.php\n\u001b[1m\u001b[32m00002\u001b[0m   \u001b[1m\u001b[36m200\u001b[0m        11         49            198             admin\n\n\u001b[1m\u001b[34m[INFO]\u001b[0m Scan finished in 1.30 seconds."
+  }
+]

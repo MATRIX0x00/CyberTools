@@ -1,0 +1,174 @@
+{
+  "name": "Ping",
+  "version": "1.0",
+  "executable": "ping",
+  "description": "Ping is a network utility used to test the reachability of a host on an Internet Protocol (IP) network.",
+  "tabs": [
+    {
+      "id": "basic",
+      "name": "Basic",
+      "inputs": [
+        {
+          "id": "target_entry",
+          "label": "Target Host/IP:",
+          "type": "text",
+          "flag": "",
+          "placeholder": "e.g., google.com or 8.8.8.8",
+          "help": "The hostname or IP address to ping."
+        },
+        {
+          "id": "count_entry",
+          "label": "Packet Count (-c):",
+          "type": "number",
+          "flag": "-c",
+          "placeholder": "e.g., 4",
+          "help": "Number of packets to send. Leave blank for continuous ping."
+        },
+        {
+          "id": "interface_entry",
+          "label": "Interface (-I):",
+          "type": "text",
+          "flag": "-I",
+          "placeholder": "e.g., eth0",
+          "help": "Source interface to send packets from."
+        },
+        {
+          "id": "interval_entry",
+          "label": "Interval (-i):",
+          "type": "number",
+          "flag": "-i",
+          "placeholder": "e.g., 2",
+          "help": "Wait a number of seconds between sending each packet."
+        },
+        {
+          "id": "file_path_entry",
+          "label": "Target List File (-i):",
+          "type": "text",
+          "flag": "-i",
+          "placeholder": "e.g., /path/to/hosts.txt",
+          "help": "Read a list of targets from a file. Note: Not all `ping` implementations support this."
+        },
+        {
+          "id": "file_upload_entry",
+          "label": "Upload Target List:",
+          "type": "file",
+          "flag": "-i",
+          "help": "Upload a file containing a list of targets (one per line)."
+        }
+      ]
+    },
+    {
+      "id": "advanced",
+      "name": "Advanced",
+      "inputs": [
+        {
+          "id": "quiet_var",
+          "label": "Quiet Output (-q)",
+          "type": "checkbox",
+          "flag": "-q",
+          "help": "Suppress all output except for the summary lines."
+        },
+        {
+          "id": "flood_var",
+          "label": "Flood Ping (-f)",
+          "type": "checkbox",
+          "flag": "-f",
+          "help": "Send packets as fast as possible. Useful for stress testing. Note: Requires root privileges and is highly intrusive."
+        },
+        {
+          "id": "preload_entry",
+          "label": "Preload (-l):",
+          "type": "number",
+          "flag": "-l",
+          "placeholder": "e.g., 10",
+          "help": "Send a number of packets as fast as possible before switching to normal behavior."
+        },
+        {
+          "id": "ttl_entry",
+          "label": "TTL (-t):",
+          "type": "number",
+          "flag": "-t",
+          "placeholder": "e.g., 64",
+          "help": "Set the Time to Live for the packets."
+        },
+        {
+          "id": "pattern_entry",
+          "label": "Pattern (-p):",
+          "type": "text",
+          "flag": "-p",
+          "placeholder": "e.g., FF",
+          "help": "Fill the packets with up to 16 bytes of data from the given hex pattern."
+        },
+        {
+          "id": "tos_entry",
+          "label": "TOS (-o):",
+          "type": "number",
+          "flag": "-o",
+          "placeholder": "e.g., 16",
+          "help": "Set the Type of Service/DSCP for the packets."
+        }
+      ]
+    },
+    {
+      "id": "ipv6",
+      "name": "IPv6",
+      "inputs": [
+        {
+          "id": "ipv6_var",
+          "label": "Use IPv6 (-6)",
+          "type": "checkbox",
+          "flag": "-6",
+          "help": "Use IPv6 packets instead of IPv4."
+        },
+        {
+          "id": "flow_label_entry",
+          "label": "Flow Label (-F):",
+          "type": "number",
+          "flag": "-F",
+          "placeholder": "e.g., 1",
+          "help": "Set the IPv6 flow label."
+        }
+      ]
+    },
+    {
+      "id": "output",
+      "name": "Output",
+      "inputs": [
+        {
+          "id": "beep_var",
+          "label": "Beep on Success (-a)",
+          "type": "checkbox",
+          "flag": "-a",
+          "help": "Beep when a host is reachable."
+        },
+        {
+          "id": "numeric_only_var",
+          "label": "Numeric Output (-n)",
+          "type": "checkbox",
+          "flag": "-n",
+          "help": "Do not resolve hostnames."
+        },
+        {
+          "id": "timestamp_var",
+          "label": "Add Timestamp (-D)",
+          "type": "checkbox",
+          "flag": "-D",
+          "help": "Add a timestamp to each line."
+        }
+      ]
+    },
+    {
+      "id": "additional-args",
+      "name": "Additional Arguments",
+      "inputs": [
+        {
+          "id": "additional_args_textarea",
+          "label": "Additional Arguments:",
+          "type": "textarea",
+          "flag": "",
+          "help": "Any other ping arguments not covered by the GUI. Enter them exactly as you would on the command line."
+        }
+      ]
+    }
+  ]
+}

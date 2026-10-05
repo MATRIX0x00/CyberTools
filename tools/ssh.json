@@ -1,0 +1,220 @@
+{
+  "name": "SSH Client",
+  "version": "8.4p1",
+  "executable": "ssh",
+  "description": "Secure Shell client for remote login and secure file transfer.",
+  "tabs": [
+    {
+      "id": "connection",
+      "name": "Connection",
+      "inputs": [
+        {
+          "id": "user_entry",
+          "label": "User:",
+          "type": "text",
+          "flag": "",
+          "placeholder": "e.g., kali",
+          "help": "The username for the remote connection."
+        },
+        {
+          "id": "host_entry",
+          "label": "Host/IP:",
+          "type": "text",
+          "flag": "",
+          "placeholder": "e.g., 192.168.1.10",
+          "help": "The remote hostname or IP address."
+        },
+        {
+          "id": "port_entry",
+          "label": "Port (-p):",
+          "type": "number",
+          "flag": "-p",
+          "placeholder": "22",
+          "help": "Port to connect to on the remote host."
+        },
+        {
+          "id": "command_to_execute_entry",
+          "label": "Remote Command:",
+          "type": "textarea",
+          "flag": "",
+          "placeholder": "e.g., ls -la /var/www",
+          "help": "Optional command to execute on the remote host."
+        },
+        {
+          "id": "family_select",
+          "label": "Address Family (-4/-6):",
+          "type": "select",
+          "flag": "",
+          "options": [
+            { "value": "", "label": "Default (Any)", "selected": true },
+            { "value": "-4", "label": "IPv4 Only (-4)", "selected": false },
+            { "value": "-6", "label": "IPv6 Only (-6)", "selected": false }
+          ],
+          "help": "Force use of IPv4 or IPv6 addresses."
+        },
+        {
+          "id": "quiet_mode_var",
+          "label": "Quiet Mode (-q)",
+          "type": "checkbox",
+          "flag": "-q",
+          "help": "Silences most warnings and diagnostic messages."
+        }
+      ]
+    },
+    {
+      "id": "authentication",
+      "name": "Authentication",
+      "inputs": [
+        {
+          "id": "identity_file_path_entry",
+          "label": "Identity File Path (-i):",
+          "type": "text",
+          "flag": "-i",
+          "placeholder": "e.g., ~/.ssh/id_rsa",
+          "help": "Path to the identity (private key) file."
+        },
+        {
+          "id": "identity_file_upload_input",
+          "label": "Upload Identity File (-i):",
+          "type": "file",
+          "flag": "-i",
+          "help": "Upload the identity (private key) file for use."
+        },
+        {
+          "id": "password_auth_var",
+          "label": "Allow Password Auth (-o 'PasswordAuthentication=yes')",
+          "type": "checkbox",
+          "flag": "-o PasswordAuthentication=yes",
+          "help": "Enables password authentication (often required)."
+        },
+        {
+          "id": "agent_forwarding_var",
+          "label": "Agent Forwarding (-A)",
+          "type": "checkbox",
+          "flag": "-A",
+          "help": "Enables the forwarding of the authentication agent connection."
+        },
+        {
+          "id": "no_password_prompt_var",
+          "label": "Disable Password Prompt (-n)",
+          "type": "checkbox",
+          "flag": "-n",
+          "help": "Prevents reading from stdin. Useful for background scripts."
+        },
+        {
+          "id": "auth_method_radio",
+          "label": "Preferred Auth Method:",
+          "type": "radio",
+          "flag": "-o PreferredAuthentications=",
+          "options": [
+            { "value": "", "label": "Default (All)", "selected": true },
+            { "value": "publickey", "label": "Public Key", "selected": false },
+            { "value": "password", "label": "Password", "selected": false },
+            { "value": "keyboard-interactive", "label": "Keyboard Interactive", "selected": false }
+          ],
+          "help": "Specify the preferred authentication method."
+        }
+      ]
+    },
+    {
+      "id": "tunnels",
+      "name": "Tunnels & Forwarding",
+      "inputs": [
+        {
+          "id": "local_forwarding_entry",
+          "label": "Local Port Forwarding (-L):",
+          "type": "text",
+          "flag": "-L",
+          "placeholder": "e.g., 8080:target.com:80",
+          "help": "Local port forwarding (L[bind_address:]port:host:hostport)."
+        },
+        {
+          "id": "remote_forwarding_entry",
+          "label": "Remote Port Forwarding (-R):",
+          "type": "text",
+          "flag": "-R",
+          "placeholder": "e.g., 8080:localhost:80",
+          "help": "Remote port forwarding (R[bind_address:]port:host:hostport)."
+        },
+        {
+          "id": "dynamic_forwarding_entry",
+          "label": "Dynamic Port Forwarding (-D):",
+          "type": "text",
+          "flag": "-D",
+          "placeholder": "e.g., 1080",
+          "help": "Dynamic port forwarding (SOCKS proxy on port)."
+        },
+        {
+          "id": "gateway_ports_var",
+          "label": "Allow Remote Connections to Local Forwarded Ports (-g)",
+          "type": "checkbox",
+          "flag": "-g",
+          "help": "Allows remote hosts to connect to locally forwarded ports."
+        },
+        {
+          "id": "no_execute_var",
+          "label": "Do Not Execute Remote Command (-N)",
+          "type": "checkbox",
+          "flag": "-N",
+          "help": "Useful for port forwarding, prevents remote execution."
+        }
+      ]
+    },
+    {
+      "id": "advanced-config",
+      "name": "Advanced/Config",
+      "inputs": [
+        {
+          "id": "config_file_entry",
+          "label": "Config File (-F):",
+          "type": "text",
+          "flag": "-F",
+          "placeholder": "e.g., /path/to/custom_ssh_config",
+          "help": "Specify an alternative per-user configuration file."
+        },
+        {
+          "id": "cipher_select",
+          "label": "Cipher/Encryption (-c):",
+          "type": "select",
+          "flag": "-c",
+          "options": [
+            { "value": "", "label": "Default", "selected": true },
+            { "value": "aes256-gcm@openssh.com", "label": "aes256-gcm", "selected": false },
+            { "value": "chacha20-poly1305@openssh.com", "label": "chacha20-poly1305", "selected": false },
+            { "value": "3des-cbc", "label": "3des-cbc (Legacy/Weak)", "selected": false }
+          ],
+          "help": "Select a cipher or comma-separated list of ciphers."
+        },
+        {
+          "id": "log_level_select",
+          "label": "Log Level (-v):",
+          "type": "select",
+          "flag": "",
+          "options": [
+            { "value": "", "label": "None (Default)", "selected": true },
+            { "value": "-v", "label": "Verbose (-v)", "selected": false },
+            { "value": "-vv", "label": "Very Verbose (-vv)", "selected": false },
+            { "value": "-vvv", "label": "Debug (-vvv)", "selected": false }
+          ],
+          "help": "Increase verbosity of debugging messages."
+        },
+        {
+          "id": "connection_timeout_entry",
+          "label": "Connection Timeout (-o 'ConnectTimeout'):",
+          "type": "number",
+          "flag": "-o ConnectTimeout=",
+          "placeholder": "30",
+          "help": "Timeout before giving up (seconds)."
+        },
+        {
+          "id": "additional_args_entry",
+          "label": "Additional Arguments:",
+          "type": "textarea",
+          "flag": "",
+          "placeholder": "Enter any other SSH arguments here.",
+          "help": "Any other ssh arguments not covered by the GUI."
+        }
+      ]
+    }
+  ]
+}

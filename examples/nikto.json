@@ -1,0 +1,39 @@
+[
+    {
+        "name": "Basic Web Scan",
+        "description": "Perform a standard comprehensive scan against a target on the default port 80.",
+        "options": {
+            "host_entry": "http://testphp.vulnweb.com",
+            "tuning_select": "A",
+            "output_file_entry": "output/nikto_basic_scan.txt",
+            "format_select": "txt"
+        },
+        "example_output": "\u001b[1m\u001b[34m+ Nikto v2.1.6/2.1.5\u001b[0m\n\u001b[1m\u001b[34m+ Target IP: 192.168.1.100\u001b[0m\n\u001b[1m\u001b[34m+ Target Hostname: testphp.vulnweb.com\u001b[0m\n\u001b[1m\u001b[34m+ Target Port: 80\u001b[0m\n\n\u001b[1m\u001b[33m+ Web Server: Apache/2.4.18 (Ubuntu) PHP/7.0.4\u001b[0m\n\u001b[1m+ The anti-clickjacking X-Frame-Options header is not present.\u001b[0m\n\u001b[1m\u001b[32m+ Allowed HTTP Methods: GET, HEAD, POST, OPTIONS\u001b[0m\n\u001b[1m\u001b[31m+ OSVDB-3092: /test/test.html: This file may contain sensitive information.\u001b[0m\n\u001b[1m\u001b[31m+ OSVDB-3233: /admin/: Folder allows listing. Files could be indexed.\u001b[0m\n\u001b[1m\u001b[34m+ End Time: 2025-09-28 10:30:00 (150 seconds)\u001b[0m"
+    },
+    {
+        "name": "SSL Scan with Specific Port",
+        "description": "Scan a target using SSL on a non-standard port like 8443, outputting to XML.",
+        "options": {
+            "host_entry": "secure.example.com",
+            "port_entry": "8443",
+            "ssl_var": true,
+            "tuning_select": "1",
+            "output_file_entry": "output/nikto_ssl_scan.xml",
+            "format_select": "xml"
+        },
+        "example_output": "\u001b[1m\u001b[34m+ Nikto v2.1.6/2.1.5\u001b[0m\n\u001b[1m\u001b[34m+ Target IP: 10.0.0.5\u001b[0m\n\u001b[1m\u001b[34m+ Target Port: 8443\u001b[0m\n\u001b[1m\u001b[34m+ SSL/TLS is in use.\u001b[0m\n\n\u001b[1m\u001b[33m+ Test: 'Interesting File/Dir' (Tuning 1)\u001b[0m\n\u001b[1m\u001b[32m+ The server is running Microsoft-IIS/7.5.\u001b[0m\n\u001b[1m\u001b[31m+ OSVDB-3268: /iis-internal/: IIS 7.5 uses short name generation which may lead to security bypasses.\u001b[0m\n\u001b[1m\u001b[34m+ End Time: 2025-09-28 10:31:30 (90 seconds)\u001b[0m"
+    },
+    {
+        "name": "Evasion and Tuning",
+        "description": "Use full evasion techniques and a long delay between checks to avoid detection.",
+        "options": {
+            "host_entry": "http://target.local",
+            "evasion_radio": "9",
+            "scan_delay_entry": "10",
+            "user_agent_entry": "Googlebot/2.1",
+            "output_file_entry": "output/nikto_evasion.txt",
+            "format_select": "txt"
+        },
+        "example_output": "\u001b[1m\u001b[34m+ Nikto v2.1.6/2.1.5\u001b[0m\n\u001b[1m\u001b[34m+ Using Evasion Technique 9: All evasion techniques enabled\u001b[0m\n\u001b[1m\u001b[34m+ Setting scan delay to 10 seconds\u001b[0m\n\u001b[1m\u001b[34m+ Target Hostname: target.local\u001b[0m\n\n\u001b[1m\u001b[33m+ Web Server: nginx/1.10.3\u001b[0m\n\u001b[1m\u001b[32m+ No HTTP OPTIONS info was found.\u001b[0m\n\u001b[1m\u001b[31m+ OSVDB-3972: /phpinfo.php: PHP info file found. May leak sensitive config details.\u001b[0m\n\u001b[1m\u001b[34m+ End Time: 2025-09-28 10:33:00 (300 seconds)\u001b[0m"
+    }
+]

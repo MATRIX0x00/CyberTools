@@ -1,0 +1,228 @@
+{
+  "name": "amass",
+  "version": "4.2.1",
+  "executable": "amass",
+  "description": "Amass is a powerful network discovery and attack surface mapping tool that uses open-source information gathering and active reconnaissance techniques.",
+  "tabs": [
+    {
+      "id": "enum",
+      "name": "Enumeration",
+      "inputs": [
+        {
+          "id": "domain_entry",
+          "label": "Target Domain (-d):",
+          "type": "text",
+          "flag": "-d",
+          "placeholder": "e.g., example.com",
+          "help": "The primary domain name to enumerate."
+        },
+        {
+          "id": "passive_mode_var",
+          "label": "Passive Mode (-passive)",
+          "type": "checkbox",
+          "flag": "-passive",
+          "help": "Run in passive mode, using only data sources that do not require DNS requests or other active reconnaissance."
+        },
+        {
+          "id": "active_mode_var",
+          "label": "Active Mode (-active)",
+          "type": "checkbox",
+          "flag": "-active",
+          "help": "Run in active mode, performing more exhaustive enumeration using various techniques."
+        },
+        {
+          "id": "brute_force_var",
+          "label": "Brute Force (-brute)",
+          "type": "checkbox",
+          "flag": "-brute",
+          "help": "Perform brute force subdomain enumeration. This can be time-consuming."
+        },
+        {
+          "id": "wordlist_path_entry",
+          "label": "Wordlist Path (-w):",
+          "type": "text",
+          "flag": "-w",
+          "placeholder": "e.g., /path/to/wordlist.txt",
+          "help": "Path to a custom wordlist file for brute force and DNS permutations."
+        },
+        {
+          "id": "wordlist_upload",
+          "label": "Upload Wordlist:",
+          "type": "file",
+          "flag": "-w",
+          "help": "Upload a custom wordlist file for brute force."
+        },
+        {
+          "id": "cidr_entry",
+          "label": "CIDR (-cidr):",
+          "type": "text",
+          "flag": "-cidr",
+          "placeholder": "e.g., 192.168.1.0/24",
+          "help": "CIDR block to discover hosts within."
+        },
+        {
+          "id": "ports_entry",
+          "label": "Ports (-p):",
+          "type": "text",
+          "flag": "-p",
+          "placeholder": "e.g., 80,443,8080",
+          "help": "Ports to check for open services (e.g., '80,443')."
+        },
+        {
+          "id": "max_dns_queries_entry",
+          "label": "Max DNS Queries (-max-dns-queries):",
+          "type": "number",
+          "flag": "-max-dns-queries",
+          "placeholder": "e.g., 10000",
+          "help": "Maximum number of DNS queries to make."
+        }
+      ]
+    },
+    {
+      "id": "data-sources",
+      "name": "Data Sources",
+      "inputs": [
+        {
+          "id": "excluded_sources_entry",
+          "label": "Exclude Sources (-exclude):",
+          "type": "textarea",
+          "flag": "-exclude",
+          "placeholder": "e.g., 'virustotal,crtsh'",
+          "help": "Exclude specific data sources from the enumeration."
+        },
+        {
+          "id": "included_sources_entry",
+          "label": "Include Sources (-include):",
+          "type": "textarea",
+          "flag": "-include",
+          "placeholder": "e.g., 'virustotal,crtsh'",
+          "help": "Only use specific data sources for the enumeration."
+        },
+        {
+          "id": "list_sources_var",
+          "label": "List All Sources (-list-sources)",
+          "type": "checkbox",
+          "flag": "-list-sources",
+          "help": "List all available data sources without performing a scan."
+        },
+        {
+          "id": "custom_api_keys_entry",
+          "label": "Custom API Keys (-config):",
+          "type": "text",
+          "flag": "-config",
+          "placeholder": "e.g., /path/to/config.ini",
+          "help": "Specify a configuration file with API keys for external services."
+        },
+        {
+          "id": "custom_api_keys_upload",
+          "label": "Upload Config File:",
+          "type": "file",
+          "flag": "-config",
+          "help": "Upload a custom configuration file with API keys."
+        },
+        {
+          "id": "dns_servers_entry",
+          "label": "DNS Servers (-resolvers):",
+          "type": "textarea",
+          "flag": "-resolvers",
+          "placeholder": "e.g., '8.8.8.8,1.1.1.1'",
+          "help": "Comma-separated list of DNS server IP addresses to use."
+        },
+        {
+          "id": "reverse_dns_var",
+          "label": "Reverse DNS Lookup (-rdns)",
+          "type": "checkbox",
+          "flag": "-rdns",
+          "help": "Perform reverse DNS lookups on discovered IP addresses."
+        }
+      ]
+    },
+    {
+      "id": "output",
+      "name": "Output",
+      "inputs": [
+        {
+          "id": "output_file_entry",
+          "label": "Output File (-o):",
+          "type": "text",
+          "flag": "-o",
+          "placeholder": "e.g., output/amass_results.txt",
+          "help": "Save the enumeration results to a text file."
+        },
+        {
+          "id": "json_output_file_entry",
+          "label": "JSON Output (-json):",
+          "type": "text",
+          "flag": "-json",
+          "placeholder": "e.g., output/amass_results.json",
+          "help": "Save the enumeration results to a JSON file."
+        },
+        {
+          "id": "verbose_var",
+          "label": "Verbose (-v)",
+          "type": "checkbox",
+          "flag": "-v",
+          "help": "Enable verbose output to see more details about the scan."
+        },
+        {
+          "id": "show_ips_var",
+          "label": "Show IPs (-ip)",
+          "type": "checkbox",
+          "flag": "-ip",
+          "help": "Show IP addresses for discovered subdomains."
+        },
+        {
+          "id": "show_reason_var",
+          "label": "Show Reason (-whois)",
+          "type": "checkbox",
+          "flag": "-whois",
+          "help": "Show WHOIS information for discovered assets."
+        }
+      ]
+    },
+    {
+      "id": "advanced",
+      "name": "Advanced",
+      "inputs": [
+        {
+          "id": "proxy_entry",
+          "label": "Proxy (-proxy):",
+          "type": "text",
+          "flag": "-proxy",
+          "placeholder": "e.g., 'http://127.0.0.1:8080'",
+          "help": "Use a proxy for all HTTP requests."
+        },
+        {
+          "id": "threads_entry",
+          "label": "Threads (-t):",
+          "type": "number",
+          "flag": "-t",
+          "placeholder": "e.g., 25",
+          "help": "Number of concurrent threads to use."
+        },
+        {
+          "id": "additional_args_entry",
+          "label": "Additional Arguments:",
+          "type": "textarea",
+          "flag": "",
+          "help": "Any other Amass arguments not covered by the GUI. Enter them exactly as you would on the command line."
+        },
+        {
+          "id": "domain_list_file_entry",
+          "label": "Domain List File (-df):",
+          "type": "text",
+          "flag": "-df",
+          "placeholder": "e.g., /path/to/domains.txt",
+          "help": "File containing a list of domains to enumerate (one per line)."
+        },
+        {
+          "id": "domain_list_upload",
+          "label": "Upload Domain List:",
+          "type": "file",
+          "flag": "-df",
+          "help": "Upload a file with a list of domains to enumerate."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+[
+    {
+        "name": "MD5 Straight Attack",
+        "description": "Cracks MD5 hashes (m=0) using a straight wordlist attack (a=0).",
+        "options": {
+            "attack_mode_select": "0",
+            "hash_type_entry": "0",
+            "hash_file_path": "hashes/md5.txt",
+            "wordlist_file_path": "/usr/share/wordlists/rockyou.txt",
+            "outfile_entry": "cracked_md5.txt"
+        },
+        "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Started: Mon Sep 28 10:15:00 2025\n\nSession..........: hashcat\nStatus...........: \u001b[32mCracked\u001b[0m\nHash.Name........: MD5\nHash.Target......: hashes/md5.txt\nTime.Started.....: Mon Sep 28 10:15:00 2025 (10 secs)\nTime.Estimated...: Mon Sep 28 10:15:10 2025 (0 secs)\nGuess.Base.......: /usr/share/wordlists/rockyou.txt\nSpeed.#1.........: 1000.0 MH/s\nRecovered........: \u001b[32m1/1\u001b[0m digests, 1/1 salts\n\n\u001b[1m\u001b[34m[INFO]\u001b[0m Finished: Mon Sep 28 10:15:10 2025"
+    },
+    {
+        "name": "NTLM Mask Brute-force",
+        "description": "Brute-forces NTLM hashes (m=1000) using a mask attack (a=3) with 8 lowercase alphanumeric characters.",
+        "options": {
+            "attack_mode_select": "3",
+            "hash_type_entry": "1000",
+            "hash_file_path": "hashes/ntlm.txt",
+            "mask_entry": "?l?d?l?d?l?d?l?d",
+            "increment_var": true,
+            "gpu_temp_retain_entry": "90"
+        },
+        "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Started: Mon Sep 28 10:17:30 2025\n\nSession..........: hashcat\nStatus...........: \u001b[32mCracked\u001b[0m\nHash.Name........: NTLM\nHash.Target......: hashes/ntlm.txt\nTime.Started.....: Mon Sep 28 10:17:30 2025 (25 secs)\nTime.Estimated...: Mon Sep 28 10:17:55 2025 (0 secs)\nGuess.Mask.......: ?l?d?l?d?l?d?l?d\nSpeed.#1.........: 50.0 GH/s\nRecovered........: \u001b[32m2/2\u001b[0m digests, 2/2 salts\n\n\u001b[1m\u001b[34m[INFO]\u001b[0m Finished: Mon Sep 28 10:17:55 2025"
+    },
+    {
+        "name": "WPA/WPA2 Hybrid Attack",
+        "description": "Hybrid crack (a=6) for WPA/WPA2 hashes (m=2500) using a wordlist and a static 4-digit number mask.",
+        "options": {
+            "attack_mode_select": "6",
+            "hash_type_entry": "2500",
+            "hash_file_path": "hashes/wpa2.hccapx",
+            "wordlist_file_path": "dictionaries/passwords.txt",
+            "mask_entry": "?d?d?d?d",
+            "rule_file_path": "rules/leetspeak.rule",
+            "session_entry": "wpa_hybrid_scan"
+        },
+        "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Started: Mon Sep 28 10:20:00 2025\n\nSession..........: \u001b[36mwpa_hybrid_scan\u001b[0m\nStatus...........: Exhausted\nHash.Name........: WPA/WPA2\nHash.Target......: hashes/wpa2.hccapx\nAttack.Mode......: \u001b[36mHybrid Wordlist + Mask\u001b[0m\nGuess.Mask.......: ?d?d?d?d\nRule.File........: rules/leetspeak.rule\nSpeed.#1.........: 500.0 kH/s\nRecovered........: \u001b[33m0/5\u001b[0m digests, 0/5 salts\n\n\u001b[1m\u001b[33m[WARNING]\u001b[0m Exhausted key space. This attack will not find new cracks.\n\u001b[1m\u001b[34m[INFO]\u001b[0m Finished: Mon Sep 28 10:25:30 2025"
+    },
+    {
+        "name": "NetNTLMv2 Straight Attack",
+        "description": "Cracks NetNTLMv2 hashes (m=5600) using a dictionary attack (a=0). A common use case in internal penetration tests.",
+        "options": {
+            "attack_mode_select": "0",
+            "hash_type_entry": "5600",
+            "hash_file_path": "hashes/ntlmv2_capture.hash",
+            "wordlist_file_path": "/usr/share/wordlists/xato_v2.txt",
+            "outfile_entry": "cracked_ntlmv2.txt",
+            "force_var": true
+        },
+        "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Started: Mon Sep 28 10:27:00 2025\n\nSession..........: hashcat\nStatus...........: \u001b[32mCracked\u001b[0m\nHash.Name........: NetNTLMv2\nHash.Target......: hashes/ntlmv2_capture.hash\nTime.Started.....: Mon Sep 28 10:27:00 2025 (32 secs)\nTime.Estimated...: Mon Sep 28 10:27:32 2025 (0 secs)\nGuess.Base.......: /usr/share/wordlists/xato_v2.txt\nSpeed.#1.........: 850.0 MH/s\nRecovered........: \u001b[32m5/5\u001b[0m digests, 5/5 salts\n\n\u001b[1m\u001b[34m[INFO]\u001b[0m Finished: Mon Sep 28 10:27:32 2025"
+    },
+    {
+        "name": "SHA1 Combinator Attack",
+        "description": "Cracks SHA1 hashes (m=100) using the Combinator attack (a=1) by joining two wordlists.",
+        "options": {
+            "attack_mode_select": "1",
+            "hash_type_entry": "100",
+            "hash_file_path": "hashes/sha1.txt",
+            "wordlist_file_path": "dicts/names.txt",
+            "additional_args_entry": "dicts/years.txt",
+            "session_entry": "sha1_combinator"
+        },
+        "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Started: Mon Sep 28 10:30:15 2025\n\nSession..........: \u001b[36msha1_combinator\u001b[0m\nStatus...........: Running\nHash.Name........: SHA1\nHash.Target......: hashes/sha1.txt\nAttack.Mode......: \u001b[36mCombinator\u001b[0m\nGuess.Queue......: 1/1 (80.00% done)\nSpeed.#1.........: 12.5 GH/s\nRecovered........: \u001b[33m2/10\u001b[0m digests, 2/10 salts\nProgress.........: 1,500,000 / 2,000,000 (75.00%)\nRuntime..........: 0 days, 00:00:03\n\n\u001b[1m\u001b[34m[INFO]\u001b[0m Press 's' for status or 'q' to quit."
+    },
+    {
+        "name": "Kerberos 5 Rule-based Crack",
+        "description": "Cracks Kerberos 5, TGS-REP etype 23 hashes (m=13100) with a rule file (a=0 -r).",
+        "options": {
+            "attack_mode_select": "0",
+            "hash_type_entry": "13100",
+            "hash_file_path": "hashes/kerberos5.hash",
+            "wordlist_file_path": "dicts/corp_passwords.txt",
+            "rule_file_path": "rules/office_leet.rule",
+            "status_var": true
+        },
+        "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Started: Mon Sep 28 10:33:45 2025\n\nSession..........: hashcat\nStatus...........: \u001b[33mPaused\u001b[0m\nHash.Name........: Kerberos 5 TGS-REP etype 23\nHash.Target......: hashes/kerberos5.hash\nAttack.Mode......: \u001b[36mStraight\u001b[0m\nRule.File........: rules/office_leet.rule\nSpeed.#1.........: 300.0 kH/s\nRecovered........: \u001b[32m1/8\u001b[0m digests, 1/8 salts\nProgress.........: 1,200,000 / 10,000,000 (12.00%)\nRuntime..........: 0 days, 00:00:20\n\n\u001b[1m\u001b[33m[WARNING]\u001b[0m To continue, press 's' for status or 'r' to resume."
+    },
+    {
+        "name": "Salted MD5 Hybrid Mask + Wordlist",
+        "description": "Cracks md5($salt.$pass) hashes (m=20) using a Hybrid Mask + Wordlist attack (a=7) - appending a 4-digit mask.",
+        "options": {
+            "attack_mode_select": "7",
+            "hash_type_entry": "20",
+            "hash_file_path": "hashes/salted_md5.hash",
+            "wordlist_file_path": "/usr/share/wordlists/top10k.txt",
+            "mask_entry": "?d?d?d?d",
+            "slow_down_entry": "3",
+            "threads_entry": "128"
+        },
+        "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Started: Mon Sep 28 10:35:05 2025\n\nSession..........: hashcat\nStatus...........: Running\nHash.Name........: md5($salt.$pass)\nHash.Target......: hashes/salted_md5.hash\nAttack.Mode......: \u001b[36mHybrid Mask + Wordlist\u001b[0m\nGuess.Mask.......: ?d?d?d?d\nGuess.Queue......: 1/1 (50.00% done)\nSpeed.#1.........: 5.0 GH/s\nRecovered........: \u001b[33m0/3\u001b[0m digests, 0/3 salts\nProgress.........: 3,000,000,000 / 6,000,000,000 (50.00%)\nRuntime..........: 0 days, 00:01:00\n\n\u001b[1m\u001b[32m[INFO]\u001b[0m Estimated completion in 0 days, 00:01:00"
+    },
+    {
+        "name": "WPA/WPA2 Pure Brute-force",
+        "description": "Brute-forces WPA/WPA2 hashes (m=2500) using the Mask attack (a=3) with 10 lowercase-only characters.",
+        "options": {
+            "attack_mode_select": "3",
+            "hash_type_entry": "2500",
+            "hash_file_path": "hashes/wpa_cap.hccapx",
+            "mask_entry": "?l?l?l?l?l?l?l?l?l?l",
+            "increment_var": true,
+            "gpu_temp_retain_entry": "90"
+        },
+        "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Started: Mon Sep 28 10:38:20 2025\n\nSession..........: hashcat\nStatus...........: Running\nHash.Name........: WPA/WPA2\nHash.Target......: hashes/wpa_cap.hccapx\nTime.Started.....: Mon Sep 28 10:38:20 2025 (48 secs)\nTime.Estimated...: Wed Sep 30 15:30:00 2025 (2 days, 04:51:40)\nGuess.Mask.......: ?l?l?l?l?l?l?l?l?l?l\nSpeed.#1.........: 550.0 kH/s\nRecovered........: \u001b[33m0/1\u001b[0m digests, 0/1 salts\nProgress.........: 12,500,000 / 1,400,000,000,000 (0.00%)\n\n\u001b[1m\u001b[33m[WARNING]\u001b[0m This attack is estimated to take a very long time."
+    },
+    {
+        "name": "Generic SHA-512 with Rules",
+        "description": "Cracks standard SHA-512 hashes (m=1700) using a dictionary attack (a=0) combined with a highly aggressive rule set.",
+        "options": {
+            "attack_mode_select": "0",
+            "hash_type_entry": "1700",
+            "hash_file_path": "hashes/sha512.txt",
+            "wordlist_file_path": "dicts/company_names.txt",
+            "rule_file_path": "rules/aggressive.rule",
+            "quiet_var": true
+        },
+        "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Started: Mon Sep 28 10:40:55 2025\n\nSession..........: hashcat\nStatus...........: \u001b[32mCracked\u001b[0m\nHash.Name........: SHA512\nHash.Target......: hashes/sha512.txt\nAttack.Mode......: \u001b[36mStraight\u001b[0m\nRule.File........: rules/aggressive.rule\nSpeed.#1.........: 2.1 GH/s\nRecovered........: \u001b[32m3/3\u001b[0m digests, 3/3 salts\n\n\u001b[1m\u001b[34m[INFO]\u001b[0m Finished: Mon Sep 28 10:41:05 2025"
+    }
+]

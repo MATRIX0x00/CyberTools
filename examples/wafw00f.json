@@ -1,0 +1,43 @@
+[
+  {
+    "name": "Basic Scan",
+    "description": "Performs a basic scan on a single target URL.",
+    "options": {
+      "target_url_entry": "http://www.imperva.com"
+    },
+    "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Starting wafw00f 1.0.0\n\u001b[1m\u001b[34m[INFO]\u001b[0m Checking for WAF on http://www.imperva.com\n\u001b[1m\u001b[32m[SUCCESS]\u001b[0m The site http://www.imperva.com is protected by \u001b[1m\u001b[36mIncapsula\u001b[0m\n\u001b[1m\u001b[34m[INFO]\u001b[0m Scan finished."
+  },
+  {
+    "name": "Scan with Verbose Output",
+    "description": "Increases verbosity to show more details about the requests and responses.",
+    "options": {
+      "target_url_entry": "http://www.imperva.com",
+      "verbose_var": true
+    },
+    "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Starting wafw00f 1.0.0\n\u001b[1m\u001b[34m[INFO]\u001b[0m Checking for WAF on http://www.imperva.com\n\u001b[1m\u001b[34m[INFO]\u001b[0m Verbose mode enabled. Trying a request with a malicious payload...\n\u001b[1m\u001b[32m[SUCCESS]\u001b[0m The site http://www.imperva.com is protected by \u001b[1m\u001b[36mIncapsula\u001b[0m\n\u001b[1m\u001b[34m[INFO]\u001b[0m Scan finished."
+  },
+  {
+    "name": "Scan with Target List",
+    "description": "Scans multiple targets from a provided file.",
+    "options": {
+      "target_list_file_path_entry": "targets/top_websites.txt"
+    },
+    "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Starting wafw00f 1.0.0\n\u001b[1m\u001b[34m[INFO]\u001b[0m Loading targets from targets/top_websites.txt\n\u001b[1m\u001b[34m[INFO]\u001b[0m Checking for WAF on http://www.imperva.com\n\u001b[1m\u001b[32m[SUCCESS]\u001b[0m The site http://www.imperva.com is protected by \u001b[1m\u001b[36mIncapsula\u001b[0m\n\u001b[1m\u001b[34m[INFO]\u001b[0m Checking for WAF on http://www.cloudflare.com\n\u001b[1m\u001b[32m[SUCCESS]\u001b[0m The site http://www.cloudflare.com is protected by \u001b[1m\u001b[36mCloudflare\u001b[0m\n\u001b[1m\u001b[34m[INFO]\u001b[0m Scan finished."
+  },
+  {
+    "name": "List All WAFs",
+    "description": "Lists all WAFs that wafw00f is capable of detecting.",
+    "options": {
+      "list_wafs_var": true
+    },
+    "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Starting wafw00f 1.0.0\n\u001b[1m\u001b[34m[INFO]\u001b[0m WAFs that wafw00f is able to detect:\n\u001b[1m\u001b[32m[SUCCESS]\u001b[0m - 360 Safeguard Center\n- Akamai\n- Alibaba Cloud WAF\n- AMS-WAF\n...snip...\n- F5 BIG-IP\n- FortiWeb\n- IBM Web Application Firewall\n- Incapsula\n\u001b[1m\u001b[34m[INFO]\u001b[0m Scan finished."
+  },
+  {
+    "name": "Target Not Protected",
+    "description": "Shows the output for a target that is not protected by a known WAF.",
+    "options": {
+      "target_url_entry": "http://scanme.nmap.org"
+    },
+    "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Starting wafw00f 1.0.0\n\u001b[1m\u001b[34m[INFO]\u001b[0m Checking for WAF on http://scanme.nmap.org\n\u001b[1m\u001b[33m[WARNING]\u001b[0m The site http://scanme.nmap.org does not appear to be protected by a WAF\n\u001b[1m\u001b[34m[INFO]\u001b[0m Scan finished."
+  }
+]

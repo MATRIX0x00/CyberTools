@@ -1,0 +1,55 @@
+[
+  {
+    "name": "Basic Directory Brute Force",
+    "description": "Brute force directories on a target web server using a common wordlist.",
+    "options": {
+      "mode_select": "dir",
+      "url_entry": "http://example.com",
+      "wordlist_entry": "/usr/share/wordlists/dirb/common.txt"
+    },
+    "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Starting gobuster in dir mode\n\u001b[32m/images\u001b[0m (Status: 301) [Size: 312]\n\u001b[32m/admin\u001b[0m (Status: 403) [Size: 278]"
+  },
+  {
+    "name": "Directory Brute Force with Extensions",
+    "description": "Search for specific file extensions during directory brute force.",
+    "options": {
+      "mode_select": "dir",
+      "url_entry": "http://example.com",
+      "wordlist_entry": "/usr/share/wordlists/dirb/common.txt",
+      "extensions_entry": "php,txt"
+    },
+    "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Starting gobuster in dir mode\n\u001b[32m/index.php\u001b[0m (Status: 200) [Size: 1024]\n\u001b[32m/robots.txt\u001b[0m (Status: 200) [Size: 45]"
+  },
+  {
+    "name": "DNS Subdomain Brute Force",
+    "description": "Discover subdomains using DNS mode.",
+    "options": {
+      "mode_select": "dns",
+      "url_entry": "example.com",
+      "wordlist_entry": "/usr/share/wordlists/seclists/Discovery/DNS/subdomains-top1million-110000.txt"
+    },
+    "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Starting gobuster in dns mode\n\u001b[32mFound: www.example.com\u001b[0m\n\u001b[32mFound: dev.example.com\u001b[0m"
+  },
+  {
+    "name": "Virtual Host Brute Force",
+    "description": "Discover virtual hosts on a target server.",
+    "options": {
+      "mode_select": "vhost",
+      "url_entry": "http://example.com",
+      "wordlist_entry": "/usr/share/wordlists/seclists/Discovery/DNS/subdomains-top1million-110000.txt"
+    },
+    "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Starting gobuster in vhost mode\n\u001b[32mFound: admin.example.com\u001b[0m (Status: 200)\n\u001b[32mFound: test.example.com\u001b[0m (Status: 403)"
+  },
+  {
+    "name": "Fast Directory Brute Force",
+    "description": "Increase the number of threads for a faster brute force.",
+    "options": {
+      "mode_select": "dir",
+      "url_entry": "http://example.com",
+      "wordlist_entry": "/usr/share/wordlists/dirb/common.txt",
+      "threads_entry": "50",
+      "quiet_var": true
+    },
+    "example_output": "\u001b[32m/css\u001b[0m (Status: 301) [Size: 309]\n\u001b[32m/js\u001b[0m (Status: 301) [Size: 308]"
+  }
+]

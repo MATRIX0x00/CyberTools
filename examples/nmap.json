@@ -1,0 +1,280 @@
+[
+    {
+        "name": "Basic Scan",
+        "description": "Scans for common open ports and services.",
+        "options": {
+            "target_entry": "scanme.nmap.org",
+            "syn_scan_var": true,
+            "service_version_detection_var": true,
+            "normal_output_file_entry": "output/basic_scan.txt"
+        },
+        "example_output": "\u001b[1m\u001b[34mStarting Nmap 7.91\u001b[0m ( \u001b[4mhttps://nmap.org\u001b[0m ) at 2025-07-29 10:00 EEST\n\u001b[1m\u001b[32mNmap scan report for scanme.nmap.org (45.33.32.152)\u001b[0m\nHost is up (0.050s latency).\nNot shown: 998 closed ports\nPORT     STATE SERVICE VERSION\n\u001b[32m22/tcp\u001b[0m   open  ssh     \u001b[1mOpenSSH 7.9\u001b[0m (protocol 2.0)\n\u001b[32m80/tcp\u001b[0m   open  http    \u001b[1mApache httpd 2.4.6\u001b[0m ((CentOS) PHP/5.4.16)\n\n\u001b[1m\u001b[34mNmap done\u001b[0m: 1 IP address (1 host up) scanned in 1.23 seconds"
+    },
+    {
+        "name": "OS & Version Detection",
+        "description": "Aggressively detects OS and service versions.",
+        "options": {
+            "target_entry": "scanme.nmap.org",
+            "aggressive_detection_var": true,
+            "normal_output_file_entry": "output/os_and_version_detection.txt"
+        },
+        "example_output": "\u001b[1m\u001b[34mStarting Nmap 7.91\u001b[0m ( \u001b[4mhttps://nmap.org\u001b[0m ) at 2025-07-29 10:01 EEST\n\u001b[1m\u001b[32mNmap scan report for scanme.nmap.org (45.33.32.152)\u001b[0m\nHost is up (0.050s latency).\nNot shown: 998 closed ports\nPORT     STATE SERVICE VERSION\n\u001b[32m22/tcp\u001b[0m   open  ssh     \u001b[1mOpenSSH 7.9\u001b[0m (protocol 2.0)\n\u001b[32m80/tcp\u001b[0m   open  http    \u001b[1mApache httpd 2.4.6\u001b[0m ((CentOS) PHP/5.4.16)\nService Info: OS: \u001b[1m\u001b[36mLinux\u001b[0m; CPE: cpe:/o:linux:linux_kernel\n\n\u001b[1m\u001b[34mOS detection performed\u001b[0m. Please report any incorrect results at \u001b[4mhttps://nmap.org/submit/\u001b[0m .\n\u001b[1m\u001b[34mNmap done\u001b[0m: 1 IP address (1 host up) scanned in 2.56 seconds"
+    },
+    {
+        "name": "Specific Port Scan",
+        "description": "Scans only specified ports (e.g., 80, 443).",
+        "options": {
+            "target_entry": "scanme.nmap.org",
+            "ports_entry": "80,443",
+            "syn_scan_var": true,
+            "normal_output_file_entry": "output/specific_port_scan.txt"
+        },
+        "example_output": "\u001b[1m\u001b[34mStarting Nmap 7.91\u001b[0m ( \u001b[4mhttps://nmap.org\u001b[0m ) at 2025-07-29 10:02 EEST\n\u001b[1m\u001b[32mNmap scan report for scanme.nmap.org (45.33.32.152)\u001b[0m\nHost is up (0.050s latency).\nPORT    STATE SERVICE\n\u001b[1m\u001b[32m80/tcp\u001b[0m  open  http\n\u001b[1m\u001b[31m443/tcp\u001b[0m closed https\n        \n\u001b[1m\u001b[34mNmap done\u001b[0m: 1 IP address (1 host up) scanned in 0.87 seconds"
+    },
+    {
+        "name": "Stealth Scan (SYN)",
+        "description": "Performs a stealthy SYN scan (requires root).",
+        "options": {
+            "target_entry": "scanme.nmap.org",
+            "syn_scan_var": true,
+            "normal_output_file_entry": "output/stealth_scan.txt"
+        },
+        "example_output": "\u001b[1m\u001b[34mStarting Nmap 7.91\u001b[0m ( \u001b[4mhttps://nmap.org\u001b[0m ) at 2025-07-29 10:03 EEST\n\u001b[1m\u001b[32mNmap scan report for scanme.nmap.org (45.33.32.152)\u001b[0m\nHost is up (0.050s latency).\nNot shown: 998 closed ports\nPORT     STATE SERVICE\n\u001b[1m\u001b[32m22/tcp\u001b[0m   open  ssh\n\u001b[1m\u001b[32m80/tcp\u001b[0m   open  http\n        \n\u001b[1m\u001b[34mNmap done\u001b[0m: 1 IP address (1 host up) scanned in 1.15 seconds"
+    },
+    {
+        "name": "Ping Scan Only",
+        "description": "Only performs host discovery (no port scan).",
+        "options": {
+            "target_entry": "scanme.nmap.org",
+            "ping_scan_var": true,
+            "normal_output_file_entry": "output/ping_scan_only.txt"
+        },
+        "example_output": "\u001b[1m\u001b[34mStarting Nmap 7.91\u001b[0m ( \u001b[4mhttps://nmap.org\u001b[0m ) at 2025-07-29 10:04 EEST\n\u001b[1m\u001b[32mNmap scan report for scanme.nmap.org (45.33.32.152)\u001b[0m\nHost is up (0.050s latency).\n\u001b[1m\u001b[34mNmap done\u001b[0m: 1 IP address (1 host up) scanned in 0.05 seconds"
+    },
+    {
+        "name": "Aggressive Scan",
+        "description": "Enables OS detection, version detection, script scanning, and traceroute.",
+        "options": {
+            "target_entry": "scanme.nmap.org",
+            "aggressive_detection_var": true,
+            "normal_output_file_entry": "output/aggressive_scan.txt"
+        },
+        "example_output": "\u001b[1m\u001b[34mStarting Nmap 7.91\u001b[0m ( \u001b[4mhttps://nmap.org\u001b[0m ) at 2025-07-29 10:05 EEST\n\u001b[1m\u001b[32mNmap scan report for scanme.nmap.org (45.33.32.152)\u001b[0m\nHost is up (0.050s latency).\nPORT     STATE SERVICE VERSION\n\u001b[1m\u001b[32m22/tcp\u001b[0m   open  ssh     \u001b[1mOpenSSH 7.9\u001b[0m (protocol 2.0)\n\u001b[1m\u001b[32m80/tcp\u001b[0m   open  http    \u001b[1mApache httpd 2.4.6\u001b[0m ((CentOS))\n\u001b[1m\u001b[36m|_http-server-header\u001b[0m: \u001b[1m\u001b[36mApache/2.4.6 (CentOS) PHP/5.4.16\u001b[0m\nService Info: OS: \u001b[1m\u001b[36mLinux\u001b[0m; CPE: cpe:/o:linux:linux_kernel\n\nOS details: Linux 3.10 to 4.1\n\nTRACEROUTE (using port 80/tcp)\nHOP RTT       ADDRESS\n\u001b[1m\u001b[36m1\u001b[0m   \u001b[1m\u001b[32m10.00 ms\u001b[0m  router.example.com (192.168.1.1)\n\u001b[1m\u001b[36m2\u001b[0m   \u001b[1m\u001b[32m15.00 ms\u001b[0m  ISP-router.com (203.0.113.1)\n\u001b[1m\u001b[36m3\u001b[0m   \u001b[1m\u001b[32m25.00 ms\u001b[0m  scanme.nmap.org (45.33.32.152)\n\n\u001b[1m\u001b[34mNmap done\u001b[0m: 1 IP address (1 host up) scanned in 5.12 seconds"
+    },
+    {
+        "name": "Vulnerability Scan",
+        "description": "Runs scripts to check for common vulnerabilities.",
+        "options": {
+            "target_entry": "scanme.nmap.org",
+            "scripts_entry": "vuln",
+            "normal_output_file_entry": "output/vulnerability_scan.txt"
+        },
+        "example_output": "\u001b[1m\u001b[34mStarting Nmap 7.91\u001b[0m ( \u001b[4mhttps://nmap.org\u001b[0m ) at 2025-07-29 10:06 EEST\n\u001b[1m\u001b[32mNmap scan report for scanme.nmap.org (45.33.32.152)\u001b[0m\nHost is up (0.050s latency).\nPORT     STATE SERVICE\n\u001b[1m\u001b[32m22/tcp\u001b[0m   open  ssh\n\u001b[1m\u001b[33m|_ssh-vuln-CVE2017-15906\u001b[0m: The server is likely vulnerable to this flaw.\n\u001b[1m\u001b[32m80/tcp\u001b[0m   open  http\n\u001b[1m\u001b[32m|_http-vuln-cve2015-1635\u001b[0m: The server is not vulnerable.\n\n\u001b[1m\u001b[34mNmap done\u001b[0m: 1 IP address (1 host up) scanned in 7.89 seconds"
+    },
+    {
+        "name": "Intense Scan",
+        "description": "Combines many popular scan options for a comprehensive check.",
+        "options": {
+            "target_entry": "scanme.nmap.org",
+            "syn_scan_var": true,
+            "os_detection_var": true,
+            "service_version_detection_det_var": true,
+            "script_scan_var": true,
+            "normal_output_file_entry": "output/intense_scan.txt"
+        },
+        "example_output": "\u001b[1m\u001b[34mStarting Nmap 7.91\u001b[0m ( \u001b[4mhttps://nmap.org\u001b[0m ) at 2025-07-29 10:07 EEST\n\u001b[1m\u001b[32mNmap scan report for scanme.nmap.org (45.33.32.152)\u001b[0m\nHost is up (0.050s latency).\nPORT     STATE SERVICE VERSION\n\u001b[1m\u001b[32m22/tcp\u001b[0m   open  ssh     \u001b[1mOpenSSH 7.9\u001b[0m (protocol 2.0)\n\u001b[1m\u001b[32m80/tcp\u001b[0m   open  http    \u001b[1mApache httpd 2.4.6\u001b[0m ((CentOS) PHP/5.4.16)\nService Info: OS: \u001b[1m\u001b[36mLinux\u001b[0m; CPE: cpe:/o:linux:linux_kernel\n\nOS details: \u001b[1m\u001b[36mLinux 3.10 to 4.1\u001b[0m\n\n\u001b[1m\u001b[34mNmap done\u001b[0m: 1 IP address (1 host up) scanned in 6.45 seconds"
+    },
+    {
+        "name": "Scan with Decoys",
+        "description": "Evade detection by using multiple decoy IP addresses.",
+        "options": {
+            "target_entry": "scanme.nmap.org",
+            "decoy_scan_evasion_entry": "RND:5,ME,192.168.1.1",
+            "normal_output_file_entry": "output/scan_with_decoys.txt"
+        },
+        "example_output": "\u001b[1m\u001b[34mStarting Nmap 7.91\u001b[0m ( \u001b[4mhttps://nmap.org\u001b[0m ) at 2025-07-29 10:08 EEST\n\u001b[1m\u001b[32mNmap scan report for scanme.nmap.org (45.33.32.152)\u001b[0m\nHost is up (0.050s latency).\nNot shown: 998 closed ports\nPORT     STATE SERVICE\n\u001b[1m\u001b[32m22/tcp\u001b[0m   open  ssh\n\u001b[1m\u001b[32m80/tcp\u001b[0m   open  http\n\n\u001b[1m\u001b[33mNote\u001b[0m: The actual source IP of the scan will be obscured in logs due to the decoy packets sent.\n\n\u001b[1m\u001b[34mNmap done\u001b[0m: 1 IP address (1 host up) scanned in 1.30 seconds"
+    },
+    {
+        "name": "Custom Port Scan",
+        "description": "Scans a specific list of TCP and UDP ports.",
+        "options": {
+            "target_entry": "scanme.nmap.org",
+            "ports_entry": "T:21-23,80,443,U:53,161",
+            "normal_output_file_entry": "output/custom_port_scan.txt"
+        },
+        "example_output": "\u001b[1m\u001b[34mStarting Nmap 7.91\u001b[0m ( \u001b[4mhttps://nmap.org\u001b[0m ) at 2025-07-29 10:09 EEST\n\u001b[1m\u001b[32mNmap scan report for scanme.nmap.org (45.33.32.152)\u001b[0m\nHost is up (0.050s latency).\nPORT     STATE SERVICE\n\u001b[1m\u001b[31m21/tcp\u001b[0m   closed ftp\n\u001b[1m\u001b[32m22/tcp\u001b[0m   open  ssh\n\u001b[1m\u001b[31m23/tcp\u001b[0m   closed telnet\n\u001b[1m\u001b[32m80/tcp\u001b[0m   open  http\n\u001b[1m\u001b[31m443/tcp\u001b[0m  closed https\n\u001b[1m\u001b[32m53/udp\u001b[0m   open  domain\n\u001b[1m\u001b[31m161/udp\u001b[0m  closed snmp\n\n\u001b[1m\u001b[34mNmap done\u001b[0m: 1 IP address (1 host up) scanned in 2.59 seconds"
+    },
+    {
+        "name": "All Ports Scan",
+        "description": "Scans all 65,535 TCP ports on the target host.",
+        "options": {
+            "target_entry": "scanme.nmap.org",
+            "all_ports_var": true,
+            "normal_output_file_entry": "output/all_ports_scan.txt"
+        },
+        "example_output": "\u001b[1m\u001b[34mStarting Nmap 7.91\u001b[0m ( \u001b[4mhttps://nmap.org\u001b[0m ) at 2025-07-29 10:10 EEST\n\u001b[1m\u001b[32mNmap scan report for scanme.nmap.org (45.33.32.152)\u001b[0m\nHost is up (0.050s latency).\nAll 65535 ports on scanme.nmap.org (45.33.32.152) are scanned.\n\nNot shown: 65533 closed ports\nPORT      STATE SERVICE\n\u001b[1m\u001b[32m22/tcp\u001b[0m    open  ssh\n\u001b[1m\u001b[32m80/tcp\u001b[0m    open  http\n\n\u001b[1m\u001b[34mNmap done\u001b[0m: 1 IP address (1 host up) scanned in 35.12 seconds"
+    },
+    {
+        "name": "Heartbleed Vulnerability Check",
+        "description": "Uses the 'ssl-heartbleed' script to check for the Heartbleed vulnerability (CVE-2014-0160).",
+        "options": {
+            "target_entry": "scanme.nmap.org",
+            "service_version_detection_var": true,
+            "scripts_entry": "ssl-heartbleed",
+            "normal_output_file_entry": "output/heartbleed_check.txt"
+        },
+        "example_output": "\u001b[1m\u001b[34mStarting Nmap 7.91\u001b[0m ( \u001b[4mhttps://nmap.org\u001b[0m ) at 2025-07-29 10:11 EEST\n\u001b[1m\u001b[32mNmap scan report for scanme.nmap.org (45.33.32.152)\u001b[0m\nHost is up (0.050s latency).\nPORT     STATE SERVICE VERSION\n\u001b[1m\u001b[31m443/tcp\u001b[0m  open  ssl/http \u001b[1mApache httpd 2.4.6\u001b[0m\n\u001b[1m\u001b[32m|_ssl-heartbleed\u001b[0m: The Heartbleed bug \u001b[1m\u001b[31m(CVE-2014-0160)\u001b[0m was not detected.\n\n\u001b[1m\u001b[34mNmap done\u001b[0m: 1 IP address (1 host up) scanned in 5.80 seconds"
+    },
+    {
+        "name": "EternalBlue Check",
+        "description": "Runs the 'smb-vuln-ms17-010' script to check for the EternalBlue vulnerability (CVE-2017-0143).",
+        "options": {
+            "target_entry": "192.168.1.100",
+            "ports_entry": "445",
+            "scripts_entry": "smb-vuln-ms17-010",
+            "normal_output_file_entry": "output/eternalblue_check.txt"
+        },
+        "example_output": "\u001b[1m\u001b[34mStarting Nmap 7.91\u001b[0m ( \u001b[4mhttps://nmap.org\u001b[0m ) at 2025-07-29 10:12 EEST\n\u001b[1m\u001b[32mNmap scan report for host.example.com (192.168.1.100)\u001b[0m\nHost is up (0.050s latency).\nPORT    STATE SERVICE\n\u001b[1m\u001b[32m445/tcp\u001b[0m open  microsoft-ds\n\nHost script results:\n|\u001b[1m\u001b[31m smb-vuln-ms17-010\u001b[0m:\n| \u001b[1m\u001b[31mVULNERABLE:\u001b[0m\n|   Remote Code Execution vulnerability in Microsoft SMBv1 servers (ms17-010)\n|     State: \u001b[1m\u001b[31mVULNERABLE\u001b[0m\n|     IDs:  CVE:CVE-2017-0143\n|     Risk factor: HIGH\n|   A critical remote code execution vulnerability exists in Microsoft SMBv1\n|   servers (ms17-010).\n|\n| \u001b[1m\u001b[36mReferences:\u001b[0m\n|   https://technet.microsoft.com/en-us/library/security/ms17-010.aspx\n|_  https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-0143\n\n\u001b[1m\u001b[34mNmap done\u001b[0m: 1 IP address (1 host up) scanned in 2.22 seconds"
+    },
+    {
+        "name": "Web Application Enum",
+        "description": "Uses the 'http-enum' script to enumerate common web application directories and files.",
+        "options": {
+            "target_entry": "scanme.nmap.org",
+            "ports_entry": "80,443",
+            "scripts_entry": "http-enum",
+            "normal_output_file_entry": "output/web_enum.txt"
+        },
+        "example_output": "\u001b[1m\u001b[34mStarting Nmap 7.91\u001b[0m ( \u001b[4mhttps://nmap.org\u001b[0m ) at 2025-07-29 10:13 EEST\n\u001b[1m\u001b[32mNmap scan report for scanme.nmap.org (45.33.32.152)\u001b[0m\nHost is up (0.050s latency).\nPORT    STATE SERVICE\n\u001b[1m\u001b[32m80/tcp\u001b[0m  open  http\n| http-enum:\n|   /login.php: Login page\n|   /admin/: Administrative section\n|   /wp-content/uploads/: WordPress uploads directory\n|   /.git/HEAD: Git repository found\n|\n|_  /robots.txt: Disallows crawling of /admin/\n\n\u001b[1m\u001b[34mNmap done\u001b[0m: 1 IP address (1 host up) scanned in 15.65 seconds"
+    },
+    {
+        "name": "CSRF Check",
+        "description": "Checks web forms for a lack of anti-CSRF tokens.",
+        "options": {
+            "target_entry": "scanme.nmap.org",
+            "ports_entry": "80,443",
+            "scripts_entry": "http-csrf",
+            "normal_output_file_entry": "output/csrf_check.txt"
+        },
+        "example_output": "\u001b[1m\u001b[34mStarting Nmap 7.91\u001b[0m ( \u001b[4mhttps://nmap.org\u001b[0m ) at 2025-07-29 10:14 EEST\n\u001b[1m\u001b[32mNmap scan report for scanme.nmap.org (45.33.32.152)\u001b[0m\nHost is up (0.050s latency).\nPORT    STATE SERVICE\n\u001b[1m\u001b[32m80/tcp\u001b[0m  open  http\n| http-csrf:\n|   \u001b[1m\u001b[31mVULNERABLE:\u001b[0m\n|   Cross Site Request Forgery (CSRF) vulnerability found.\n|   The form 'login-form' at '/login.php' does not contain an anti-CSRF token.\n|\n|   \u001b[1m\u001b[31mVULNERABLE:\u001b[0m\n|   Cross Site Request Forgery (CSRF) vulnerability found.\n|   The form 'search' at '/search.html' does not contain an anti-CSRF token.\n|\n|   _http-csrf_check:\n|_    - Host: scanme.nmap.org (45.33.32.152)\n\n\u001b[1m\u001b[34mNmap done\u001b[0m: 1 IP address (1 host up) scanned in 12.33 seconds"
+    },
+    {
+        "name": "DNS Brute-force",
+        "description": "Attempts to discover subdomains by brute-force guessing.",
+        "options": {
+            "target_entry": "scanme.nmap.org",
+            "scripts_entry": "dns-brute",
+            "normal_output_file_entry": "output/dns_brute.txt"
+        },
+        "example_output": "\u001b[1m\u001b[34mStarting Nmap 7.91\u001b[0m ( \u001b[4mhttps://nmap.org\u001b[0m ) at 2025-07-29 10:15 EEST\n\u001b[1m\u001b[32mNmap scan report for scanme.nmap.org (45.33.32.152)\u001b[0m\nHost is up (0.050s latency).\n\nHost script results:\n| dns-brute:\n|   DNS Brute-force hostnames:\n|   - www.scanme.nmap.org -> 45.33.32.152\n|   - blog.scanme.nmap.org -> 45.33.32.152\n|   - mail.scanme.nmap.org -> 45.33.32.152\n|   - admin.scanme.nmap.org -> 45.33.32.152\n|_  - test.scanme.nmap.org -> 45.33.32.152\n\n\u001b[1m\u001b[34mNmap done\u001b[0m: 1 IP address (1 host up) scanned in 4.56 seconds"
+    },
+    {
+        "name": "SMTP User Enum",
+        "description": "Attempts to enumerate valid users on an SMTP server using VRFY and EXPN.",
+        "options": {
+            "target_entry": "smtp.example.com",
+            "ports_entry": "25",
+            "scripts_entry": "smtp-enum-users",
+            "normal_output_file_entry": "output/smtp_enum.txt"
+        },
+        "example_output": "\u001b[1m\u001b[34mStarting Nmap 7.91\u001b[0m ( \u001b[4mhttps://nmap.org\u001b[0m ) at 2025-07-29 10:16 EEST\n\u001b[1m\u001b[32mNmap scan report for smtp.example.com (192.168.1.200)\u001b[0m\nHost is up (0.050s latency).\nPORT   STATE SERVICE\n\u001b[1m\u001b[32m25/tcp\u001b[0m open  smtp\n\nHost script results:\n| smtp-enum-users:\n|   \u001b[1m\u001b[31mVULNERABLE: SMTP user enumeration\u001b[0m\n|     State: \u001b[1m\u001b[31mVULNERABLE\u001b[0m\n|     Methods: VRFY, EXPN\n|     Users found:\n|       - john.doe\n|       - jane.doe\n|_      - admin\n\n\u001b[1m\u001b[34mNmap done\u001b[0m: 1 IP address (1 host up) scanned in 3.14 seconds"
+    },
+    {
+        "name": "Vulnerable SSH Check (Linux)",
+        "description": "Scans for weak SSH ciphers, algorithms, and configurations that could be exploited.",
+        "options": {
+            "target_entry": "192.168.1.101",
+            "ports_entry": "22",
+            "scripts_entry": "ssh-audit",
+            "normal_output_file_entry": "output/ssh_audit.txt"
+        },
+        "example_output": "\u001b[1m\u001b[34mStarting Nmap 7.91\u001b[0m ( \u001b[4mhttps://nmap.org\u001b[0m ) at 2025-07-29 10:17 EEST\n\u001b[1m\u001b[32mNmap scan report for server.local (192.168.1.101)\u001b[0m\nHost is up (0.050s latency).\n\nPORT   STATE SERVICE\n\u001b[1m\u001b[32m22/tcp\u001b[0m open  ssh\n| \u001b[1m\u001b[31mssh-audit\u001b[0m:\n|   \u001b[1m\u001b[31mVULNERABLE: Weak Ciphers\u001b[0m\n|     State: \u001b[1m\u001b[31mVULNERABLE\u001b[0m\n|     Description: Server supports weak ciphers like 3DES.\n|\n|   \u001b[1m\u001b[31mVULNERABLE: Weak Key Exchange Algorithms\u001b[0m\n|     State: \u001b[1m\u001b[31mVULNERABLE\u001b[0m\n|     Description: Server supports diffie-hellman-group1-sha1.\n|\n|_  Audit summary: 2 vulnerabilities found.\n\n\u001b[1m\u001b[34mNmap done\u001b[0m: 1 IP address (1 host up) scanned in 4.56 seconds"
+    },
+    {
+        "name": "SMB Signing Check (Windows)",
+        "description": "Audits a Windows system for disabled SMB signing, which can make it vulnerable to man-in-the-middle attacks.",
+        "options": {
+            "target_entry": "192.168.1.102",
+            "ports_entry": "445",
+            "scripts_entry": "smb-security-mode",
+            "normal_output_file_entry": "output/smb_signing_check.txt"
+        },
+        "example_output": "\u001b[1m\u001b[34mStarting Nmap 7.91\u001b[0m ( \u001b[4mhttps://nmap.org\u001b[0m ) at 2025-07-29 10:18 EEST\n\u001b[1m\u001b[32mNmap scan report for win-server (192.168.1.102)\u001b[0m\nHost is up (0.060s latency).\n\nPORT   STATE SERVICE\n\u001b[1m\u001b[32m445/tcp\u001b[0m open  microsoft-ds\n\nHost script results:\n| \u001b[1m\u001b[31msmb-security-mode\u001b[0m:\n|   Account credentials: disabled\n|   SMB signing: disabled\n|   SMBv3: true\n|_  SMBv2: true\n\n\u001b[1m\u001b[34mNmap done\u001b[0m: 1 IP address (1 host up) scanned in 2.12 seconds"
+    },
+    {
+        "name": "Heartbleed Check (Vulnerable)",
+        "description": "An example of a vulnerable host output for the 'ssl-heartbleed' script.",
+        "options": {
+            "target_entry": "vulnerable.example.com",
+            "service_version_detection_var": true,
+            "scripts_entry": "ssl-heartbleed",
+            "normal_output_file_entry": "output/vulnerable_heartbleed.txt"
+        },
+        "example_output": "\u001b[1m\u001b[34mStarting Nmap 7.91\u001b[0m ( \u001b[4mhttps://nmap.org\u001b[0m ) at 2025-07-29 10:19 EEST\n\u001b[1m\u001b[32mNmap scan report for vulnerable.example.com (10.0.0.10)\u001b[0m\nHost is up (0.050s latency).\n\nPORT     STATE SERVICE\n\u001b[1m\u001b[32m443/tcp\u001b[0m  open  ssl/http\n| \u001b[1m\u001b[31msl-heartbleed\u001b[0m:\n|   \u001b[1m\u001b[31mVULNERABLE:\u001b[0m\n|   The Heartbleed Bug is a serious vulnerability in the popular OpenSSL cryptographic software library.\n|   State: \u001b[1m\u001b[31mVULNERABLE\u001b[0m\n|   Risk factor: \u001b[1m\u001b[31mHigh\u001b[0m\n|   Description:\n|   OpenSSL versions 1.0.1 and 1.0.2-beta releases are affected by the Heartbleed bug.\n|\n| \u001b[1m\u001b[36mReferences:\u001b[0m\n|   https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-0160\n|_  http://www.openssl.org/news/secadv_20140407.txt\n\n\u001b[1m\u001b[34mNmap done\u001b[0m: 1 IP address (1 host up) scanned in 3.80 seconds"
+    },
+    {
+        "name": "IIS Vulnerability Check",
+        "description": "Checks for a specific vulnerability (CVE-2015-1635) in Microsoft IIS.",
+        "options": {
+            "target_entry": "192.168.1.201",
+            "ports_entry": "80",
+            "scripts_entry": "http-vuln-cve2015-1635",
+            "normal_output_file_entry": "output/iis_vuln_check.txt"
+        },
+        "example_output": "\u001b[1m\u001b[34mStarting Nmap 7.91\u001b[0m ( \u001b[4mhttps://nmap.org\u001b[0m ) at 2025-07-29 10:20 EEST\n\u001b[1m\u001b[32mNmap scan report for iis-server (192.168.1.201)\u001b[0m\nHost is up (0.050s latency).\n\nPORT   STATE SERVICE\n\u001b[1m\u001b[32m80/tcp\u001b[0m open  http\n\nHost script results:\n| \u001b[1m\u001b[31mhttp-vuln-cve2015-1635\u001b[0m:\n|   \u001b[1m\u001b[31mVULNERABLE:\u001b[0m\n|   Remote Code Execution vulnerability in HTTP.sys (Microsoft Windows).\n|     State: \u001b[1m\u001b[31mVULNERABLE\u001b[0m\n|     Risk factor: \u001b[1m\u001b[31mHigh\u001b[0m\n|     Description:\n|     A remote code execution vulnerability exists when HTTP.sys in Microsoft Windows improperly parses a specially crafted HTTP request.\n|\n| \u001b[1m\u001b[36mReferences:\u001b[0m\n|   https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2015-1635\n|_  https://technet.microsoft.com/library/security/ms15-034\n\n\u001b[1m\u001b[34mNmap done\u001b[0m: 1 IP address (1 host up) scanned in 2.55 seconds"
+    },
+    {
+        "name": "FIN/Xmas/Null Scans",
+        "description": "Performs FIN, Xmas, and Null scans which can bypass simple stateful firewalls.",
+        "options": {
+            "target_entry": "scanme.nmap.org",
+            "fin_scan_var": true,
+            "xmas_scan_var": true,
+            "null_scan_var": true,
+            "normal_output_file_entry": "output/fin_xmas_null_scan.txt"
+        },
+        "example_output": "\u001b[1m\u001b[34mStarting Nmap 7.91\u001b[0m ( \u001b[4mhttps://nmap.org\u001b[0m ) at 2025-07-29 10:21 EEST\n\u001b[1m\u001b[32mNmap scan report for scanme.nmap.org (45.33.32.152)\u001b[0m\nHost is up (0.050s latency).\nNot shown: 998 closed ports\nPORT     STATE SERVICE\n\u001b[1m\u001b[32m22/tcp\u001b[0m   open  ssh\n\u001b[1m\u001b[32m80/tcp\u001b[0m   open  http\n\n\u001b[1m\u001b[34mNmap done\u001b[0m: 1 IP address (1 host up) scanned in 1.25 seconds"
+    },
+    {
+        "name": "Idle Scan (Zombie)",
+        "description": "A truly silent scan that bounces the scan off a 'zombie' host to hide the scanner's IP address.",
+        "options": {
+            "target_entry": "scanme.nmap.org",
+            "idle_scan_evasion_entry": "zombie.example.com",
+            "normal_output_file_entry": "output/idle_scan.txt"
+        },
+        "example_output": "\u001b[1m\u001b[34mStarting Nmap 7.91\u001b[0m ( \u001b[4mhttps://nmap.org\u001b[0m ) at 2025-07-29 10:22 EEST\n\u001b[1m\u001b[32mNmap scan report for scanme.nmap.org (45.33.32.152)\u001b[0m\nHost is up (0.050s latency).\nNot shown: 998 closed ports\nPORT     STATE SERVICE\n\u001b[1m\u001b[32m22/tcp\u001b[0m   open  ssh\n\u001b[1m\u001b[32m80/tcp\u001b[0m   open  http\n\n\u001b[1m\u001b[34mNmap done\u001b[0m: 1 IP address (1 host up) scanned in 2.30 seconds"
+    },
+    {
+        "name": "Fragmented Scan",
+        "description": "Breaks the IP packets into smaller fragments to bypass simple firewall rules and packet filters.",
+        "options": {
+            "target_entry": "scanme.nmap.org",
+            "fragment_packets_evasion_var": true,
+            "normal_output_file_entry": "output/fragmented_scan.txt"
+        },
+        "example_output": "\u001b[1m\u001b[34mStarting Nmap 7.91\u001b[0m ( \u001b[4mhttps://nmap.org\u001b[0m ) at 2025-07-29 10:23 EEST\n\u001b[1m\u001b[32mNmap scan report for scanme.nmap.org (45.33.32.152)\u001b[0m\nHost is up (0.050s latency).\nNot shown: 998 closed ports\nPORT     STATE SERVICE\n\u001b[1m\u001b[32m22/tcp\u001b[0m   open  ssh\n\u001b[1m\u001b[32m80/tcp\u001b[0m   open  http\n\n\u001b[1m\u001b[34mNmap done\u001b[0m: 1 IP address (1 host up) scanned in 1.45 seconds"
+    },
+    {
+        "name": "Spoof Source Port",
+        "description": "Changes the source port of the scan to a common port like 53 or 80 to evade detection.",
+        "options": {
+            "target_entry": "scanme.nmap.org",
+            "source_port_evasion_entry": "80",
+            "normal_output_file_entry": "output/spoof_source_port.txt"
+        },
+        "example_output": "\u001b[1m\u001b[34mStarting Nmap 7.91\u001b[0m ( \u001b[4mhttps://nmap.org\u001b[0m ) at 2025-07-29 10:24 EEST\n\u001b[1m\u001b[32mNmap scan report for scanme.nmap.org (45.33.32.152)\u001b[0m\nHost is up (0.050s latency).\nNot shown: 998 closed ports\nPORT     STATE SERVICE\n\u001b[1m\u001b[32m22/tcp\u001b[0m   open  ssh\n\u001b[1m\u001b[32m80/tcp\u001b[0m   open  http\n\n\u001b[1m\u001b[34mNmap done\u001b[0m: 1 IP address (1 host up) scanned in 1.35 seconds"
+    },
+    {
+        "name": "Intense, Aggressive Scan (Intrusive)",
+        "description": "Performs a very fast and aggressive scan using 'insane' timing. This is highly intrusive and likely to be detected by a target's security systems.",
+        "options": {
+            "target_entry": "scanme.nmap.org",
+            "timing_template_var": "insane",
+            "aggressive_detection_var": true,
+            "ports_entry": "1-10000",
+            "normal_output_file_entry": "output/intense_aggressive_scan.txt"
+        },
+        "example_output": "\u001b[1m\u001b[34mStarting Nmap 7.91\u001b[0m ( \u001b[4mhttps://nmap.org\u001b[0m ) at 2025-07-29 10:25 EEST\n\u001b[1m\u001b[32mNmap scan report for scanme.nmap.org (45.33.32.152)\u001b[0m\nHost is up (0.050s latency).\n\nPORT      STATE    SERVICE VERSION\n\u001b[1m\u001b[32m22/tcp\u001b[0m    open     ssh     \u001b[1mOpenSSH 7.9\u001b[0m (protocol 2.0)\n\u001b[1m\u001b[32m80/tcp\u001b[0m    open     http    \u001b[1mApache httpd 2.4.6\u001b[0m\n\u001b[1m\u001b[36m|_http-title: Go ahead and ScanMe!\n\u001b[1m\u001b[36m|_http-server-header: \u001b[1m\u001b[36mApache/2.4.6 (CentOS)\u001b[0m\n\nService Info: OS: \u001b[1m\u001b[36mLinux\u001b[0m; CPE: cpe:/o:linux:linux_kernel\n\nOS details: \u001b[1m\u001b[36mLinux 3.10 to 4.1\u001b[0m\n\n\u001b[1m\u001b[34mNmap done\u001b[0m: 1 IP address (1 host up) scanned in 1.95 seconds\n\n\u001b[1m\u001b[31mWARNING\u001b[0m: This scan was extremely fast and intrusive. It is highly likely to have been detected and logged by the target system's security. It may cause performance issues on some systems."
+    }
+]

@@ -1,0 +1,190 @@
+{
+  "name": "wafw00f",
+  "version": "1.0.0",
+  "executable": "wafw00f",
+  "description": "wafw00f is a Web Application Firewall (WAF) detector that helps to identify and fingerprint WAFs and other security mechanisms.",
+  "tabs": [
+    {
+      "id": "target",
+      "name": "Target",
+      "inputs": [
+        {
+          "id": "target_url_entry",
+          "label": "Target URL:",
+          "type": "text",
+          "flag": "",
+          "placeholder": "e.g., http://example.com",
+          "help": "The URL of the web application to test. You must provide a target URL."
+        },
+        {
+          "id": "target_list_file_path_entry",
+          "label": "Target List File Path (-i):",
+          "type": "text",
+          "flag": "-i",
+          "placeholder": "e.g., /path/to/urls.txt",
+          "help": "File containing a list of target URLs (one per line)."
+        },
+        {
+          "id": "target_list_upload_entry",
+          "label": "Upload Target List File (-i):",
+          "type": "file",
+          "flag": "-i",
+          "help": "Upload a file containing a list of target URLs (one per line)."
+        },
+        {
+          "id": "random_agent_var",
+          "label": "Random User-Agent (-r)",
+          "type": "checkbox",
+          "flag": "-r",
+          "help": "Use a random User-Agent from the included list for each request."
+        }
+      ]
+    },
+    {
+      "id": "request-settings",
+      "name": "Request Settings",
+      "inputs": [
+        {
+          "id": "proxy_entry",
+          "label": "Proxy (--proxy):",
+          "type": "text",
+          "flag": "--proxy",
+          "placeholder": "e.g., http://127.0.0.1:8080",
+          "help": "Use a proxy to connect to the target URL."
+        },
+        {
+          "id": "follow_redirects_var",
+          "label": "Follow Redirects (--follow-redirects)",
+          "type": "checkbox",
+          "flag": "--follow-redirects",
+          "help": "Follow HTTP redirects."
+        },
+        {
+          "id": "skip_redirect_check_var",
+          "label": "Skip Redirect Check (--skip-redirect-check)",
+          "type": "checkbox",
+          "flag": "--skip-redirect-check",
+          "help": "Skip checking for redirects."
+        },
+        {
+          "id": "threads_entry",
+          "label": "Threads (-t):",
+          "type": "number",
+          "flag": "-t",
+          "placeholder": "e.g., 5",
+          "help": "Number of concurrent threads (default: 20)."
+        },
+        {
+          "id": "delay_entry",
+          "label": "Delay (-D):",
+          "type": "number",
+          "flag": "-D",
+          "placeholder": "e.g., 10",
+          "help": "Delay between requests in seconds."
+        },
+        {
+          "id": "verbose_var",
+          "label": "Verbose (-v)",
+          "type": "checkbox",
+          "flag": "-v",
+          "help": "Increase verbosity level."
+        },
+        {
+          "id": "additional_headers_entry",
+          "label": "Additional Headers (-H):",
+          "type": "textarea",
+          "flag": "-H",
+          "placeholder": "e.g., 'X-Forwarded-For: 127.0.0.1\nCookie: JSESSIONID=...'",
+          "help": "Add custom HTTP headers. One header per line."
+        },
+        {
+          "id": "request_data_entry",
+          "label": "POST Data (-d):",
+          "type": "textarea",
+          "flag": "-d",
+          "placeholder": "e.g., 'param1=value1&param2=value2'",
+          "help": "Send data with POST request."
+        }
+      ]
+    },
+    {
+      "id": "output-settings",
+      "name": "Output",
+      "inputs": [
+        {
+          "id": "text_output_file_path_entry",
+          "label": "Text Output File (-o):",
+          "type": "text",
+          "flag": "-o",
+          "placeholder": "e.g., output/waf_scan.txt",
+          "help": "Save output to a text file."
+        },
+        {
+          "id": "xml_output_file_path_entry",
+          "label": "XML Output File (-x):",
+          "type": "text",
+          "flag": "-x",
+          "placeholder": "e.g., output/waf_scan.xml",
+          "help": "Save output to an XML file."
+        },
+        {
+          "id": "json_output_file_path_entry",
+          "label": "JSON Output File (-j):",
+          "type": "text",
+          "flag": "-j",
+          "placeholder": "e.g., output/waf_scan.json",
+          "help": "Save output to a JSON file."
+        },
+        {
+          "id": "output_all_var",
+          "label": "Output All Formats (-a)",
+          "type": "checkbox",
+          "flag": "-a",
+          "help": "Output in all available formats (text, XML, and JSON)."
+        },
+        {
+          "id": "show_all_waf_var",
+          "label": "Show All WAFs (-S)",
+          "type": "checkbox",
+          "flag": "-S",
+          "help": "Show all WAFs, not just the identified one."
+        }
+      ]
+    },
+    {
+      "id": "advanced-options",
+      "name": "Advanced Options",
+      "inputs": [
+        {
+          "id": "additional_args_entry",
+          "label": "Additional Arguments:",
+          "type": "textarea",
+          "flag": "",
+          "placeholder": "e.g., '--no-check-certificate'",
+          "help": "Any other wafw00f arguments not covered by the GUI. Enter them exactly as you would on the command line."
+        },
+        {
+          "id": "list_wafs_var",
+          "label": "List WAFs (-l)",
+          "type": "checkbox",
+          "flag": "-l",
+          "help": "List all WAFs that wafw00f is able to detect."
+        },
+        {
+          "id": "skip_all_checks_var",
+          "label": "Skip All Checks (-k)",
+          "type": "checkbox",
+          "flag": "-k",
+          "help": "Skip all checks for a given URL. Useful if you already know it's a WAF."
+        },
+        {
+          "id": "no_color_var",
+          "label": "No Color (--no-color)",
+          "type": "checkbox",
+          "flag": "--no-color",
+          "help": "Disable color in the output."
+        }
+      ]
+    }
+  ]
+}

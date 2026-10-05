@@ -1,0 +1,51 @@
+[
+  {
+    "name": "Basic Scan",
+    "description": "Run a basic DIRB scan against a URL.",
+    "options": {
+      "url_entry": "http://example.com/",
+      "wordlist_entry": "/usr/share/wordlists/dirb/common.txt"
+    },
+    "example_output": "\u001b[1m\u001b[34m-----------------\u001b[0m\nDIRB v2.22\n\u001b[1m\u001b[34m-----------------\u001b[0m\n\u001b[32m+ http://example.com/admin\u001b[0m (CODE:403|SIZE:278)\n\u001b[32m+ http://example.com/images\u001b[0m (CODE:301|SIZE:312)"
+  },
+  {
+    "name": "Scan with Extensions",
+    "description": "Run a DIRB scan checking for specific file extensions.",
+    "options": {
+      "url_entry": "http://example.com/",
+      "wordlist_entry": "/usr/share/wordlists/dirb/common.txt",
+      "extensions_entry": ".php,.txt"
+    },
+    "example_output": "\u001b[1m\u001b[34m-----------------\u001b[0m\nDIRB v2.22\n\u001b[1m\u001b[34m-----------------\u001b[0m\n\u001b[32m+ http://example.com/index.php\u001b[0m (CODE:200|SIZE:1024)\n\u001b[32m+ http://example.com/robots.txt\u001b[0m (CODE:200|SIZE:45)"
+  },
+  {
+    "name": "Silent Scan",
+    "description": "Run DIRB in silent mode, showing only found items.",
+    "options": {
+      "url_entry": "http://example.com/",
+      "wordlist_entry": "/usr/share/wordlists/dirb/common.txt",
+      "silent_var": true
+    },
+    "example_output": "\u001b[32m+ http://example.com/secret\u001b[0m (CODE:200|SIZE:543)"
+  },
+  {
+    "name": "Authenticated Scan",
+    "description": "Scan a directory that requires HTTP Basic Authentication.",
+    "options": {
+      "url_entry": "http://example.com/private/",
+      "wordlist_entry": "/usr/share/wordlists/dirb/common.txt",
+      "username_password_entry": "admin:password123"
+    },
+    "example_output": "\u001b[1m\u001b[34m-----------------\u001b[0m\nDIRB v2.22\n\u001b[1m\u001b[34m-----------------\u001b[0m\n\u001b[32m+ http://example.com/private/dashboard\u001b[0m (CODE:200|SIZE:2048)"
+  },
+  {
+    "name": "Scan with Output File",
+    "description": "Run a DIRB scan and save the output to a file.",
+    "options": {
+      "url_entry": "http://example.com/",
+      "wordlist_entry": "/usr/share/wordlists/dirb/common.txt",
+      "output_file_entry": "dirb_scan.txt"
+    },
+    "example_output": "\u001b[1m\u001b[34m-----------------\u001b[0m\nDIRB v2.22\n\u001b[1m\u001b[34m-----------------\u001b[0m\nOUTPUT_FILE: dirb_scan.txt\n\u001b[32m+ http://example.com/assets\u001b[0m (CODE:301|SIZE:313)"
+  }
+]

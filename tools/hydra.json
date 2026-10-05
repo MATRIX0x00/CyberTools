@@ -1,0 +1,109 @@
+{
+  "name": "Hydra",
+  "version": "9.5",
+  "executable": "hydra",
+  "description": "Hydra is a parallelized login cracker which supports numerous protocols to attack.",
+  "tabs": [
+    {
+      "id": "target",
+      "name": "Target",
+      "inputs": [
+        {
+          "id": "target_entry",
+          "label": "Target IP/Host:",
+          "type": "text",
+          "flag": "",
+          "placeholder": "e.g., 192.168.1.100",
+          "help": "The target to attack."
+        },
+        {
+          "id": "service_select",
+          "label": "Service:",
+          "type": "select",
+          "flag": "",
+          "options": [
+            { "value": "ssh", "label": "SSH", "selected": true },
+            { "value": "ftp", "label": "FTP", "selected": false },
+            { "value": "http-get", "label": "HTTP GET", "selected": false },
+            { "value": "http-post-form", "label": "HTTP POST Form", "selected": false },
+            { "value": "mysql", "label": "MySQL", "selected": false },
+            { "value": "rdp", "label": "RDP", "selected": false }
+          ],
+          "help": "Service protocol to attack."
+        },
+        {
+          "id": "port_entry",
+          "label": "Port (-s):",
+          "type": "number",
+          "flag": "-s",
+          "placeholder": "e.g., 2222",
+          "help": "If the service is running on a non-standard port."
+        }
+      ]
+    },
+    {
+      "id": "credentials",
+      "name": "Credentials",
+      "inputs": [
+        {
+          "id": "login_entry",
+          "label": "Login Name (-l):",
+          "type": "text",
+          "flag": "-l",
+          "placeholder": "e.g., root",
+          "help": "Single username to attack."
+        },
+        {
+          "id": "login_list_upload",
+          "label": "Upload Username List (-L):",
+          "type": "file",
+          "flag": "-L",
+          "help": "File containing usernames."
+        },
+        {
+          "id": "password_entry",
+          "label": "Password (-p):",
+          "type": "text",
+          "flag": "-p",
+          "placeholder": "e.g., password123",
+          "help": "Single password to attack."
+        },
+        {
+          "id": "password_list_upload",
+          "label": "Upload Password List (-P):",
+          "type": "file",
+          "flag": "-P",
+          "help": "File containing passwords."
+        },
+        {
+          "id": "colon_file_upload",
+          "label": "Upload User:Pass File (-C):",
+          "type": "file",
+          "flag": "-C",
+          "help": "File with colon separated user:pass."
+        }
+      ]
+    },
+    {
+      "id": "options",
+      "name": "Options",
+      "inputs": [
+        {
+          "id": "threads_entry",
+          "label": "Threads (-t):",
+          "type": "number",
+          "flag": "-t",
+          "placeholder": "e.g., 4",
+          "help": "Number of tasks to run in parallel."
+        },
+        {
+          "id": "verbose_var",
+          "label": "Verbose (-V)",
+          "type": "checkbox",
+          "flag": "-V",
+          "help": "Show login and pass for each attempt."
+        }
+      ]
+    }
+  ]
+}

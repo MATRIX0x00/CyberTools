@@ -1,0 +1,37 @@
+[
+  {
+    "name": "Show all connections (numeric)",
+    "description": "Displays all TCP/UDP connections and listening ports in numeric form.",
+    "options": {
+      "all_var": true,
+      "numeric_var": true
+    },
+    "example_output": "\u001b[1m\u001b[34mActive Connections\u001b[0m\r\n\u001b[1m\u001b[32mProto\u001b[0m  \u001b[1m\u001b[32mLocal Address\u001b[0m  \u001b[1m\u001b[32mForeign Address\u001b[0m  \u001b[1m\u001b[32mState\u001b[0m\r\n\u001b[33mTCP\u001b[0m      127.0.0.1:8080      0.0.0.0:0      \u001b[36mLISTENING\u001b[0m\r\n\u001b[33mTCP\u001b[0m      192.168.1.5:49152   93.184.216.34:80  \u001b[32mESTABLISHED\u001b[0m\r\n\u001b[33mTCP\u001b[0m      192.168.1.5:50000   142.250.187.110:443  \u001b[32mESTABLISHED\u001b[0m\r\n\u001b[33mUDP\u001b[0m      0.0.0.0:5353        0.0.0.0:0      \u001b[36m*\u001b[0m\r\n\u001b[33mUDP\u001b[0m      0.0.0.0:5469        0.0.0.0:0      \u001b[36m*\u001b[0m"
+  },
+  {
+    "name": "Show listening ports and programs",
+    "description": "Lists all open listening ports and the programs that own them.",
+    "options": {
+      "listening_var": true,
+      "programs_var": true
+    },
+    "example_output": "\u001b[1m\u001b[34mActive Internet connections (only servers)\u001b[0m\r\n\u001b[1m\u001b[32mProto\u001b[0m  \u001b[1m\u001b[32mLocal Address\u001b[0m  \u001b[1m\u001b[32mForeign Address\u001b[0m  \u001b[1m\u001b[32mPID/Program name\u001b[0m\r\n\u001b[33mTCP\u001b[0m      0.0.0.0:22          0.0.0.0:0      \u001b[32m1234/sshd\u001b[0m\r\n\u001b[33mTCP\u001b[0m      0.0.0.0:80          0.0.0.0:0      \u001b[32m5678/apache2\u001b[0m\r\n\u001b[33mTCP\u001b[0m      127.0.0.1:3306      0.0.0.0:0      \u001b[32m9101/mysqld\u001b[0m\r\n\u001b[33mUDP\u001b[0m      0.0.0.0:5353        0.0.0.0:0      \u001b[32m150/avahi-daemon\u001b[0m\r\n\u001b[33mUDP\u001b[0m      0.0.0.0:68          0.0.0.0:0      \u001b[32m180/dhclient\u001b[0m"
+  },
+  {
+    "name": "Check routing table",
+    "description": "Displays the IP routing table for the local machine.",
+    "options": {
+      "routing_table_var": true
+    },
+    "example_output": "\u001b[1m\u001b[34mKernel IP routing table\u001b[0m\r\n\u001b[1m\u001b[32mDestination\u001b[0m \u001b[1m\u001b[32mGateway\u001b[0m     \u001b[1m\u001b[32mGenmask\u001b[0m         \u001b[1m\u001b[32mFlags\u001b[0m \u001b[1m\u001b[32mMetric\u001b[0m \u001b[1m\u001b[32mRef\u001b[0m \u001b[1m\u001b[32mUse\u001b[0m \u001b[1m\u001b[32mIface\u001b[0m\r\n\u001b[33m0.0.0.0\u001b[0m       192.168.1.1     0.0.0.0         \u001b[36mUG\u001b[0m    100    0       0 \u001b[32meth0\u001b[0m\r\n\u001b[33m192.168.1.0\u001b[0m   0.0.0.0         255.255.255.0   \u001b[36mU\u001b[0m     100    0       0 \u001b[32meth0\u001b[0m\r\n\u001b[33m127.0.0.0\u001b[0m   0.0.0.0         255.0.0.0       \u001b[36mU\u001b[0m     0      0       0 \u001b[32mlo\u001b[0m"
+  },
+  {
+    "name": "Filter by Port",
+    "description": "Filters the output to show only connections on a specific port, in this case, 8080.",
+    "options": {
+      "all_var": true,
+      "port_entry": ":8080"
+    },
+    "example_output": "\u001b[1m\u001b[34mActive Connections\u001b[0m\r\n\u001b[1m\u001b[32mProto\u001b[0m  \u001b[1m\u001b[32mLocal Address\u001b[0m  \u001b[1m\u001b[32mForeign Address\u001b[0m  \u001b[1m\u001b[32mState\u001b[0m\r\n\u001b[33mTCP\u001b[0m      0.0.0.0:8080        0.0.0.0:0      \u001b[36mLISTENING\u001b[0m\r\n\u001b[33mTCP\u001b[0m      127.0.0.1:8080      127.0.0.1:45678  \u001b[32mESTABLISHED\u001b[0m\r\n"
+  }
+]

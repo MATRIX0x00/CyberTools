@@ -1,0 +1,33 @@
+{
+  "tool": "wfuzz",
+  "install_methods": [
+    {
+      "platform": "Linux",
+      "label": "Install on Linux (Apt)",
+      "command": "sudo apt update && sudo apt install wfuzz -y",
+      "icon": "download",
+      "class": "bg-red-600 hover:bg-red-700"
+    },
+    {
+      "platform": "Linux",
+      "label": "Install on Linux (Pip)",
+      "command": "sudo apt install python3-pip && pip3 install wfuzz",
+      "icon": "download",
+      "class": "bg-red-600 hover:bg-red-700"
+    },
+    {
+      "platform": "Termux",
+      "label": "Install on Termux",
+      "command": "pkg update && pkg install wfuzz -y",
+      "icon": "download",
+      "class": "bg-orange-600 hover:bg-orange-700"
+    },
+    {
+      "platform": "Windows",
+      "label": "Install on Windows (Pip)",
+      "command": "pip install wfuzz",
+      "icon": "download",
+      "class": "bg-purple-600 hover:bg-purple-700"
+    }
+  ]
+}

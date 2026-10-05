@@ -1,0 +1,155 @@
+{
+  "name": "Netstat",
+  "version": "1.0",
+  "executable": "netstat",
+  "description": "Netstat (network statistics) is a command-line utility used to display network connections (both incoming and outgoing), routing tables, and a number of network interface statistics.",
+  "tabs": [
+    {
+      "id": "main-options",
+      "name": "Main Options",
+      "inputs": [
+        {
+          "id": "all_var",
+          "label": "Show all connections (-a)",
+          "type": "checkbox",
+          "flag": "-a",
+          "help": "Display all connections and listening ports. By default, the output hides listening servers."
+        },
+        {
+          "id": "numeric_var",
+          "label": "Show numeric addresses (-n)",
+          "type": "checkbox",
+          "flag": "-n",
+          "help": "Show addresses and port numbers in numerical form rather than trying to determine symbolic host, port or user names."
+        },
+        {
+          "id": "programs_var",
+          "label": "Show owning programs (-p)",
+          "type": "checkbox",
+          "flag": "-p",
+          "help": "Show the PID and name of the program to which each socket belongs."
+        },
+        {
+          "id": "listening_var",
+          "label": "Show listening sockets (-l)",
+          "type": "checkbox",
+          "flag": "-l",
+          "help": "Show only listening sockets (servers)."
+        },
+        {
+          "id": "routing_table_var",
+          "label": "Show routing table (-r)",
+          "type": "checkbox",
+          "flag": "-r",
+          "help": "Display the kernel routing table."
+        },
+        {
+          "id": "statistics_var",
+          "label": "Show statistics (-s)",
+          "type": "checkbox",
+          "flag": "-s",
+          "help": "Display per-protocol statistics."
+        },
+        {
+          "id": "show_users_var",
+          "label": "Show user IDs (-u)",
+          "type": "checkbox",
+          "flag": "-u",
+          "help": "Show the user ID for each socket."
+        }
+      ]
+    },
+    {
+      "id": "protocol-filter",
+      "name": "Protocol Filter",
+      "inputs": [
+        {
+          "id": "tcp_var",
+          "label": "Show TCP connections (-t)",
+          "type": "checkbox",
+          "flag": "-t",
+          "help": "Show TCP connections."
+        },
+        {
+          "id": "udp_var",
+          "label": "Show UDP connections (-u)",
+          "type": "checkbox",
+          "flag": "-u",
+          "help": "Show UDP connections."
+        },
+        {
+          "id": "ipv4_var",
+          "label": "Show IPv4 connections (-4)",
+          "type": "checkbox",
+          "flag": "-4",
+          "help": "Show IPv4 connections."
+        },
+        {
+          "id": "ipv6_var",
+          "label": "Show IPv6 connections (-6)",
+          "type": "checkbox",
+          "flag": "-6",
+          "help": "Show IPv6 connections."
+        }
+      ]
+    },
+    {
+      "id": "filtering",
+      "name": "Filtering",
+      "inputs": [
+        {
+          "id": "port_entry",
+          "label": "Filter by Port:",
+          "type": "text",
+          "flag": "| grep",
+          "placeholder": "e.g., :8080",
+          "help": "Filter the output to show only connections to a specific port."
+        },
+        {
+          "id": "address_entry",
+          "label": "Filter by Address:",
+          "type": "text",
+          "flag": "| grep",
+          "placeholder": "e.g., 127.0.0.1",
+          "help": "Filter the output to show only connections from a specific address."
+        },
+        {
+          "id": "pid_entry",
+          "label": "Filter by PID:",
+          "type": "number",
+          "flag": "| grep",
+          "placeholder": "e.g., 1234",
+          "help": "Filter the output by a specific process ID."
+        }
+      ]
+    },
+    {
+      "id": "advanced",
+      "name": "Advanced",
+      "inputs": [
+        {
+          "id": "show_timer_var",
+          "label": "Show timer (-o)",
+          "type": "checkbox",
+          "flag": "-o",
+          "help": "Show timers for active connections."
+        },
+        {
+          "id": "interval_entry",
+          "label": "Refresh interval:",
+          "type": "number",
+          "flag": "",
+          "placeholder": "e.g., 5",
+          "help": "Display statistics continuously with a specified refresh interval in seconds."
+        },
+        {
+          "id": "additional_args_entry",
+          "label": "Additional Arguments:",
+          "type": "textarea",
+          "flag": "",
+          "help": "Any other netstat arguments not covered by the GUI. Enter them exactly as you would on the command line."
+        }
+      ]
+    }
+  ]
+}

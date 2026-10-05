@@ -1,0 +1,81 @@
+[
+    {
+        "name": "Basic Directory Fuzz",
+        "description": "Fuzzes common directories on a target website.",
+        "options": {
+            "url_entry": "http://testphp.vulnweb.com/FUZZ",
+            "wordlist_file_entry": "/usr/share/wordlists/dirb/common.txt"
+        },
+        "example_output": "\u001b[1m\u001b[34m/usr/bin/ffuf\u001b[0m -u http://testphp.vulnweb.com/FUZZ -w /usr/share/wordlists/dirb/common.txt\n\u001b[1m\u001b[34m____________________\u001b[0m\n\n:: FFUF::\nVersion: \u001b[1m\u001b[32mv1.3.1\u001b[0m\nWritten by: \u001b[1m\u001b[36mhttps://github.com/ffuf\u001b[0m\n\n____________________\n\n\u001b[1m\u001b[34m[INFO]\u001b[0m Starting scan at 2025-09-23 10:00:00\n\u001b[1m\u001b[32m[200]                   \u001b[0m - \u001b[1m\u001b[36m/images\u001b[0m             - Size: 110 - Words: 20 - Lines: 3\n\u001b[1m\u001b[32m[200]                   \u001b[0m - \u001b[1m\u001b[36m/listproducts.php\u001b[0m       - Size: 504 - Words: 121 - Lines: 12\n\u001b[1m\u001b[32m[301]                   \u001b[0m - \u001b[1m\u001b[36m/uploads\u001b[0m            - Size: 0 - Words: 0 - Lines: 0\n\u001b[1m\u001b[32m[403]                   \u001b[0m - \u001b[1m\u001b[36m/admin\u001b[0m              - Size: 12 - Words: 1 - Lines: 1\n\u001b[1m\u001b[34m[INFO]\u001b[0m Fuzzing completed in 12.55 seconds\n\u001b[1m\u001b[34m____________________\u001b[0m"
+    },
+    {
+        "name": "Subdomain Fuzzing",
+        "description": "Fuzzes for subdomains using a common wordlist.",
+        "options": {
+            "url_entry": "http://FUZZ.example.com",
+            "wordlist_file_entry": "/usr/share/wordlists/subdomains-top100.txt"
+        },
+        "example_output": "\u001b[1m\u001b[34m/usr/bin/ffuf\u001b[0m -u http://FUZZ.example.com -w /usr/share/wordlists/subdomains-top100.txt\n\u001b[1m\u001b[34m____________________\u001b[0m\n\n:: FFUF::\nVersion: \u001b[1m\u001b[32mv1.3.1\u001b[0m\nWritten by: \u001b[1m\u001b[36mhttps://github.com/ffuf\u001b[0m\n\n____________________\n\n\u001b[1m\u001b[34m[INFO]\u001b[0m Starting scan at 2025-09-23 10:05:00\n\u001b[1m\u001b[32m[200]                   \u001b[0m - \u001b[1m\u001b[36mwww\u001b[0m                 - Size: 245 - Words: 50 - Lines: 8\n\u001b[1m\u001b[32m[200]                   \u001b[0m - \u001b[1m\u001b[36madmin\u001b[0m               - Size: 301 - Words: 65 - Lines: 10\n\u001b[1m\u001b[32m[301]                   \u001b[0m - \u001b[1m\u001b[36mdev\u001b[0m                 - Size: 0 - Words: 0 - Lines: 0\n\u001b[1m\u001b[34m[INFO]\u001b[0m Fuzzing completed in 5.12 seconds\n\u001b[1m\u001b[34m____________________\u001b[0m"
+    },
+    {
+        "name": "Directory Fuzz with File Extension",
+        "description": "Fuzzes common directories with a list of file extensions.",
+        "options": {
+            "url_entry": "http://testphp.vulnweb.com/FUZZ.php",
+            "wordlist_file_entry": "/usr/share/wordlists/dirb/common.txt"
+        },
+        "example_output": "\u001b[1m\u001b[34m/usr/bin/ffuf\u001b[0m -u http://testphp.vulnweb.com/FUZZ.php -w /usr/share/wordlists/dirb/common.txt\n\u001b[1m\u001b[34m____________________\u001b[0m\n\n:: FFUF::\nVersion: \u001b[1m\u001b[32mv1.3.1\u001b[0m\nWritten by: \u001b[1m\u001b[36mhttps://github.com/ffuf\u001b[0m\n\n____________________\n\n\u001b[1m\u001b[34m[INFO]\u001b[0m Starting scan at 2025-09-23 10:10:00\n\u001b[1m\u001b[32m[200]                   \u001b[0m - \u001b[1m\u001b[36m/login.php\u001b[0m            - Size: 154 - Words: 35 - Lines: 5\n\u001b[1m\u001b[32m[200]                   \u001b[0m - \u001b[1m\u001b[36m/register.php\u001b[0m         - Size: 189 - Words: 40 - Lines: 6\n\u001b[1m\u001b[34m[INFO]\u001b[0m Fuzzing completed in 8.76 seconds\n\u001b[1m\u001b[34m____________________\u001b[0m"
+    },
+    {
+        "name": "Filtered Fuzz",
+        "description": "Filters out common 404 pages and redirects to find interesting results.",
+        "options": {
+            "url_entry": "http://testphp.vulnweb.com/FUZZ",
+            "wordlist_file_entry": "/usr/share/wordlists/dirb/common.txt",
+            "filter_status_entry": "404,301"
+        },
+        "example_output": "\u001b[1m\u001b[34m/usr/bin/ffuf\u001b[0m -u http://testphp.vulnweb.com/FUZZ -w /usr/share/wordlists/dirb/common.txt -fc 404,301\n\u001b[1m\u001b[34m____________________\u001b[0m\n\n:: FFUF::\nVersion: \u001b[1m\u001b[32mv1.3.1\u001b[0m\nWritten by: \u001b[1m\u001b[36mhttps://github.com/ffuf\u001b[0m\n\n____________________\n\n\u001b[1m\u001b[34m[INFO]\u001b[0m Starting scan at 2025-09-23 10:15:00\n\u001b[1m\u001b[32m[200]                   \u001b[0m - \u001b[1m\u001b[36m/login.php\u001b[0m            - Size: 154 - Words: 35 - Lines: 5\n\u001b[1m\u001b[34m[INFO]\u001b[0m Fuzzing completed in 10.32 seconds\n\u001b[1m\u001b[34m____________________\u001b[0m"
+    },
+    {
+        "name": "Advanced Fuzzing with Headers and Cookies",
+        "description": "Performs a fuzzer with custom headers and cookies.",
+        "options": {
+            "url_entry": "http://testphp.vulnweb.com/FUZZ",
+            "wordlist_file_entry": "/usr/share/wordlists/dirb/common.txt",
+            "headers_entry": "Content-Type: application/json",
+            "cookie_entry": "PHPSESSID=abc12345"
+        },
+        "example_output": "\u001b[1m\u001b[34m/usr/bin/ffuf\u001b[0m -u http://testphp.vulnweb.com/FUZZ -w /usr/share/wordlists/dirb/common.txt -H 'Content-Type: application/json' -H 'Cookie: PHPSESSID=abc12345'\n\u001b[1m\u001b[34m____________________\u001b[0m\n\n:: FFUF::\nVersion: \u001b[1m\u001b[32mv1.3.1\u001b[0m\nWritten by: \u001b[1m\u001b[36mhttps://github.com/ffuf\u001b[0m\n\n____________________\n\n\u001b[1m\u001b[34m[INFO]\u001b[0m Starting scan at 2025-09-23 10:20:00\n\u001b[1m\u001b[32m[200]                   \u001b[0m - \u001b[1m\u001b[36m/images\u001b[0m             - Size: 110 - Words: 20 - Lines: 3\n\u001b[1m\u001b[32m[200]                   \u001b[0m - \u001b[1m\u001b[36m/listproducts.php\u001b[0m       - Size: 504 - Words: 121 - Lines: 12\n\u001b[1m\u001b[34m[INFO]\u001b[0m Fuzzing completed in 15.89 seconds\n\u001b[1m\u001b[34m____________________\u001b[0m"
+    },
+    {
+        "name": "POST Data Fuzzing",
+        "description": "Fuzzes a login page using a wordlist for the username field.",
+        "options": {
+            "url_entry": "http://testphp.vulnweb.com/login.php",
+            "data_entry": "username=FUZZ&password=test",
+            "wordlist_file_entry": "/usr/share/wordlists/usernames.txt"
+        },
+        "example_output": "\u001b[1m\u001b[34m/usr/bin/ffuf\u001b[0m -u http://testphp.vulnweb.com/login.php -d 'username=FUZZ&password=test' -w /usr/share/wordlists/usernames.txt\n\u001b[1m\u001b[34m____________________\u001b[0m\n\n:: FFUF::\nVersion: \u001b[1m\u001b[32mv1.3.1\u001b[0m\nWritten by: \u001b[1m\u001b[36mhttps://github.com/ffuf\u001b[0m\n\n____________________\n\n\u001b[1m\u001b[34m[INFO]\u001b[0m Starting scan at 2025-09-23 10:25:00\n\u001b[1m\u001b[32m[200]                   \u001b[0m - \u001b[1m\u001b[36m/login.php\u001b[0m            - Size: 154 - Words: 35 - Lines: 5\n\u001b[1m\u001b[34m[INFO]\u001b[0m Fuzzing completed in 22.31 seconds\n\u001b[1m\u001b[34m____________________\u001b[0m"
+    },
+    {
+        "name": "Recursive Fuzzing",
+        "description": "Fuzzes a directory and recursively fuzzes any discovered subdirectories.",
+        "options": {
+            "url_entry": "http://testphp.vulnweb.com/FUZZ",
+            "wordlist_file_entry": "/usr/share/wordlists/dirb/common.txt",
+            "recursion_var": true,
+            "recursion_depth_entry": "1"
+        },
+        "example_output": "\u001b[1m\u001b[34m/usr/bin/ffuf\u001b[0m -u http://testphp.vulnweb.com/FUZZ -w /usr/share/wordlists/dirb/common.txt -recursion -recursion-depth 1\n\u001b[1m\u001b[34m____________________\u001b[0m\n\n:: FFUF::\nVersion: \u001b[1m\u001b[32mv1.3.1\u001b[0m\nWritten by: \u001b[1m\u001b[36mhttps://github.com/ffuf\u001b[0m\n\n____________________\n\n\u001b[1m\u001b[34m[INFO]\u001b[0m Starting scan at 2025-09-23 10:30:00\n\u001b[1m\u001b[32m[200]                   \u001b[0m - \u001b[1m\u001b[36m/images\u001b[0m             - Size: 110 - Words: 20 - Lines: 3\n\u001b[1m\u001b[32m[200]                   \u001b[0m - \u001b[1m\u001b[36m/listproducts.php\u001b[0m       - Size: 504 - Words: 121 - Lines: 12\n\u001b[1m\u001b[32m[200]                   \u001b[0m - \u001b[1m\u001b[36m/images/uploads\u001b[0m       - Size: 245 - Words: 50 - Lines: 8\n\u001b[1m\u001b[34m[INFO]\u001b[0m Fuzzing completed in 25.10 seconds\n\u001b[1m\u001b[34m____________________\u001b[0m"
+    },
+    {
+        "name": "Match by Status Code",
+        "description": "Matches only results with a specific status code (e.g., 200).",
+        "options": {
+            "url_entry": "http://testphp.vulnweb.com/FUZZ",
+            "wordlist_file_entry": "/usr/share/wordlists/dirb/common.txt",
+            "match_status_entry": "200"
+        },
+        "example_output": "\u001b[1m\u001b[34m/usr/bin/ffuf\u001b[0m -u http://testphp.vulnweb.com/FUZZ -w /usr/share/wordlists/dirb/common.txt -mc 200\n\u001b[1m\u001b[34m____________________\u001b[0m\n\n:: FFUF::\nVersion: \u001b[1m\u001b[32mv1.3.1\u001b[0m\nWritten by: \u001b[1m\u001b[36mhttps://github.com/ffuf\u001b[0m\n\n____________________\n\n\u001b[1m\u001b[34m[INFO]\u001b[0m Starting scan at 2025-09-23 10:35:00\n\u001b[1m\u001b[32m[200]                   \u001b[0m - \u001b[1m\u001b[36m/images\u001b[0m             - Size: 110 - Words: 20 - Lines: 3\n\u001b[1m\u001b[32m[200]                   \u001b[0m - \u001b[1m\u001b[36m/listproducts.php\u001b[0m       - Size: 504 - Words: 121 - Lines: 12\n\u001b[1m\u001b[34m[INFO]\u001b[0m Fuzzing completed in 11.45 seconds\n\u001b[1m\u001b[34m____________________\u001b[0m"
+    }
+]

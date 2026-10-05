@@ -1,0 +1,967 @@
+{
+  "name": "Nmap",
+  "version": "7.91",
+  "executable": "nmap",
+  "tabs": [
+    {
+      "id": "target",
+      "name": "Target",
+      "inputs": [
+        {
+          "id": "target_entry",
+          "label": "Target(s):",
+          "type": "text",
+          "flag": "",
+          "placeholder": "e.g., scanme.nmap.org",
+          "help": "Target IP address(es), hostnames, ranges (e.g., 192.168.1.1, example.com, 192.168.1.1-10, 192.168.1.0/24). For multiple targets, separate with spaces or use a file."
+        },
+        {
+          "id": "target_list_file_entry",
+          "label": "Target List File (-iL):",
+          "type": "text",
+          "flag": "-iL",
+          "help": "File containing a list of targets (one per line)."
+        },
+        {
+          "id": "target_list_upload",
+          "label": "Upload Target List:",
+          "type": "file",
+          "flag": "-iL",
+          "help": "Upload a file containing a list of targets (one per line)."
+        },
+        {
+          "id": "exclude_hosts_entry",
+          "label": "Exclude Hosts (--exclude):",
+          "type": "text",
+          "flag": "--exclude",
+          "help": "Comma-separated list of hosts to exclude."
+        },
+        {
+          "id": "exclude_file_entry",
+          "label": "Exclude File (--excludefile):",
+          "type": "text",
+          "flag": "--excludefile",
+          "help": "File containing a list of hosts to exclude (one per line)."
+        },
+        {
+          "id": "random_hosts_entry",
+          "label": "Random Hosts (-iR):",
+          "type": "number",
+          "flag": "-iR",
+          "help": "Scan N random hosts (e.g., '10')."
+        },
+        {
+          "id": "stdin_input_var",
+          "label": "Input from stdin (-iS)",
+          "type": "checkbox",
+          "flag": "-iS",
+          "help": "Read targets from standard input."
+        },
+        {
+          "id": "no_ping_var",
+          "label": "No Ping (--Pn):",
+          "type": "checkbox",
+          "flag": "-Pn",
+          "help": "Treat all hosts as online -- skip host discovery."
+        },
+        {
+          "id": "ping_scan_var",
+          "label": "Ping Scan (-sP):",
+          "type": "checkbox",
+          "flag": "-sP",
+          "help": "Only perform host discovery (ping scan)."
+        },
+        {
+          "id": "list_scan_var",
+          "label": "List Scan (-sL):",
+          "type": "checkbox",
+          "flag": "-sL",
+          "help": "List targets to scan without running a scan."
+        },
+        {
+          "id": "no_dns_resolution_var",
+          "label": "Disable DNS Resolution (-n):",
+          "type": "checkbox",
+          "flag": "-n",
+          "help": "Never do DNS resolution."
+        },
+        {
+          "id": "force_dns_resolution_var",
+          "label": "Force DNS Resolution (-R):",
+          "type": "checkbox",
+          "flag": "-R",
+          "help": "Always resolve DNS for all target IPs."
+        },
+        {
+          "id": "system_dns_var",
+          "label": "System DNS Resolver (--system-dns):",
+          "type": "checkbox",
+          "flag": "--system-dns",
+          "help": "Use system DNS resolver (slower)."
+        },
+        {
+          "id": "dns_servers_entry",
+          "label": "DNS Servers (--dns-servers):",
+          "type": "text",
+          "flag": "--dns-servers",
+          "help": "Comma-separated list of DNS servers to use."
+        }
+      ]
+    },
+    {
+      "id": "scan-types",
+      "name": "Scan Types",
+      "inputs": [
+        {
+          "id": "syn_scan_var",
+          "label": "SYN Scan (-sS)",
+          "type": "checkbox",
+          "flag": "-sS",
+          "help": "Stealth SYN scan (default and fastest). Requires root privileges."
+        },
+        {
+          "id": "connect_scan_var",
+          "label": "Connect Scan (-sT)",
+          "type": "checkbox",
+          "flag": "-sT",
+          "help": "TCP connect() scan. Slower than SYN, but works without root privileges."
+        },
+        {
+          "id": "udp_scan_var",
+          "label": "UDP Scan (-sU)",
+          "type": "checkbox",
+          "flag": "-sU",
+          "help": "UDP scan. Can be very slow."
+        },
+        {
+          "id": "ack_scan_var",
+          "label": "ACK Scan (-sA)",
+          "type": "checkbox",
+          "flag": "-sA",
+          "help": "ACK scan. Used to map firewall rulesets, not to determine open ports."
+        },
+        {
+          "id": "window_scan_var",
+          "label": "Window Scan (-sW)",
+          "type": "checkbox",
+          "flag": "-sW",
+          "help": "Window scan. Similar to ACK scan, but can sometimes detect open ports."
+        },
+        {
+          "id": "maimon_scan_var",
+          "label": "Maimon Scan (-sM)",
+          "type": "checkbox",
+          "flag": "-sM",
+          "help": "Maimon scan. Advanced scan type, similar to FIN/Xmas/Null."
+        },
+        {
+          "id": "fin_scan_var",
+          "label": "FIN Scan (-sF)",
+          "type": "checkbox",
+          "flag": "-sF",
+          "help": "FIN scan. Stealthy, sends FIN packets."
+        },
+        {
+          "id": "xmas_scan_var",
+          "label": "Xmas Scan (-sX)",
+          "type": "checkbox",
+          "flag": "-sX",
+          "help": "Xmas scan. Stealthy, sets FIN, PSH, URG flags."
+        },
+        {
+          "id": "null_scan_var",
+          "label": "Null Scan (-sN)",
+          "type": "checkbox",
+          "flag": "-sN",
+          "help": "Null scan. Stealthy, sends packets with no flags set."
+        },
+        {
+          "id": "ip_protocol_scan_var",
+          "label": "IP Protocol Scan (-sO)",
+          "type": "checkbox",
+          "flag": "-sO",
+          "help": "IP protocol scan. Discovers supported IP protocols (TCP, UDP, ICMP, etc.)."
+        },
+        {
+          "id": "fast_scan_var",
+          "label": "Fast Scan (-F)",
+          "type": "checkbox",
+          "flag": "-F",
+          "help": "Scan fewer ports than the default scan."
+        },
+        {
+          "id": "fragment_packets_var",
+          "label": "Fragment Packets (-f)",
+          "type": "checkbox",
+          "flag": "-f",
+          "help": "Fragment IP packets into tiny pieces. Can evade simple firewalls."
+        },
+        {
+          "id": "no_reason_var",
+          "label": "Don't Show Reason (--noreason)",
+          "type": "checkbox",
+          "flag": "--noreason",
+          "help": "Don't print the reason a host or port is in a particular state."
+        },
+        {
+          "id": "ipv6_scan_var",
+          "label": "IPv6 Scan (-6)",
+          "type": "checkbox",
+          "flag": "-6",
+          "help": "Enable IPv6 scanning."
+        },
+        {
+          "id": "append_output_var",
+          "label": "Append Output (--append-output)",
+          "type": "checkbox",
+          "flag": "--append-output",
+          "help": "Append to specified output files rather than clobbering them."
+        },
+        {
+          "id": "disable_host_discovery_var",
+          "label": "Disable Host Discovery (-Pn)",
+          "type": "checkbox",
+          "flag": "-Pn",
+          "help": "Treat all hosts as online -- skip host discovery."
+        },
+        {
+          "id": "only_specified_ports_var",
+          "label": "Scan Only Specified Ports (-p)",
+          "type": "checkbox",
+          "flag": "-p",
+          "help": "Only scan ports specified with -p."
+        },
+        {
+          "id": "syn_ack_discovery_entry",
+          "label": "SYN/ACK Discovery (-PS/-PA):",
+          "type": "text",
+          "flag": "-PS",
+          "help": "TCP SYN/ACK discovery on specified ports (e.g., '22,80,443')."
+        },
+        {
+          "id": "udp_discovery_entry",
+          "label": "UDP Discovery (-PU):",
+          "type": "text",
+          "flag": "-PU",
+          "help": "UDP discovery on specified ports (e.g., '53,161')."
+        },
+        {
+          "id": "sctp_init_scan_var",
+          "label": "SCTP INIT Scan (-sY)",
+          "type": "checkbox",
+          "flag": "-sY",
+          "help": "SCTP INIT scan."
+        },
+        {
+          "id": "sctp_cookie_echo_scan_var",
+          "label": "SCTP COOKIE-ECHO Scan (-sZ)",
+          "type": "checkbox",
+          "flag": "-sZ",
+          "help": "SCTP COOKIE-ECHO scan."
+        },
+        {
+          "id": "idle_scan_entry",
+          "label": "Idle Scan (-sI):",
+          "type": "text",
+          "flag": "-sI",
+          "help": "Idle scan (zombie host). e.g., 'zombie.example.com'."
+        },
+        {
+          "id": "protocol_scan_var",
+          "label": "Protocol Scan (-sO)",
+          "type": "checkbox",
+          "flag": "-sO",
+          "help": "IP protocol scan."
+        },
+        {
+          "id": "decoy_scan_entry",
+          "label": "Decoy Scan (-D):",
+          "type": "text",
+          "flag": "-D",
+          "help": "Comma-separated list of decoy IP addresses (e.g., 'ME,192.168.1.1,10.0.0.1')."
+        },
+        {
+          "id": "spoof_mac_entry",
+          "label": "Spoof MAC Address (--spoof-mac):",
+          "type": "text",
+          "flag": "--spoof-mac",
+          "help": "MAC address to spoof (e.g., '00:0C:29:12:34:56' or 'Dell')."
+        },
+        {
+          "id": "source_port_entry",
+          "label": "Source Port (--source-port):",
+          "type": "number",
+          "flag": "--source-port",
+          "help": "Specify source port number."
+        },
+        {
+          "id": "data_length_entry",
+          "label": "Data Length (--data-length):",
+          "type": "number",
+          "flag": "--data-length",
+          "help": "Append random data to sent packets."
+        },
+        {
+          "id": "bad_checksum_var",
+          "label": "Bad Checksum (--badsum)",
+          "type": "checkbox",
+          "flag": "--badsum",
+          "help": "Send packets with a bogus TCP/UDP/SCTP checksum."
+        }
+      ]
+    },
+    {
+      "id": "ports",
+      "name": "Ports",
+      "inputs": [
+        {
+          "id": "ports_entry",
+          "label": "Ports (-p):",
+          "type": "text",
+          "flag": "-p",
+          "help": "Comma-separated list of ports or ranges (e.g., '21,22,80,1-1024')."
+        },
+        {
+          "id": "exclude_ports_entry",
+          "label": "Exclude Ports (--exclude-ports):",
+          "type": "text",
+          "flag": "--exclude-ports",
+          "help": "Comma-separated list of ports or ranges to exclude."
+        },
+        {
+          "id": "fast_scan_ports_var",
+          "label": "Fast Scan (-F)",
+          "type": "checkbox",
+          "flag": "-F",
+          "help": "Scan fewer ports than the default scan (top 100)."
+        },
+        {
+          "id": "all_ports_var",
+          "label": "All Ports (-p-)",
+          "type": "checkbox",
+          "flag": "-p-",
+          "help": "Scan all 65535 ports."
+        },
+        {
+          "id": "top_ports_entry",
+          "label": "Top Ports (--top-ports):",
+          "type": "number",
+          "flag": "--top-ports",
+          "help": "Scan the N most common ports (e.g., '1000')."
+        },
+        {
+          "id": "port_ratio_entry",
+          "label": "Port Ratio (--port-ratio):",
+          "type": "number",
+          "flag": "--port-ratio",
+          "help": "Scan ports with a ratio greater than the given value (0.0-1.0)."
+        },
+        {
+          "id": "service_version_detection_var",
+          "label": "Service/Version Detection (-sV)",
+          "type": "checkbox",
+          "flag": "-sV",
+          "help": "Probe open ports to determine service/version info."
+        }
+      ]
+    },
+    {
+      "id": "timing",
+      "name": "Timing/Performance",
+      "inputs": [
+        {
+          "id": "timing_template_var",
+          "label": "Timing Template (-T):",
+          "type": "radio",
+          "flag": "-T",
+          "options": [
+            {
+              "value": "",
+              "label": "None",
+              "selected": true
+            },
+            {
+              "value": "0",
+              "label": "0 (paranoid)",
+              "selected": false
+            },
+            {
+              "value": "1",
+              "label": "1 (sneaky)",
+              "selected": false
+            },
+            {
+              "value": "2",
+              "label": "2 (polite)",
+              "selected": false
+            },
+            {
+              "value": "3",
+              "label": "3 (normal)",
+              "selected": false
+            },
+            {
+              "value": "4",
+              "label": "4 (aggressive)",
+              "selected": false
+            },
+            {
+              "value": "5",
+              "label": "5 (insane)",
+              "selected": false
+            }
+          ],
+          "help": "Set a timing template (0-5 or paranoid, sneaky, polite, normal, aggressive, insane)."
+        },
+        {
+          "id": "min_hostgroup_entry",
+          "label": "Min Hostgroup (--min-hostgroup):",
+          "type": "number",
+          "flag": "--min-hostgroup",
+          "help": "Minimum number of hosts to scan in parallel."
+        },
+        {
+          "id": "max_hostgroup_entry",
+          "label": "Max Hostgroup (--max-hostgroup):",
+          "type": "number",
+          "flag": "--max-hostgroup",
+          "help": "Maximum number of hosts to scan in parallel."
+        },
+        {
+          "id": "min_parallelism_entry",
+          "label": "Min Parallelism (--min-parallelism):",
+          "type": "number",
+          "flag": "--min-parallelism",
+          "help": "Minimum number of probes to send in parallel."
+        },
+        {
+          "id": "max_parallelism_entry",
+          "label": "Max Parallelism (--max-parallelism):",
+          "type": "number",
+          "flag": "--max-parallelism",
+          "help": "Maximum number of probes to send in parallel."
+        },
+        {
+          "id": "min_rtt_timeout_entry",
+          "label": "Min RTT Timeout (--min-rtt-timeout):",
+          "type": "text",
+          "flag": "--min-rtt-timeout",
+          "help": "Minimum round trip time timeout (ms)."
+        },
+        {
+          "id": "max_rtt_timeout_entry",
+          "label": "Max RTT Timeout (--max-rtt-timeout):",
+          "type": "text",
+          "flag": "--max-rtt-timeout",
+          "help": "Maximum round trip time timeout (ms)."
+        },
+        {
+          "id": "initial_rtt_timeout_entry",
+          "label": "Initial RTT Timeout (--initial-rtt-timeout):",
+          "type": "text",
+          "flag": "--initial-rtt-timeout",
+          "help": "Initial round trip time timeout (ms)."
+        },
+        {
+          "id": "max_retries_entry",
+          "label": "Max Retries (--max-retries):",
+          "type": "number",
+          "flag": "--max-retries",
+          "help": "Caps the number of port scan probe retransmissions."
+        },
+        {
+          "id": "host_timeout_entry",
+          "label": "Host Timeout (--host-timeout):",
+          "type": "text",
+          "flag": "--host-timeout",
+          "help": "Give up on target host after this long (e.g., '30m', '2h')."
+        },
+        {
+          "id": "scan_delay_entry",
+          "label": "Scan Delay (--scan-delay):",
+          "type": "text",
+          "flag": "--scan-delay",
+          "help": "Delay between probes (e.g., '10ms', '1s')."
+        },
+        {
+          "id": "min_rate_entry",
+          "label": "Min Rate (--min-rate):",
+          "type": "number",
+          "flag": "--min-rate",
+          "help": "Send packets no slower than <number> per second."
+        },
+        {
+          "id": "max_rate_entry",
+          "label": "Max Rate (--max-rate):",
+          "type": "number",
+          "flag": "--max-rate",
+          "help": "Send packets no faster than <number> per second."
+        }
+      ]
+    },
+    {
+      "id": "detection",
+      "name": "Detection",
+      "inputs": [
+        {
+          "id": "os_detection_var",
+          "label": "OS Detection (-O)",
+          "type": "checkbox",
+          "flag": "-O",
+          "help": "Enable OS detection."
+        },
+        {
+          "id": "service_version_detection_det_var",
+          "label": "Service Version Detection (-sV)",
+          "type": "checkbox",
+          "flag": "-sV",
+          "help": "Probe open ports to determine service/version info."
+        },
+        {
+          "id": "aggressive_detection_var",
+          "label": "Aggressive Detection (-A)",
+          "type": "checkbox",
+          "flag": "-A",
+          "help": "Enable OS detection, version detection, script scanning, and traceroute."
+        },
+        {
+          "id": "version_intensity_entry",
+          "label": "Version Intensity (--version-intensity):",
+          "type": "number",
+          "flag": "--version-intensity",
+          "help": "Set version scan intensity (0-9). 9 is default."
+        },
+        {
+          "id": "version_light_var",
+          "label": "Version Light (--version-light)",
+          "type": "checkbox",
+          "flag": "--version-light",
+          "help": "Light mode for version scan (intensity 2)."
+        },
+        {
+          "id": "version_all_var",
+          "label": "Version All (--version-all)",
+          "type": "checkbox",
+          "flag": "--version-all",
+          "help": "Try every single probe for version detection."
+        },
+        {
+          "id": "osscan_guess_var",
+          "label": "Aggressive OS Guessing (--osscan-guess)",
+          "type": "checkbox",
+          "flag": "--osscan-guess",
+          "help": "Guess OS more aggressively."
+        },
+        {
+          "id": "osscan_limit_var",
+          "label": "Limit OS Guesses (--osscan-limit)",
+          "type": "checkbox",
+          "flag": "--osscan-limit",
+          "help": "Limit OS detection to promising targets."
+        },
+        {
+          "id": "all_ports_service_var",
+          "label": "Service Info on All Ports (--all-ports)",
+          "type": "checkbox",
+          "flag": "--all-ports",
+          "help": "Don't exclude any ports from the default service scan."
+        }
+      ]
+    },
+    {
+      "id": "evasion",
+      "name": "Evasion/Spoofing",
+      "inputs": [
+        {
+          "id": "fragment_packets_evasion_var",
+          "label": "Fragment Packets (-f)",
+          "type": "checkbox",
+          "flag": "-f",
+          "help": "Fragment IP packets into tiny pieces (8 bytes or less)."
+        },
+        {
+          "id": "mtu_entry",
+          "label": "MTU (--mtu):",
+          "type": "number",
+          "flag": "--mtu",
+          "help": "Specify your own offset size (e.g., '24', '48')."
+        },
+        {
+          "id": "decoy_scan_evasion_entry",
+          "label": "Decoy Scan (-D):",
+          "type": "text",
+          "flag": "-D",
+          "help": "Comma-separated list of decoy IP addresses (e.g., 'RND:5,ME,192.168.1.1')."
+        },
+        {
+          "id": "idle_scan_evasion_entry",
+          "label": "Idle Scan (-sI):",
+          "type": "text",
+          "flag": "-sI",
+          "help": "Idle scan (zombie host). e.g., 'zombie.example.com'."
+        },
+        {
+          "id": "spoof_mac_evasion_entry",
+          "label": "Spoof MAC Address (--spoof-mac):",
+          "type": "text",
+          "flag": "--spoof-mac",
+          "help": "MAC address to spoof (e.g., '00:0C:29:12:34:56' or 'Dell')."
+        },
+        {
+          "id": "source_port_evasion_entry",
+          "label": "Source Port (--source-port):",
+          "type": "number",
+          "flag": "--source-port",
+          "help": "Specify source port number (e.g., '53', '80')."
+        },
+        {
+          "id": "data_length_evasion_entry",
+          "label": "Data Length (--data-length):",
+          "type": "number",
+          "flag": "--data-length",
+          "help": "Append random data to sent packets (e.g., '25')."
+        },
+        {
+          "id": "bad_checksum_evasion_var",
+          "label": "Bad Checksum (--badsum)",
+          "type": "checkbox",
+          "flag": "--badsum",
+          "help": "Send packets with a bogus TCP/UDP/SCTP checksum."
+        },
+        {
+          "id": "randomize_hosts_var",
+          "label": "Randomize Hosts (--randomize-hosts)",
+          "type": "checkbox",
+          "flag": "--randomize-hosts",
+          "help": "Randomize target host order."
+        },
+        {
+          "id": "randomize_ports_var",
+          "label": "Randomize Ports (--randomize-ports)",
+          "type": "checkbox",
+          "flag": "--randomize-ports",
+          "help": "Randomize scanned port order."
+        },
+        {
+          "id": "ip_options_entry",
+          "label": "IP Options (--ip-options):",
+          "type": "text",
+          "flag": "--ip-options",
+          "help": "Send packets with specified IP options (e.g., 'R')."
+        },
+        {
+          "id": "ttl_entry",
+          "label": "TTL (--ttl):",
+          "type": "number",
+          "flag": "--ttl",
+          "help": "Set IPv4 time-to-live field."
+        },
+        {
+          "id": "max_retries_adv_entry",
+          "label": "Max Retries (--max-retries):",
+          "type": "number",
+          "flag": "--max-retries",
+          "help": "Caps the number of port scan probe retransmissions."
+        },
+        {
+          "id": "host_timeout_adv_entry",
+          "label": "Host Timeout (--host-timeout):",
+          "type": "text",
+          "flag": "--host-timeout",
+          "help": "Give up on target host after this long."
+        },
+        {
+          "id": "scan_delay_adv_entry",
+          "label": "Scan Delay (--scan-delay):",
+          "type": "text",
+          "flag": "--scan-delay",
+          "help": "Delay between probes."
+        },
+        {
+          "id": "additional_args_entry",
+          "label": "Additional Arguments:",
+          "type": "textarea",
+          "flag": "",
+          "help": "Any other Nmap arguments not covered by the GUI. Enter them exactly as you would on the command line (e.g., '--exclude 192.168.1.5')."
+        }
+      ]
+    },
+    {
+      "id": "output",
+      "name": "Output",
+      "inputs": [
+        {
+          "id": "normal_output_file_entry",
+          "label": "Normal Output (-oN):",
+          "type": "text",
+          "flag": "-oN",
+          "help": "Output to normal text file."
+        },
+        {
+          "id": "xml_output_file_entry",
+          "label": "XML Output (-oX):",
+          "type": "text",
+          "flag": "-oX",
+          "help": "Output to XML file."
+        },
+        {
+          "id": "grepable_output_file_entry",
+          "label": "Grepable Output (-oG):",
+          "type": "text",
+          "flag": "-oG",
+          "help": "Output to grepable file."
+        },
+        {
+          "id": "all_formats_output_file_entry",
+          "label": "All Formats (-oA):",
+          "type": "text",
+          "flag": "-oA",
+          "help": "Output in all major formats (normal, XML, grepable)."
+        },
+        {
+          "id": "verbose_var",
+          "label": "Verbose (-v)",
+          "type": "checkbox",
+          "flag": "-v",
+          "help": "Increase verbosity level (use -vv for more)."
+        },
+        {
+          "id": "debug_var",
+          "label": "Debug (-d)",
+          "type": "checkbox",
+          "flag": "-d",
+          "help": "Increase debugging level (use -dd for more)."
+        },
+        {
+          "id": "reason_var",
+          "label": "Reason (--reason)",
+          "type": "checkbox",
+          "flag": "--reason",
+          "help": "Show the reason a host or port is in a particular state."
+        },
+        {
+          "id": "open_ports_only_var",
+          "label": "Open Ports Only (--open)",
+          "type": "checkbox",
+          "flag": "--open",
+          "help": "Only show open (or possibly open) ports."
+        },
+        {
+          "id": "packet_trace_var",
+          "label": "Packet Trace (--packet-trace)",
+          "type": "checkbox",
+          "flag": "--packet-trace",
+          "help": "Show all packets sent and received."
+        },
+        {
+          "id": "resume_file_entry",
+          "label": "Resume Scan (--resume):",
+          "type": "text",
+          "flag": "--resume",
+          "help": "Resume an aborted scan."
+        },
+        {
+          "id": "append_output_output_var",
+          "label": "Append Output (--append-output)",
+          "type": "checkbox",
+          "flag": "--append-output",
+          "help": "Append to specified output files rather than clobbering them."
+        },
+        {
+          "id": "no_host_discovery_var",
+          "label": "No Host Discovery (--no-host-discovery)",
+          "type": "checkbox",
+          "flag": "--no-host-discovery",
+          "help": "Do not perform host discovery."
+        },
+        {
+          "id": "show_version_var",
+          "label": "Show Version (--version)",
+          "type": "checkbox",
+          "flag": "--version",
+          "help": "Show Nmap version number and exit."
+        },
+        {
+          "id": "show_help_var",
+          "label": "Show Help (-h)",
+          "type": "checkbox",
+          "flag": "-h",
+          "help": "Display help message and exit."
+        }
+      ]
+    },
+    {
+      "id": "scripting",
+      "name": "Scripting (NSE)",
+      "inputs": [
+        {
+          "id": "script_scan_var",
+          "label": "Script Scan (-sC)",
+          "type": "checkbox",
+          "flag": "-sC",
+          "help": "Perform a default script scan."
+        },
+        {
+          "id": "scripts_entry",
+          "label": "Scripts (--script):",
+          "type": "text",
+          "flag": "--script",
+          "help": "Comma-separated list of scripts, script categories, or directory (e.g., 'default,vuln', 'http-enum', '/path/to/scripts')."
+        },
+        {
+          "id": "script_args_entry",
+          "label": "Script Arguments (--script-args):",
+          "type": "textarea",
+          "flag": "--script-args",
+          "help": "Arguments for NSE scripts (e.g., 'http.useragent=Mozilla,http.max-pipeline=10'). One argument per line."
+        },
+        {
+          "id": "script_timeout_entry",
+          "label": "Script Timeout (--script-timeout):",
+          "type": "text",
+          "flag": "--script-timeout",
+          "help": "Set maximum execution time for scripts (e.g., '5m')."
+        },
+        {
+          "id": "script_trace_var",
+          "label": "Script Trace (--script-trace)",
+          "type": "checkbox",
+          "flag": "--script-trace",
+          "help": "Show all data sent and received by scripts."
+        },
+        {
+          "id": "script_debug_var",
+          "label": "Script Debug (--script-debug)",
+          "type": "checkbox",
+          "flag": "--script-debug",
+          "help": "Increase debug level for scripts."
+        },
+        {
+          "id": "script_help_entry",
+          "label": "Script Help (--script-help):",
+          "type": "text",
+          "flag": "--script-help",
+          "help": "Show help for specified scripts (e.g., 'http-enum')."
+        },
+        {
+          "id": "script_update_db_var",
+          "label": "Update Script DB (--script-updatedb)",
+          "type": "checkbox",
+          "flag": "--script-updatedb",
+          "help": "Update the script database."
+        },
+        {
+          "id": "script_fags_var",
+          "label": "Show Failed Scripts (--script-fags)",
+          "type": "checkbox",
+          "flag": "--script-fags",
+          "help": "Show scripts that failed to run."
+        }
+      ]
+    },
+    {
+      "id": "advanced",
+      "name": "Advanced",
+      "inputs": [
+        {
+          "id": "interface_entry",
+          "label": "Interface (-e):",
+          "type": "text",
+          "flag": "-e",
+          "help": "Use specified network interface."
+        },
+        {
+          "id": "source_address_entry",
+          "label": "Source Address (-S):",
+          "type": "text",
+          "flag": "-S",
+          "help": "Spoof source IP address."
+        },
+        {
+          "id": "payload_length_entry",
+          "label": "Payload Length (--data-length):",
+          "type": "number",
+          "flag": "--data-length",
+          "help": "Append random data to sent packets (e.g., '25')."
+        },
+        {
+          "id": "max_parallelism_adv_entry",
+          "label": "Max Parallelism (--max-parallelism):",
+          "type": "number",
+          "flag": "--max-parallelism",
+          "help": "Maximum number of probes to send in parallel."
+        },
+        {
+          "id": "min_parallelism_adv_entry",
+          "label": "Min Parallelism (--min-parallelism):",
+          "type": "number",
+          "flag": "--min-parallelism",
+          "help": "Minimum number of probes to send in parallel."
+        },
+        {
+          "id": "packet_trace_adv_var",
+          "label": "Packet Trace (--packet-trace)",
+          "type": "checkbox",
+          "flag": "--packet-trace",
+          "help": "Show all packets sent and received."
+        },
+        {
+          "id": "badsum_adv_var",
+          "label": "Bypass Firewall/IDS (--badsum)",
+          "type": "checkbox",
+          "flag": "--badsum",
+          "help": "Send packets with a bogus TCP/UDP/SCTP checksum."
+        },
+        {
+          "id": "fragment_packets_adv_var",
+          "label": "Fragment Packets (-f)",
+          "type": "checkbox",
+          "flag": "-f",
+          "help": "Fragment IP packets into tiny pieces."
+        },
+        {
+          "id": "ip_options_adv_entry",
+          "label": "IP Options (--ip-options):",
+          "type": "text",
+          "flag": "--ip-options",
+          "help": "Send packets with specified IP options."
+        },
+        {
+          "id": "ttl_adv_entry",
+          "label": "TTL (--ttl):",
+          "type": "number",
+          "flag": "--ttl",
+          "help": "Set IPv4 time-to-live field."
+        },
+        {
+          "id": "max_retries_adv_entry",
+          "label": "Max Retries (--max-retries):",
+          "type": "number",
+          "flag": "--max-retries",
+          "help": "Caps the number of port scan probe retransmissions."
+        },
+        {
+          "id": "host_timeout_adv_entry",
+          "label": "Host Timeout (--host-timeout):",
+          "type": "text",
+          "flag": "--host-timeout",
+          "help": "Give up on target host after this long."
+        },
+        {
+          "id": "scan_delay_adv_entry",
+          "label": "Scan Delay (--scan-delay):",
+          "type": "text",
+          "flag": "--scan-delay",
+          "help": "Delay between probes."
+        },
+        {
+          "id": "additional_args_entry",
+          "label": "Additional Arguments:",
+          "type": "textarea",
+          "flag": "",
+          "help": "Any other Nmap arguments not covered by the GUI. Enter them exactly as you would on the command line (e.g., '--exclude 192.168.1.5')."
+        }
+      ]
+    }
+  ]
+}

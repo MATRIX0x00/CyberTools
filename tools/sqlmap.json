@@ -1,0 +1,367 @@
+{
+  "name": "sqlmap",
+  "version": "1.6",
+  "executable": "sqlmap",
+  "description": "SQLMap is an open-source penetration testing tool that automates the process of detecting and exploiting SQL injection flaws and taking over database servers.",
+  "tabs": [
+    {
+      "id": "target",
+      "name": "Target",
+      "inputs": [
+        {
+          "id": "url_entry",
+          "label": "Target URL (-u):",
+          "type": "text",
+          "flag": "-u",
+          "placeholder": "e.g., http://example.com/page.php?id=1",
+          "help": "Target URL. You must specify a target URL."
+        },
+        {
+          "id": "request_file_path_entry",
+          "label": "Request File Path (-r):",
+          "type": "text",
+          "flag": "-r",
+          "placeholder": "e.g., /path/to/request.txt",
+          "help": "Load HTTP request from a text file."
+        },
+        {
+          "id": "request_file_upload_entry",
+          "label": "Upload Request File:",
+          "type": "file",
+          "flag": "-r",
+          "help": "Upload a file containing a raw HTTP request."
+        },
+        {
+          "id": "google_dork_entry",
+          "label": "Google Dork (-g):",
+          "type": "text",
+          "flag": "-g",
+          "placeholder": "e.g., inurl:.php?id=1",
+          "help": "Process Google dork results as targets."
+        },
+        {
+          "id": "multiple_targets_path_entry",
+          "label": "Multiple Targets File Path (-m):",
+          "type": "text",
+          "flag": "-m",
+          "placeholder": "e.g., /path/to/targets.txt",
+          "help": "Scan multiple targets given in a text file."
+        },
+        {
+          "id": "multiple_targets_upload_entry",
+          "label": "Upload Multiple Targets:",
+          "type": "file",
+          "flag": "-m",
+          "help": "Upload a file containing multiple target URLs (one per line)."
+        },
+        {
+          "id": "forms_var",
+          "label": "Test Forms (--forms)",
+          "type": "checkbox",
+          "flag": "--forms",
+          "help": "Test all input forms found on the target URL."
+        }
+      ]
+    },
+    {
+      "id": "http-settings",
+      "name": "HTTP Settings",
+      "inputs": [
+        {
+          "id": "cookie_entry",
+          "label": "HTTP Cookie (--cookie):",
+          "type": "text",
+          "flag": "--cookie",
+          "placeholder": "e.g., 'PHPSESSID=abcdefg123456'",
+          "help": "HTTP Cookie header."
+        },
+        {
+          "id": "data_entry",
+          "label": "POST Data (--data):",
+          "type": "text",
+          "flag": "--data",
+          "placeholder": "e.g., 'id=1&name=test'",
+          "help": "Data string to be sent via POST."
+        },
+        {
+          "id": "headers_entry",
+          "label": "HTTP Headers (--headers):",
+          "type": "textarea",
+          "flag": "--headers",
+          "placeholder": "e.g., 'Accept-Language: en\nReferer: http://example.com'",
+          "help": "Extra HTTP headers separated by newline."
+        },
+        {
+          "id": "user_agent_entry",
+          "label": "User-Agent (--user-agent):",
+          "type": "text",
+          "flag": "--user-agent",
+          "placeholder": "e.g., 'Mozilla/5.0 ...'",
+          "help": "HTTP User-Agent header."
+        },
+        {
+          "id": "random_agent_var",
+          "label": "Random User-Agent (--random-agent)",
+          "type": "checkbox",
+          "flag": "--random-agent",
+          "help": "Use a randomly selected HTTP User-Agent header from the included text file."
+        },
+        {
+          "id": "proxy_entry",
+          "label": "Proxy (--proxy):",
+          "type": "text",
+          "flag": "--proxy",
+          "placeholder": "e.g., 'http://127.0.0.1:8080'",
+          "help": "Use a proxy to connect to the target URL."
+        },
+        {
+          "id": "threads_entry",
+          "label": "Threads (--threads):",
+          "type": "number",
+          "flag": "--threads",
+          "placeholder": "e.g., 10",
+          "help": "Max number of concurrent HTTP requests."
+        }
+      ]
+    },
+    {
+      "id": "injection-evasion",
+      "name": "Injection & Evasion",
+      "inputs": [
+        {
+          "id": "level_select",
+          "label": "Test Level (--level):",
+          "type": "select",
+          "flag": "--level",
+          "options": [
+            { "value": "", "label": "None (1 - Default)", "selected": true },
+            { "value": "1", "label": "1" },
+            { "value": "2", "label": "2" },
+            { "value": "3", "label": "3" },
+            { "value": "4", "label": "4" },
+            { "value": "5", "label": "5" }
+          ],
+          "help": "Level of tests to perform (1-5). Higher levels include more requests."
+        },
+        {
+          "id": "risk_select",
+          "label": "Risk Level (--risk):",
+          "type": "select",
+          "flag": "--risk",
+          "options": [
+            { "value": "", "label": "None (1 - Default)", "selected": true },
+            { "value": "1", "label": "1" },
+            { "value": "2", "label": "2" },
+            { "value": "3", "label": "3" }
+          ],
+          "help": "Risk level of tests to perform (1-3). Default is 1. Level 2 adds time-based injections. Level 3 adds OR-based injections."
+        },
+        {
+          "id": "all_techniques_var",
+          "label": "All Techniques (-all)",
+          "type": "checkbox",
+          "flag": "--all",
+          "help": "Test all injection techniques (boolean, time-based, error-based, etc.)."
+        },
+        {
+          "id": "techniques_radio",
+          "label": "Specific Techniques (-T):",
+          "type": "radio",
+          "flag": "-T",
+          "options": [
+            { "value": "B", "label": "Boolean-based blind (-B)", "selected": false},
+            { "value": "E", "label": "Error-based (-E)", "selected": false},
+            { "value": "T", "label": "Time-based blind (-T)", "selected": false},
+            { "value": "U", "label": "Union query (-U)", "selected": false},
+            { "value": "S", "label": "Stacked queries (-S)", "selected": false},
+            { "value": "", "label": "None (default)", "selected": true}
+          ],
+          "help": "Select specific SQL injection techniques to test."
+        },
+        {
+          "id": "tamper_entry",
+          "label": "Tamper Script (--tamper):",
+          "type": "text",
+          "flag": "--tamper",
+          "placeholder": "e.g., 'apostrophemask,charencode'",
+          "help": "Use tamper scripts for evasion."
+        },
+        {
+          "id": "skip_waf_var",
+          "label": "Skip WAF Detection (--skip-waf)",
+          "type": "checkbox",
+          "flag": "--skip-waf",
+          "help": "Skip WAF detection tests."
+        }
+      ]
+    },
+    {
+      "id": "enumeration",
+      "name": "Enumeration",
+      "inputs": [
+        {
+          "id": "current_db_var",
+          "label": "Current Database (--current-db)",
+          "type": "checkbox",
+          "flag": "--current-db",
+          "help": "Retrieve the name of the current database."
+        },
+        {
+          "id": "database_var",
+          "label": "Enumerate Databases (-D)",
+          "type": "checkbox",
+          "flag": "-D",
+          "help": "Enumerate databases."
+        },
+        {
+          "id": "tables_var",
+          "label": "Enumerate Tables (-T)",
+          "type": "checkbox",
+          "flag": "-T",
+          "help": "Enumerate tables."
+        },
+        {
+          "id": "columns_var",
+          "label": "Enumerate Columns (-C)",
+          "type": "checkbox",
+          "flag": "-C",
+          "help": "Enumerate columns."
+        },
+        {
+          "id": "schemas_var",
+          "label": "Enumerate Schemas (--schemas)",
+          "type": "checkbox",
+          "flag": "--schemas",
+          "help": "Enumerate database management system schemas."
+        },
+        {
+          "id": "current_user_var",
+          "label": "Current User (--current-user)",
+          "type": "checkbox",
+          "flag": "--current-user",
+          "help": "Retrieve the name of the current user."
+        },
+        {
+          "id": "is_dba_var",
+          "label": "Is DBA (--is-dba)",
+          "type": "checkbox",
+          "flag": "--is-dba",
+          "help": "Check if the current user is a database administrator."
+        },
+        {
+          "id": "passwords_var",
+          "label": "Enumerate Passwords (--passwords)",
+          "type": "checkbox",
+          "flag": "--passwords",
+          "help": "Enumerate user passwords hashes."
+        }
+      ]
+    },
+    {
+      "id": "file-os",
+      "name": "File System & OS",
+      "inputs": [
+        {
+          "id": "file_read_entry",
+          "label": "File Read (--file-read):",
+          "type": "text",
+          "flag": "--file-read",
+          "placeholder": "e.g., /etc/passwd",
+          "help": "Read a file from the database server's file system."
+        },
+        {
+          "id": "file_write_entry",
+          "label": "File Write (--file-write):",
+          "type": "text",
+          "flag": "--file-write",
+          "placeholder": "e.g., /tmp/shell.php",
+          "help": "Write a local file to the database server's file system."
+        },
+        {
+          "id": "file_dest_entry",
+          "label": "File Destination (--file-dest):",
+          "type": "text",
+          "flag": "--file-dest",
+          "placeholder": "e.g., /var/www/shell.php",
+          "help": "Absolute path of the destination file on the database server."
+        },
+        {
+          "id": "os_shell_var",
+          "label": "OS Shell (--os-shell)",
+          "type": "checkbox",
+          "flag": "--os-shell",
+          "help": "Prompt for an interactive operating system shell."
+        },
+        {
+          "id": "os_pwn_var",
+          "label": "OS Pwn (--os-pwn)",
+          "type": "checkbox",
+          "flag": "--os-pwn",
+          "help": "Prompt for an OOB shell, Meterpreter, or VNC."
+        }
+      ]
+    },
+    {
+      "id": "bruteforce",
+      "name": "Brute-force",
+      "inputs": [
+        {
+          "id": "brute_force_var",
+          "label": "Common Tables (--common-tables)",
+          "type": "checkbox",
+          "flag": "--common-tables",
+          "help": "Check for existence of common tables."
+        },
+        {
+          "id": "brute_columns_var",
+          "label": "Common Columns (--common-columns)",
+          "type": "checkbox",
+          "flag": "--common-columns",
+          "help": "Check for existence of common columns."
+        },
+        {
+          "id": "wordlist_entry",
+          "label": "Wordlist (-w):",
+          "type": "text",
+          "flag": "-w",
+          "placeholder": "e.g., /path/to/wordlist.txt",
+          "help": "Path to a custom wordlist file for brute-force."
+        }
+      ]
+    },
+    {
+      "id": "advanced",
+      "name": "Advanced",
+      "inputs": [
+        {
+          "id": "batch_var",
+          "label": "Batch Mode (--batch)",
+          "type": "checkbox",
+          "flag": "--batch",
+          "help": "Never ask for user input, use default behavior."
+        },
+        {
+          "id": "all_data_var",
+          "label": "Dump All Data (--dump)",
+          "type": "checkbox",
+          "flag": "--dump",
+          "help": "Dump all data from the database."
+        },
+        {
+          "id": "dump_all_var",
+          "label": "Dump All (--dump-all)",
+          "type": "checkbox",
+          "flag": "--dump-all",
+          "help": "Dump all tables, columns, and data."
+        },
+        {
+          "id": "additional_args_entry",
+          "label": "Additional Arguments:",
+          "type": "textarea",
+          "flag": "",
+          "help": "Any other sqlmap arguments not covered by the GUI. Enter them exactly as you would on the command line (e.g., '--risk 3 --threads 5')."
+        }
+      ]
+    }
+  ]
+}

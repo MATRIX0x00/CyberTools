@@ -1,0 +1,26 @@
+{
+  "tool": "ffuf",
+  "install_methods": [
+    {
+      "platform": "Linux",
+      "label": "Install on Linux (Go)",
+      "command": "sudo apt update && sudo apt install go -y && go install github.com/ffuf/ffuf/v2@latest",
+      "icon": "download",
+      "class": "bg-red-600 hover:bg-red-700"
+    },
+    {
+      "platform": "Termux",
+      "label": "Install on Termux (Go)",
+      "command": "pkg update && pkg install go -y && go install github.com/ffuf/ffuf/v2@latest",
+      "icon": "download",
+      "class": "bg-orange-600 hover:bg-orange-700"
+    },
+    {
+      "platform": "Windows",
+      "label": "Download for Windows",
+      "command": "start https://github.com/ffuf/ffuf/releases",
+      "icon": "download",
+      "class": "bg-purple-600 hover:bg-purple-700"
+    }
+  ]
+}

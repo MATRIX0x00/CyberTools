@@ -1,0 +1,138 @@
+{
+  "name": "Subfinder",
+  "version": "2.6.0",
+  "executable": "subfinder",
+  "description": "Subfinder is a subdomain discovery tool that discovers valid subdomains for websites by using passive online sources.",
+  "tabs": [
+    {
+      "id": "target",
+      "name": "Target",
+      "inputs": [
+        {
+          "id": "domain_entry",
+          "label": "Target Domain (-d):",
+          "type": "text",
+          "flag": "-d",
+          "placeholder": "e.g., example.com",
+          "help": "Domain to find subdomains for."
+        },
+        {
+          "id": "domain_list_file",
+          "label": "Domain List (-dL):",
+          "type": "text",
+          "flag": "-dL",
+          "placeholder": "e.g., /path/to/domains.txt",
+          "help": "File containing list of domains to enumerate."
+        },
+        {
+          "id": "domain_list_upload",
+          "label": "Upload Domain List:",
+          "type": "file",
+          "flag": "-dL",
+          "help": "Upload a file containing domains."
+        }
+      ]
+    },
+    {
+      "id": "configuration",
+      "name": "Configuration",
+      "inputs": [
+        {
+          "id": "all_sources_var",
+          "label": "Use All Sources (-all)",
+          "type": "checkbox",
+          "flag": "-all",
+          "help": "Use all sources for enumeration (slow)."
+        },
+        {
+          "id": "recursive_var",
+          "label": "Recursive (-recursive)",
+          "type": "checkbox",
+          "flag": "-recursive",
+          "help": "Use only sources that can handle subdomains recursively."
+        },
+        {
+          "id": "sources_entry",
+          "label": "Specific Sources (-s):",
+          "type": "textarea",
+          "flag": "-s",
+          "placeholder": "e.g., alienvault,threatminer",
+          "help": "Comma separated list of specific sources to use."
+        },
+        {
+          "id": "exclude_sources_entry",
+          "label": "Exclude Sources (-es):",
+          "type": "text",
+          "flag": "-es",
+          "placeholder": "e.g., crtsh,waybackarchive",
+          "help": "Comma separated list of sources to exclude."
+        },
+        {
+          "id": "rate_limit_entry",
+          "label": "Rate Limit (-rl):",
+          "type": "number",
+          "flag": "-rl",
+          "placeholder": "e.g., 100",
+          "help": "Maximum number of HTTP requests to send per second."
+        },
+        {
+          "id": "threads_entry",
+          "label": "Threads (-t):",
+          "type": "number",
+          "flag": "-t",
+          "placeholder": "e.g., 10",
+          "help": "Number of concurrent goroutines for resolving."
+        },
+        {
+          "id": "timeout_entry",
+          "label": "Timeout (-timeout):",
+          "type": "number",
+          "flag": "-timeout",
+          "placeholder": "e.g., 30",
+          "help": "Seconds to wait before timing out."
+        }
+      ]
+    },
+    {
+      "id": "output",
+      "name": "Output",
+      "inputs": [
+        {
+          "id": "output_file_entry",
+          "label": "Output File (-o):",
+          "type": "text",
+          "flag": "-o",
+          "placeholder": "e.g., subfinder_out.txt",
+          "help": "File to write output to."
+        },
+        {
+          "id": "json_var",
+          "label": "JSON Output (-json)",
+          "type": "checkbox",
+          "flag": "-json",
+          "help": "Write output in JSONL format."
+        },
+        {
+          "id": "output_dir_entry",
+          "label": "Output Directory (-oD):",
+          "type": "text",
+          "flag": "-oD",
+          "placeholder": "e.g., /tmp/subfinder_results",
+          "help": "Directory to write output to (for multi-target)."
+        },
+        {
+          "id": "verbosity_radio",
+          "label": "Verbosity:",
+          "type": "radio",
+          "flag": "",
+          "options": [
+            { "value": "", "label": "None", "selected": true },
+            { "value": "-v", "label": "Verbose (-v)", "selected": false },
+            { "value": "-silent", "label": "Silent (-silent)", "selected": false }
+          ],
+          "help": "Select verbosity mode."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,3807 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Tool Web GUI with Terminal</title>
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons CDN for visual elements -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Font for consistent typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- xterm.js library and CSS for terminal emulation -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@4.17.0/css/xterm.css" />
+    <script src="https://cdn.jsdelivr.net/npm/xterm@4.17.0/lib/xterm.js"></script>
+    <!-- xterm.js addons for functionality like auto-fitting -->
+    <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.5.0/lib/xterm-addon-fit.js"></script>
+    
+    <!-- SocketIO library for real-time communication with the Flask backend -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a202c; /* Dark background */
+            color: #e2e8f0; /* Light text */
+        }
+        /* Active state for tab buttons */
+        .tab-button.active {
+            background-color: #3498DB; /* Peter River Blue */
+            color: black;
+            font-weight: bold;
+        }
+        /* Style for the new tabs */
+        .new-tab-button {
+            background-color: #7F8C8D; /* Grayish background for new tabs */
+            color: #ECF0F1; /* Light text for new tabs */
+        }
+        .new-tab-button.active {
+            background-color: #2ECC71; /* Emerald green for active new tab */
+            color: #000;
+        }
+        
+        /* Hide all tab content by default */
+        .tab-content {
+            display: none;
+        }
+        /* Show the active tab content */
+        .tab-content.active {
+            display: block;
+        }
+        /* Custom scrollbar for output area */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 12px;
+            height: 12px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #2C3E50; /* Dark Blue/Grey */
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #3498DB; /* Peter River Blue */
+            border-radius: 10px;
+            border: 3px solid #2C3E50;
+        }
+        .custom-scrollbar::-webkit-scrollbar-corner {
+            background: #2C3E50;
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8); /* Dark modal background */
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background-color: #1a202c; /* Modal background */
+            margin: auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #3498DB; /* Blue border for modal */
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #3498DB;
+            margin-bottom: 15px;
+        }
+        .modal-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #60a5fa; /* Blue modal title */
+        }
+        .modal-close {
+            color: #9ca3af;
+            font-size: 1.5rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .modal-body {
+            flex-grow: 1;
+            overflow-y: auto;
+            color: #d1d5db;
+        }
+        .modal-footer {
+            padding-top: 15px;
+            border-top: 1px solid #3498DB;
+            margin-top: 15px;
+            text-align: right;
+        }
+
+        /* Input field styling */
+        input[type="text"], input[type="number"], input[type="datetime-local"], select, textarea {
+            background-color: #4a5568;
+            color: white;
+            border-radius: 0.375rem;
+            border: 1px solid #6b7280;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            padding: 0.5rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        input[type="file"] {
+            border: 1px solid #6b7280;
+            background-color: #4a5568;
+            color: white;
+            border-radius: 0.375rem;
+            padding: 0.5rem;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        input[type="checkbox"] {
+            border: 1px solid #6b7280;
+            background-color: #4a5568;
+            color: #3b82f6;
+            border-radius: 0.25rem;
+            height: 1.25rem;
+            width: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        /* Button styling */
+        .btn-primary {
+            padding-left: 1rem;
+            padding-right: 1rem;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            background-color: #3b82f6;
+            color: white;
+            border-radius: 0.375rem;
+            transition: background-color 0.2s;
+        }
+        .btn-secondary {
+            padding-left: 1rem;
+            padding-right: 1rem;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            background-color: #4b5563;
+            color: #d1d5db;
+            border-radius: 0.375rem;
+            transition: background-color 0.2s;
+        }
+        .btn-success {
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+            background-color: #22c55e;
+            color: white;
+            border-radius: 0.5rem;
+            font-size: 1.125rem;
+            font-weight: 600;
+            transition: background-color 0.2s, transform 0.2s;
+        }
+        .btn-danger {
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+            background-color: #ef4444;
+            color: white;
+            border-radius: 0.5rem;
+            font-size: 1.125rem;
+            font-weight: 600;
+            transition: background-color 0.2s, transform 0.2s;
+        }
+        .btn-info {
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+            background-color: #8b5cf6;
+            color: white;
+            border-radius: 0.5rem;
+            font-size: 1.125rem;
+            font-weight: 600;
+            transition: background-color 0.2s, transform 0.2s;
+        }
+        
+        /* New Notification Styles */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #16a34a; /* Green-700 */
+            color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+        .notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            width: fit-content;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            margin-right: 8px;
+        }
+        
+        /* Sidebar styles */
+        .sidebar {
+            width: 250px;
+            min-width: 250px;
+            background-color: #1F2937;
+            padding: 1rem;
+            border-right: 1px solid #34495e;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .tool-list-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            background-color: #374151;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .tool-list-item:hover {
+            background-color: #4B5563;
+        }
+        .tool-list-item.active {
+            background-color: #3B82F6;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Terminal button styles */
+        .terminal-button {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            background-color: #374151;
+            color: #9ca3af;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .terminal-button:hover {
+            background-color: #4B5563;
+        }
+        .terminal-button.active {
+            background-color: #16a34a; /* Green for active terminal */
+            color: white;
+            font-weight: bold;
+        }
+        .terminal-button.active:hover {
+            background-color: #16a34a;
+        }
+        
+        /* Terminal container to hold all terminals */
+        .terminal-windows-container {
+            position: relative;
+            flex-grow: 1;
+            display: flex; /* Make it a flex container */
+            flex-direction: column;
+        }
+
+        /* Individual terminal wrapper to control visibility */
+        .terminal-wrapper {
+            width: 100%;
+            height: 100%;
+            display: none; /* Hide all wrappers by default */
+        }
+        
+        /* Show the active terminal wrapper */
+        .terminal-wrapper.active {
+            display: block; /* Show the active wrapper */
+        }
+        
+        /* The main terminal wrapper should also be active initially */
+        #main_terminal_wrapper.active {
+            display: block;
+        }
+
+        
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                min-width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #34495e;
+            }
+        }
+    </style>
+</head>
+<body class="p-4 min-h-screen flex flex-col items-center justify-center">
+    <div class="main-container bg-gray-800 p-6 rounded-lg shadow-xl w-full max-w-7xl flex flex-col md:flex-row">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h2 class="text-xl font-bold text-blue-400">Tools</h2>
+            <input type="text" id="tool_search_box" class="w-full p-2 rounded-md bg-gray-700 text-white border border-gray-600 mb-2" placeholder="Search tools..." onkeyup="filterTools()">
+            <div id="tool_list" class="flex flex-col gap-2 overflow-y-auto">
+                <!-- Tool buttons will be dynamically loaded here -->
+            </div>
+            
+            <hr class="border-gray-600 my-4">
+
+            <h2 class="text-xl font-bold text-blue-400">Terminals</h2>
+            <div class="flex flex-col space-y-2">
+                <button id="new_terminal_button" class="btn-success">
+                    <i data-lucide="plus" class="w-5 h-5 mr-2"></i> New
+                </button>
+                <input type="text" id="terminal_search_box" class="w-full p-2 rounded-md bg-gray-700 text-white border border-gray-600" placeholder="Search terminals..." onkeyup="filterTerminals()">
+            </div>
+            <div id="terminal_list" class="flex flex-col gap-2 overflow-y-auto">
+                <!-- Terminal buttons will be dynamically loaded here -->
+            </div>
+
+            <hr class="border-gray-600 my-4">
+
+            <!-- Commands Section -->
+            <h2 class="text-xl font-bold text-blue-400">Commands</h2>
+            <div class="flex flex-col space-y-2">
+                <button id="new_command_button" class="btn-primary flex items-center justify-center">
+                    <i data-lucide="plus" class="w-5 h-5 mr-2"></i> New
+                </button>
+                <input type="text" id="command_search_box" class="w-full p-2 rounded-md bg-gray-700 text-white border border-gray-600" placeholder="Search commands...">
+            </div>
+            <div id="commands_list" class="flex flex-col gap-2 overflow-y-auto max-h-40">
+                <!-- Command files will be dynamically loaded here -->
+            </div>
+
+            <hr class="border-gray-600 my-4">
+
+            <!-- Notes Section -->
+            <h2 class="text-xl font-bold text-blue-400">Notes</h2>
+            <div class="flex flex-col space-y-2">
+                <button id="new_note_button" class="btn-primary flex items-center justify-center">
+                    <i data-lucide="plus" class="w-5 h-5 mr-2"></i> New
+                </button>
+                <input type="text" id="note_search_box" class="w-full p-2 rounded-md bg-gray-700 text-white border border-gray-600 mb-2" placeholder="Search notes...">
+            </div>
+            <div id="notes_list" class="flex flex-col gap-2 overflow-y-auto max-h-40">
+                <!-- Notes files will be dynamically loaded here -->
+            </div>
+
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 flex flex-col p-4">
+            <!-- Header section with tool title and installation buttons -->
+            <div class="flex items-center justify-between mb-6">
+                <h1 id="tool_title" class="text-3xl font-bold text-blue-400"></h1>
+                <div id="installation_buttons_container" class="flex space-x-2">
+                    <!-- Installation buttons will be dynamically loaded here -->
+                </div>
+            </div>
+
+            <!-- Tabs Navigation -->
+            <div id="tabs_container" class="flex flex-wrap justify-start bg-gray-700 rounded-t-lg p-2 mb-4">
+                <!-- Default Tabs (always visible) -->
+                <button class="tab-button px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 new-tab-button active" data-tab="examples">Examples</button>
+                <button class="tab-button px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 new-tab-button" data-tab="control-output">Control Output</button>
+                <button class="tab-button px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 new-tab-button" data-tab="upload">Upload</button>
+                <button class="tab-button px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 new-tab-button" data-tab="create-file">Create File</button>
+                <button class="tab-button px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 new-tab-button" data-tab="download-file">Download File</button>
+                <button class="tab-button px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 new-tab-button" data-tab="get-files">Get Files</button>
+                <button class="tab-button px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 new-tab-button" data-tab="report">Report</button>
+                <button class="tab-button px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 new-tab-button" data-tab="tasks">Tasks</button>
+                <button class="tab-button px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 new-tab-button" data-tab="paths">Paths</button> <!-- New Paths Tab -->
+                <!-- Tool-specific tabs will be dynamically loaded here -->
+            </div>
+
+            <!-- Tab Content -->
+            <div id="tab-content-container" class="bg-gray-700 p-4 rounded-b-lg mb-4 max-h-[500px] overflow-y-auto custom-scrollbar">
+                <!-- Tool-specific tab content will be dynamically loaded here -->
+
+                <!-- Default Tabs (always visible) -->
+                <!-- Examples Tab -->
+                <div id="examples" class="tab-content active bg-gray-800 rounded-lg p-4">
+                    <h2 class="text-xl font-semibold text-indigo-300 mb-4">Examples</h2>
+                    <div class="mb-4 flex items-center">
+                        <label for="example_search_entry" class="w-32 text-right pr-4">Search Examples:</label>
+                        <input type="text" id="example_search_entry" class="flex-1 p-2 rounded bg-gray-600 text-white border border-gray-500" onkeyup="filterExamples()">
+                        <button class="ml-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded" onclick="clearExampleSearch()">Clear Search</button>
+                    </div>
+                    <div id="examples_list" class="grid grid-cols-1 gap-4">
+                        <!-- Examples will be loaded here by JavaScript -->
+                        <p class="text-gray-400">Select a tool from the sidebar to view examples.</p>
+                    </div>
+                </div>
+
+                <!-- Control Output Tab -->
+                <div id="control-output" class="tab-content bg-gray-800 rounded-lg p-4">
+                    <h2 class="text-xl font-semibold text-indigo-300 mb-4">Control Output Files</h2>
+                    <div class="grid grid-cols-1 gap-4">
+                        <div id="output-files-list" class="flex flex-col gap-2">
+                            <!-- Checkboxes for output files will be loaded here -->
+                        </div>
+                        <div class="flex items-center">
+                            <label for="destination_path_entry" class="w-48 text-right pr-4">Destination Path:</label>
+                            <input type="text" id="destination_path_entry" name="destination_path_entry" class="flex-1 p-2 rounded bg-gray-600 text-white border border-gray-500" placeholder="e.g., /home/user/documents or C:\Users\user\Desktop">
+                        </div>
+                    </div>
+                    <div class="flex justify-center mt-6 space-x-4">
+                        <button class="btn-primary" onclick="moveOutputFiles()">
+                            <i data-lucide="folder-x" class="w-5 h-5 mr-2"></i> Move Selected
+                        </button>
+                        <button class="btn-primary" onclick="copyOutputFiles()">
+                            <i data-lucide="copy" class="w-5 h-5 mr-2"></i> Copy Selected
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Upload Tab -->
+                <div id="upload" class="tab-content bg-gray-800 rounded-lg p-4">
+                    <h2 class="text-xl font-semibold text-indigo-300 mb-4">Upload File</h2>
+                    <div class="flex items-center mb-4">
+                        <label for="upload_path_entry" class="w-32 text-right pr-4">Path:</label>
+                        <input type="text" id="upload_path_entry" name="upload_path_entry" class="flex-1 p-2 rounded bg-gray-600 text-white border border-gray-500" placeholder="Optional: /path/to/save or C:\path\to\save">
+                    </div>
+                    <div id="drop-area" class="border-4 border-dashed border-gray-600 rounded-lg p-8 text-center cursor-pointer transition-all duration-300 hover:border-blue-500 hover:bg-gray-700">
+                        <p class="text-gray-400">Drag and drop a file here, or click to select one.</p>
+                        <input type="file" id="file-input" class="hidden" multiple>
+                    </div>
+                    <div id="upload-status" class="mt-4 text-center text-sm font-medium text-gray-300"></div>
+                </div>
+                
+                <!-- Create File Tab -->
+                <div id="create-file" class="tab-content bg-gray-800 rounded-lg p-4">
+                    <h2 class="text-xl font-semibold text-indigo-300 mb-4">Create a New File</h2>
+                    <div class="flex flex-col space-y-4">
+                        <div class="flex items-center">
+                            <label for="file_name_entry" class="w-32 text-right pr-4">File Name:</label>
+                            <input type="text" id="file_name_entry" name="file_name_entry" class="flex-1 p-2 rounded bg-gray-600 text-white border border-gray-500" placeholder="e.g., my_notes.txt">
+                        </div>
+                        <div class="flex items-center">
+                            <label for="create_path_select" class="w-32 text-right pr-4">Save Folder:</label>
+                            <select id="create_path_select" class="flex-1 p-2 rounded bg-gray-600 text-white border border-gray-500" onchange="toggleCustomPath()">
+                                <option value="commands_folder">Commands Folder</option>
+                                <option value="notes_folder">Notes Folder</option>
+                                <option value="output">Output Folder</option>
+                                <option value="custom">Custom Path</option>
+                            </select>
+                        </div>
+                        <div id="custom_path_container" class="flex items-center hidden">
+                            <label for="create_path_entry" class="w-32 text-right pr-4">Custom Path:</label>
+                            <input type="text" id="create_path_entry" name="create_path_entry" class="flex-1 p-2 rounded bg-gray-600 text-white border border-gray-500" placeholder="e.g., /path/to/save or C:\path\to\save">
+                        </div>
+                        <div>
+                            <label for="file_content_entry" class="block text-sm font-medium text-gray-400 mb-1">File Content:</label>
+                            <textarea id="file_content_entry" name="file_content_entry" rows="10" class="w-full p-2 rounded bg-gray-600 text-white border border-gray-500 resize-none custom-scrollbar" placeholder="Enter file content here..."></textarea>
+                        </div>
+                        <div class="flex justify-end">
+                            <button id="save_new_file_button" class="btn-success">
+                                <i data-lucide="save" class="w-5 h-5 mr-2"></i> Save File
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Download File Tab -->
+                <div id="download-file" class="tab-content bg-gray-800 rounded-lg p-4">
+                    <h2 class="text-xl font-semibold text-indigo-300 mb-4">Download File from URL</h2>
+                    <div class="flex flex-col space-y-4">
+                        <div class="flex items-center">
+                            <label for="download_url_entry" class="w-32 text-right pr-4">URL:</label>
+                            <input type="text" id="download_url_entry" name="download_url_entry" class="flex-1 p-2 rounded bg-gray-600 text-white border border-gray-500" placeholder="e.g., https://example.com/file.txt">
+                        </div>
+                        <div class="flex items-center">
+                            <label for="download_name_entry" class="w-32 text-right pr-4">File Name:</label>
+                            <input type="text" id="download_name_entry" name="download_name_entry" class="flex-1 p-2 rounded bg-gray-600 text-white border border-gray-500" placeholder="Optional: my_download.txt">
+                        </div>
+                        <div>
+                            <span class="block text-sm font-medium text-gray-400 mb-1">Download Method:</span>
+                            <div class="flex space-x-4">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="download_curl" name="download_method" class="form-checkbox h-5 w-5 text-blue-600 rounded bg-gray-600 border-gray-500" checked>
+                                    <span class="ml-2 text-gray-300">Download with `curl`</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="download_wget" name="download_method" class="form-checkbox h-5 w-5 text-blue-600 rounded bg-gray-600 border-gray-500">
+                                    <span class="ml-2 text-gray-300">Download with `wget`</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="flex justify-end">
+                            <button id="download_file_button" class="btn-success">
+                                <i data-lucide="download-cloud" class="w-5 h-5 mr-2"></i> Download
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Get Files Tab -->
+                <div id="get-files" class="tab-content bg-gray-800 rounded-lg p-4">
+                    <h2 class="text-xl font-semibold text-indigo-300 mb-4">Manage Files from a Path</h2>
+                    <div class="flex flex-col space-y-4">
+                        <div class="flex items-center">
+                            <label for="get_files_path_entry" class="w-32 text-right pr-4">Path:</label>
+                            <input type="text" id="get_files_path_entry" name="get_files_path_entry" class="flex-1 p-2 rounded bg-gray-600 text-white border border-gray-500" placeholder="e.g., /home/user/documents">
+                            <button id="get_files_button" class="ml-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Get Files</button>
+                        </div>
+                        <div id="file-list-container" class="max-h-64 overflow-y-auto custom-scrollbar">
+                            <div id="file-list" class="flex flex-col gap-2 p-2">
+                                <!-- Files will be loaded here dynamically -->
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <label for="destination_path_get_files" class="w-32 text-right pr-4">Destination Path:</label>
+                            <input type="text" id="destination_path_get_files" name="destination_path_get_files" class="flex-1 p-2 rounded bg-gray-600 text-white border border-gray-500" placeholder="Optional: /path/to/save">
+                        </div>
+                        <div class="flex justify-end space-x-4">
+                            <button id="copy_files_button" class="btn-primary">
+                                <i data-lucide="copy" class="w-5 h-5 mr-2"></i> Copy Files
+                            </button>
+                            <button id="move_files_button" class="btn-primary">
+                                <i data-lucide="folder-x" class="w-5 h-5 mr-2"></i> Move Files
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Report Tab -->
+                <div id="report" class="tab-content bg-gray-800 rounded-lg p-4">
+                    <h2 class="text-xl font-semibold text-indigo-300 mb-4">Report Files</h2>
+                    <div id="report-files-list" class="flex flex-col gap-2">
+                        <!-- .txt files will be loaded here -->
+                        <p class="text-gray-400">Loading files...</p>
+                    </div>
+                </div>
+
+                <!-- Tasks Tab -->
+                <div id="tasks" class="tab-content bg-gray-800 rounded-lg p-4">
+                    <h2 class="text-xl font-semibold text-indigo-300 mb-4">Scheduled Tasks</h2>
+                    <div class="mb-6 p-4 border border-gray-600 rounded-lg">
+                        <h3 class="text-lg font-medium text-gray-300 mb-2">Schedule a New Command</h3>
+                        <div class="flex flex-col space-y-4">
+                            <div class="flex items-center">
+                                <label for="task_name_entry" class="w-32 text-right pr-4">Task Name:</label>
+                                <input type="text" id="task_name_entry" class="flex-1 p-2 rounded-md bg-gray-600 text-white" placeholder="e.g., Daily Scan">
+                            </div>
+                            <div class="flex items-center">
+                                <label for="task_command_entry" class="w-32 text-right pr-4">Command:</label>
+                                <input type="text" id="task_command_entry" class="flex-1 p-2 rounded-md bg-gray-600 text-white" placeholder="e.g., nmap -v -A scanme.nmap.org">
+                            </div>
+                            <div class="flex items-center">
+                                <label for="task_time_entry" class="w-32 text-right pr-4">Execution Time:</label>
+                                <input type="datetime-local" id="task_time_entry" class="flex-1 p-2 rounded-md bg-gray-600 text-white">
+                            </div>
+                            <div class="flex items-center">
+                                <label for="task_status_entry" class="w-32 text-right pr-4">Status:</label>
+                                <select id="task_status_entry" class="flex-1 p-2 rounded-md bg-gray-600 text-white">
+                                    <option value="once">Once</option>
+                                    <option value="daily">Daily</option>
+                                    <option value="weekly">Weekly</option>
+                                    <option value="monthly">Monthly</option>
+                                    <option value="yearly">Yearly</option>
+                                </select>
+                            </div>
+                            <div class="flex items-center">
+                                <label for="task_terminal_session_entry" class="w-32 text-right pr-4">Terminal Session:</label>
+                                <select id="task_terminal_session_entry" class="flex-1 p-2 rounded-md bg-gray-600 text-white">
+                                    <!-- Terminal sessions will be dynamically populated here -->
+                                </select>
+                            </div>
+                            <div class="flex justify-end mt-4">
+                                <button id="schedule_task_button" class="btn-success flex-shrink-0">
+                                    <i data-lucide="clock" class="w-5 h-5 mr-2"></i> Schedule Task
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex justify-center mb-6">
+                        <button id="add_last_session_button" class="btn-primary">
+                            <i data-lucide="terminal" class="w-5 h-5 mr-2"></i> Use Last Terminal Session
+                        </button>
+                    </div>
+                    <div class="mt-8">
+                        <h3 class="text-lg font-medium text-gray-300 mb-2">Current Scheduled Tasks</h3>
+                        <div id="scheduled_tasks_list" class="flex flex-col gap-2">
+                            <!-- Scheduled tasks will be dynamically inserted here -->
+                            <p class="text-gray-400">Loading tasks...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Paths Tab (UPDATED FOR MULTI-PATH) -->
+                <div id="paths" class="tab-content bg-gray-800 rounded-lg p-4">
+                    <h2 class="text-xl font-semibold text-indigo-300 mb-4">Configure File Paths</h2>
+                    
+                    <!-- Commands Folder Paths -->
+                    <div class="mb-6 border border-gray-600 p-4 rounded-lg">
+                        <div class="flex justify-between items-center mb-4 border-b border-gray-700 pb-2">
+                            <h3 class="text-lg font-medium text-gray-300">Commands Folders</h3>
+                            <button class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded" onclick="addPathEntry('commands_folder')">
+                                <i data-lucide="plus" class="w-4 h-4 mr-1"></i> Add Path
+                            </button>
+                        </div>
+                        <div id="commands_folder_paths" class="flex flex-col space-y-2">
+                            <!-- Dynamic path inputs will be here -->
+                        </div>
+                        <div class="flex justify-end pt-4">
+                            <button class="btn-success" onclick="saveAllPathConfig('commands_folder')">
+                                <i data-lucide="save" class="w-5 h-5 mr-2"></i> Save Commands Paths
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Notes Folder Paths -->
+                    <div class="border border-gray-600 p-4 rounded-lg">
+                        <div class="flex justify-between items-center mb-4 border-b border-gray-700 pb-2">
+                            <h3 class="text-lg font-medium text-gray-300">Notes Folders</h3>
+                            <button class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded" onclick="addPathEntry('notes_folder')">
+                                <i data-lucide="plus" class="w-4 h-4 mr-1"></i> Add Path
+                            </button>
+                        </div>
+                        <div id="notes_folder_paths" class="flex flex-col space-y-2">
+                            <!-- Dynamic path inputs will be here -->
+                        </div>
+                        <div class="flex justify-end pt-4">
+                            <button class="btn-success" onclick="saveAllPathConfig('notes_folder')">
+                                <i data-lucide="save" class="w-5 h-5 mr-2"></i> Save Notes Paths
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Generated Command -->
+            <div class="bg-gray-700 p-4 rounded-lg shadow-md mb-4">
+                <h2 class="text-xl font-semibold text-blue-300 mb-2">Generated Command</h2>
+                <textarea id="command_text" class="w-full h-24 p-2 rounded bg-gray-900 text-blue-400 font-mono text-sm resize-none custom-scrollbar" oninput="onCommandChange()"></textarea>
+                <div class="flex justify-end mt-2 space-x-2">
+                    <button id="run_command_button" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-colors duration-200" onclick="runTool()">Run Command</button>
+                    <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-colors duration-200" onclick="copyCommand()">Copy Command</button>
+                    <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-colors duration-200" onclick="generateCommand()">Generate Command</button>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex justify-center space-x-4 mb-4">
+                <button id="run_tool_button" class="btn-success">
+                    <i data-lucide="play" class="w-6 h-6 mr-2"></i> Run
+                </button>
+                <button class="btn-danger" onclick="clearTerminal()">
+                    <i data-lucide="trash-2" class="w-6 h-6 mr-2"></i> Clear Terminal
+                </button>
+                <button class="btn-info" onclick="saveTerminalOutput()">
+                    <i data-lucide="save" class="w-6 h-6 mr-2"></i> Save Output
+                </button>
+            </div>
+
+            <!-- Interactive Terminal -->
+            <div id="terminal-windows-container" class="bg-gray-700 p-4 rounded-lg shadow-md flex-grow flex flex-col relative">
+                <h2 id="terminal_title" class="text-xl font-semibold text-blue-300 mb-2">Terminal</h2>
+                <div id="main_terminal_wrapper" class="terminal-wrapper active">
+                    <div id="main_terminal" class="w-full h-96 p-2 rounded bg-gray-900 text-green-400 font-mono text-sm overflow-hidden"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <div class="text-gray-500 text-sm mt-4 text-center">
+        Created by khedr0x00
+    </div>
+
+    <!-- Global Message/Alert Modal -->
+    <div id="messageModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="messageModalTitle">Alert</h2>
+                <span class="modal-close" onclick="closeMessageModal()">&times;</span>
+            </div>
+            <div class="modal-body" id="messageModalBody"></div>
+            <div class="modal-footer">
+                <button onclick="closeMessageModal()" class="btn-primary">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal for Linux/Termux Installation -->
+    <div id="installConfirmModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="installConfirmModalTitle">Confirm Installation</h2>
+                <span class="modal-close" onclick="closeInstallConfirmModal()">&times;</span>
+            </div>
+            <div class="modal-body" id="installConfirmModalBody"></div>
+            <div class="modal-footer flex justify-end space-x-4">
+                <button onclick="closeInstallConfirmModal()" class="btn-secondary">Cancel</button>
+                <button id="confirmInstallButton" class="btn-success">Install Now</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Example Output Modal -->
+    <div id="exampleOutputModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="exampleOutputModalTitle">Example Output</h2>
+                <span class="modal-close" onclick="closeExampleOutputModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <pre id="exampleOutputModalText" class="w-full h-auto p-2 rounded bg-gray-900 text-gray-200 font-mono text-sm overflow-auto custom-scrollbar"></pre>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeExampleOutputModal()" class="btn-primary">Close</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- The new pop-up modal for copy success -->
+    <div id="copy-success-modal" class="fixed inset-0 bg-transparent flex items-center justify-center hidden z-[110] pointer-events-none">
+      <div class="bg-green-500 text-white font-bold py-2 px-4 rounded-lg shadow-xl animate-fade-in-out">
+        Command copied!
+      </div>
+    </div>
+
+    <!-- New Toast Container -->
+    <div id="toast-container" class="fixed top-5 right-5 space-y-2 z-50"></div>
+    
+    <!-- Report File Content Modal -->
+    <div id="reportFileModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="reportFileModalTitle">File Content</h2>
+                <span class="modal-close" onclick="closeReportFileModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <textarea id="reportFileContent" class="w-full h-96 p-2 rounded bg-gray-900 text-gray-200 font-mono text-sm resize-none custom-scrollbar"></textarea>
+            </div>
+            <div class="modal-footer flex justify-end space-x-4">
+                <button id="saveFileButton" class="btn-success" onclick="saveFileContent()">
+                    <i data-lucide="save" class="w-4 h-4 mr-2"></i> Save
+                </button>
+                <button class="btn-secondary" onclick="closeReportFileModal()">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Task Modal -->
+    <div id="editTaskModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="editTaskModalTitle">Edit Task</h2>
+                <span class="modal-close" onclick="closeEditTaskModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="flex flex-col space-y-4">
+                    <input type="hidden" id="edit_task_id">
+                    <div class="flex items-center">
+                        <label for="edit_task_name_entry" class="w-32 text-right pr-4">Task Name:</label>
+                        <input type="text" id="edit_task_name_entry" class="flex-1 p-2 rounded-md bg-gray-600 text-white" placeholder="e.g., Daily Scan">
+                    </div>
+                    <div class="flex items-center">
+                        <label for="edit_task_command_entry" class="w-32 text-right pr-4">Command:</label>
+                        <input type="text" id="edit_task_command_entry" class="flex-1 p-2 rounded-md bg-gray-600 text-white" placeholder="e.g., nmap -v -A scanme.nmap.org">
+                    </div>
+                    <div class="flex items-center">
+                        <label for="edit_task_time_entry" class="w-32 text-right pr-4">Execution Time:</label>
+                        <input type="datetime-local" id="edit_task_time_entry" class="flex-1 p-2 rounded-md bg-gray-600 text-white">
+                    </div>
+                    <div class="flex items-center">
+                        <label for="edit_task_status_entry" class="w-32 text-right pr-4">Status:</label>
+                        <select id="edit_task_status_entry" class="flex-1 p-2 rounded-md bg-gray-600 text-white">
+                            <option value="once">Once</option>
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                            <option value="yearly">Yearly</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center">
+                        <label for="edit_task_terminal_session_entry" class="w-32 text-right pr-4">Terminal Session:</label>
+                        <select id="edit_task_terminal_session_entry" class="flex-1 p-2 rounded-md bg-gray-600 text-white">
+                            <!-- Terminal sessions will be dynamically populated here -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer flex justify-end space-x-4">
+                <button onclick="closeEditTaskModal()" class="btn-secondary">Cancel</button>
+                <button id="saveEditTaskButton" class="btn-success" onclick="saveEditedTask()">
+                    <i data-lucide="save" class="w-4 h-4 mr-2"></i> Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create/Edit Command Modal -->
+    <div id="commandFileModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="commandFileModalTitle">Create Command File</h2>
+                <span class="modal-close" onclick="closeCommandFileModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="flex flex-col space-y-4">
+                    <input type="hidden" id="command_file_id">
+                    <div class="flex items-center">
+                        <label for="command_file_name_entry" class="w-32 text-right pr-4">File Name:</label>
+                        <input type="text" id="command_file_name_entry" name="command_file_name_entry" class="flex-1 p-2 rounded bg-gray-600 text-white border border-gray-500" placeholder="e.g., my_command.txt">
+                    </div>
+                    <div class="flex items-center">
+                        <label for="command_save_path_select" class="w-32 text-right pr-4">Save Folder:</label>
+                        <div id="command_save_path_select_container" class="flex-1">
+                            <!-- Dynamic save path select will be here -->
+                        </div>
+                    </div>
+                    <div>
+                        <label for="command_file_content_entry" class="block text-sm font-medium text-gray-400 mb-1">File Content (Command):</label>
+                        <textarea id="command_file_content_entry" name="command_file_content_entry" rows="10" class="w-full p-2 rounded bg-gray-600 text-white border border-gray-500 resize-none custom-scrollbar" placeholder="Enter command content here..."></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer flex justify-end space-x-4">
+                <button onclick="closeCommandFileModal()" class="btn-secondary">Cancel</button>
+                <button id="saveCommandFileButton" class="btn-success" onclick="saveCommandFile()">
+                    <i data-lucide="save" class="w-4 h-4 mr-2"></i> Save
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create/Edit Note Modal -->
+    <div id="noteFileModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="noteFileModalTitle">Create Note File</h2>
+                <span class="modal-close" onclick="closeNoteFileModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="flex flex-col space-y-4">
+                    <input type="hidden" id="note_file_id">
+                    <div class="flex items-center">
+                        <label for="note_file_name_entry" class="w-32 text-right pr-4">File Name:</label>
+                        <input type="text" id="note_file_name_entry" name="note_file_name_entry" class="flex-1 p-2 rounded bg-gray-600 text-white border border-gray-500" placeholder="e.g., my_note.txt">
+                    </div>
+                     <div class="flex items-center">
+                        <label for="note_save_path_select" class="w-32 text-right pr-4">Save Folder:</label>
+                        <div id="note_save_path_select_container" class="flex-1">
+                            <!-- Dynamic save path select will be here -->
+                        </div>
+                    </div>
+                    <div>
+                        <label for="note_file_content_entry" class="block text-sm font-medium text-gray-400 mb-1">File Content (Note):</label>
+                        <textarea id="note_file_content_entry" name="note_file_content_entry" rows="10" class="w-full p-2 rounded bg-gray-600 text-white border border-gray-500 resize-none custom-scrollbar" placeholder="Enter note content here..."></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer flex justify-end space-x-4">
+                <button onclick="closeNoteFileModal()" class="btn-secondary">Cancel</button>
+                <button id="saveNoteFileButton" class="btn-success" onclick="saveNoteFileContent()">
+                    <i data-lucide="save" class="w-4 h-4 mr-2"></i> Save
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- New Path Browser Modal -->
+    <div id="pathBrowserModal" class="modal">
+        <div class="modal-content max-w-lg">
+            <div class="modal-header">
+                <h2 id="pathBrowserModalTitle">Browse Path</h2>
+                <span class="modal-close" onclick="closePathBrowserModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <!-- path_browser_target_id will now store the unique ID of the input field to update -->
+                <input type="hidden" id="path_browser_target_id">
+                <div class="flex items-center mb-4">
+                    <label for="current_path_display" class="w-24 text-right pr-4 text-gray-400">Current Path:</label>
+                    <input type="text" id="current_path_display" class="flex-1 p-2 rounded bg-gray-700 text-white border border-gray-600" readonly>
+                </div>
+                <div class="max-h-64 overflow-y-auto border border-gray-600 rounded-lg p-2 custom-scrollbar">
+                    <div id="path_browser_list" class="flex flex-col gap-1">
+                        <!-- Path contents will be loaded here -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer flex justify-between items-center">
+                <button id="selectPathButton" class="btn-primary" onclick="selectPathFromBrowser()">
+                    <i data-lucide="folder-check" class="w-4 h-4 mr-2"></i> Select Folder
+                </button>
+                <button onclick="closePathBrowserModal()" class="btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // Initialize Lucide icons for the UI
+        lucide.createIcons();
+
+        // Global state variables
+        let currentTool = 'nmap';
+        let allTools = {};
+        let allExamples = {};
+        let allInstallations = {};
+        let socket;
+        let lastSelectedTool = 'nmap';
+        
+        // Map to store a reference to each terminal instance
+        let terminals = {};
+        let activeTerminalId = 'main_terminal';
+        let terminalCounter = 0;
+        let terminalNames = {};
+        let currentCommandFile = null;
+        let currentNoteFile = null;
+        // pathConfig now stores arrays of paths
+        let pathConfig = {
+            commands_folder: ['commands'],
+            notes_folder: ['notes']
+        }; 
+
+        /**
+         * @brief Creates a new terminal instance and adds it to the UI.
+         * @returns {string} The ID of the newly created terminal.
+         */
+        function createNewTerminal() {
+            terminalCounter++;
+            const newTerminalId = `terminal_${terminalCounter}`;
+            const newTerminalName = `Terminal ${terminalCounter}`;
+
+            const terminalWindowsContainer = document.getElementById('terminal-windows-container');
+            const newTerminalWrapper = document.createElement('div');
+            newTerminalWrapper.id = `${newTerminalId}_wrapper`;
+            newTerminalWrapper.className = 'terminal-wrapper'; 
+            
+            const newTerminalDiv = document.createElement('div');
+            newTerminalDiv.id = newTerminalId;
+            newTerminalDiv.className = 'w-full h-96 p-2 rounded bg-gray-900 text-green-400 font-mono text-sm overflow-hidden';
+            
+            newTerminalWrapper.appendChild(newTerminalDiv);
+            terminalWindowsContainer.appendChild(newTerminalWrapper);
+
+
+            const newTerminalInstance = new Terminal({
+                cursorBlink: true,
+                convertEol: true,
+                theme: {
+                    background: '#1f2937', 
+                    foreground: '#48bb78'
+                }
+            });
+            const newFitAddon = new FitAddon.FitAddon();
+            newTerminalInstance.loadAddon(newFitAddon);
+
+            newTerminalInstance.open(newTerminalDiv);
+
+            newTerminalInstance.onData(data => {
+                socket.emit('terminal_input', { 'command': data, 'terminalId': newTerminalId });
+            });
+
+            terminals[newTerminalId] = {
+                instance: newTerminalInstance,
+                fitAddon: newFitAddon,
+                name: newTerminalName
+            };
+            terminalNames[newTerminalId] = newTerminalName;
+            
+            socket.emit('new_terminal_session', { terminalId: newTerminalId });
+            renderTerminalButtons();
+            switchTerminal(newTerminalId);
+            populateTerminalSessions();
+
+            return newTerminalId;
+        }
+
+        /**
+         * @brief Switches the currently active terminal.
+         * @param {string} terminalId The ID of the terminal to activate.
+         */
+        function switchTerminal(terminalId) {
+            if (activeTerminalId === terminalId) return;
+
+            // Hide the old active terminal window
+            const oldTerminalWrapper = document.getElementById(`${activeTerminalId}_wrapper`);
+            if (oldTerminalWrapper) {
+                oldTerminalWrapper.classList.remove('active');
+            }
+
+            // Remove active class from old button
+            const oldButton = document.querySelector(`.terminal-button[data-terminal-id="${activeTerminalId}"]`);
+            if (oldButton) {
+                oldButton.classList.remove('active');
+            }
+            
+            activeTerminalId = terminalId;
+
+            // Show the new active terminal window
+            const newTerminalWrapper = document.getElementById(`${activeTerminalId}_wrapper`);
+            if (newTerminalWrapper) {
+                newTerminalWrapper.classList.add('active');
+                // The key fix: call fit() after the element is displayed
+                setTimeout(() => {
+                    terminals[activeTerminalId].fitAddon.fit();
+                }, 10);
+            }
+
+            // Add active class to new button
+            const newButton = document.querySelector(`.terminal-button[data-terminal-id="${activeTerminalId}"]`);
+            if (newButton) {
+                newButton.classList.add('active');
+            }
+
+            // Update terminal title
+            document.getElementById('terminal_title').innerText = terminalNames[activeTerminalId];
+
+            terminals[activeTerminalId].instance.focus();
+        }
+
+        /**
+         * @brief Renders the terminal buttons in the sidebar.
+         */
+        function renderTerminalButtons() {
+            const terminalList = document.getElementById('terminal_list');
+            terminalList.innerHTML = '';
+            
+            Object.keys(terminals).forEach(id => {
+                const terminalButton = document.createElement('div');
+                terminalButton.className = 'terminal-button';
+                terminalButton.setAttribute('data-terminal-id', id);
+                
+                const nameContainer = document.createElement('div');
+                nameContainer.className = 'flex items-center justify-between flex-grow';
+                
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'flex-grow text-left';
+                nameSpan.innerText = escapeHtml(terminalNames[id]);
+                
+                const actionButtons = document.createElement('div');
+                actionButtons.className = 'flex items-center space-x-2';
+
+                const editIcon = document.createElement('div');
+                editIcon.className = 'p-1 rounded-full hover:bg-gray-600 transition-colors duration-200 cursor-pointer flex-shrink-0';
+                editIcon.innerHTML = '<i data-lucide="pen-tool" class="w-4 h-4 text-gray-400"></i>';
+                
+                const deleteIcon = document.createElement('div');
+                deleteIcon.className = 'p-1 rounded-full hover:bg-gray-600 transition-colors duration-200 cursor-pointer flex-shrink-0';
+                deleteIcon.innerHTML = '<i data-lucide="trash-2" class="w-4 h-4 text-red-400"></i>';
+                
+                nameContainer.appendChild(nameSpan);
+                actionButtons.appendChild(editIcon);
+                actionButtons.appendChild(deleteIcon);
+                terminalButton.appendChild(nameContainer);
+                terminalButton.appendChild(actionButtons);
+
+                if (id === activeTerminalId) {
+                    terminalButton.classList.add('active');
+                }
+                
+                terminalButton.addEventListener('click', () => {
+                    switchTerminal(id);
+                });
+                
+                editIcon.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    const currentName = terminalNames[id];
+                    const inputField = document.createElement('input');
+                    inputField.type = 'text';
+                    inputField.value = currentName;
+                    inputField.className = 'w-full bg-gray-600 text-white px-2 py-1 rounded';
+                    
+                    nameContainer.innerHTML = '';
+                    nameContainer.appendChild(inputField);
+                    inputField.focus();
+
+                    inputField.addEventListener('keyup', (e) => {
+                        if (e.key === 'Enter') {
+                            const newName = inputField.value.trim();
+                            if (newName !== '') {
+                                terminalNames[id] = newName;
+                                renderTerminalButtons();
+                                populateTerminalSessions();
+                                if (id === activeTerminalId) {
+                                    document.getElementById('terminal_title').innerText = newName;
+                                }
+                            } else {
+                                renderTerminalButtons(); // Re-render to restore old name
+                            }
+                        } else if (e.key === 'Escape') {
+                            renderTerminalButtons(); // Re-render to restore old name
+                        }
+                    });
+                });
+
+                deleteIcon.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    deleteTerminal(id);
+                });
+                
+                terminalList.appendChild(terminalButton);
+            });
+            // Re-render Lucide icons after adding new buttons
+            lucide.createIcons();
+        }
+
+        /**
+         * @brief Deletes a terminal session and its corresponding UI elements.
+         * @param {string} terminalId The ID of the terminal to delete.
+         */
+        function deleteTerminal(terminalId) {
+            if (Object.keys(terminals).length <= 1) {
+                showMessageModal('Error', 'Cannot delete the last terminal.');
+                return;
+            }
+            if (confirm(`Are you sure you want to delete terminal '${terminalNames[terminalId]}'?`)) {
+                 const terminalWrapper = document.getElementById(`${terminalId}_wrapper`);
+                 if (terminalWrapper) {
+                     terminalWrapper.remove();
+                 }
+
+                 const terminalButton = document.querySelector(`.terminal-button[data-terminal-id="${terminalId}"]`);
+                 if (terminalButton) {
+                     terminalButton.remove();
+                 }
+
+                 delete terminals[terminalId];
+                 delete terminalNames[terminalId];
+
+                 // Find the next available terminal to activate
+                 const remainingTerminals = Object.keys(terminals);
+                 if (activeTerminalId === terminalId) {
+                     const newActiveId = remainingTerminals[0];
+                     if (newActiveId) {
+                         switchTerminal(newActiveId);
+                     }
+                 } else {
+                     // If the deleted terminal was not active, just re-render the buttons
+                     renderTerminalButtons();
+                 }
+                 populateTerminalSessions();
+                 showToast('Terminal Deleted', `Terminal '${terminalId}' has been deleted.`, 'success');
+            }
+        }
+
+        /**
+         * @brief Filters the terminal list based on the search box input.
+         */
+        function filterTerminals() {
+            const searchQuery = document.getElementById('terminal_search_box').value.toLowerCase();
+            const terminalButtons = document.querySelectorAll('.terminal-button');
+            
+            terminalButtons.forEach(button => {
+                const terminalId = button.getAttribute('data-terminal-id');
+                const terminalName = terminalNames[terminalId].toLowerCase();
+                if (terminalName.includes(searchQuery) || terminalId.includes(searchQuery)) {
+                    button.style.display = 'flex';
+                } else {
+                    button.style.display = 'none';
+                }
+            });
+        }
+
+        // Initialize the xterm.js terminal with a custom theme
+        const mainTerminal = new Terminal({
+            cursorBlink: true,
+            convertEol: true,
+            theme: {
+                background: '#1f2937',
+                foreground: '#48bb78'
+            }
+        });
+        const fitAddon = new FitAddon.FitAddon();
+        mainTerminal.loadAddon(fitAddon);
+        
+        let currentFileInModal = null;
+        let scheduledTasks = [];
+        let toolFormElements = [];
+
+
+        /**
+         * @brief Renders the tabs and inputs for the currently selected tool.
+         */
+        function renderToolUI() {
+            const toolData = allTools[currentTool];
+            if (!toolData) {
+                return;
+            }
+
+            // Update tool title
+            document.getElementById('tool_title').innerText = toolData.name;
+            
+            // Generate dynamic tabs
+            const dynamicTabsContainer = document.createElement('div');
+            dynamicTabsContainer.id = 'dynamic_tabs';
+            dynamicTabsContainer.className = 'flex flex-wrap';
+
+            toolData.tabs.forEach(tab => {
+                const tabButton = document.createElement('button');
+                tabButton.className = 'tab-button px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 hover:bg-blue-600';
+                tabButton.setAttribute('data-tab', tab.id);
+                tabButton.innerText = tab.name;
+                tabButton.onclick = () => showTab(tab.id);
+                dynamicTabsContainer.appendChild(tabButton);
+            });
+            
+            const existingDynamicTabs = document.getElementById('dynamic_tabs');
+            if (existingDynamicTabs) {
+                existingDynamicTabs.remove();
+            }
+            document.getElementById('tabs_container').prepend(dynamicTabsContainer);
+            
+            // Generate dynamic tab content
+            const dynamicContentContainer = document.getElementById('tab-content-container');
+            // Remove existing dynamic content
+            document.querySelectorAll('.dynamic-tab-content').forEach(el => el.remove());
+
+            toolFormElements = [];
+            
+            toolData.tabs.forEach(tab => {
+                const tabContentDiv = document.createElement('div');
+                tabContentDiv.id = tab.id;
+                tabContentDiv.className = 'tab-content dynamic-tab-content';
+
+                const tabTitle = document.createElement('h2');
+                tabTitle.className = 'text-xl font-semibold text-blue-300 mb-4';
+                tabTitle.innerText = tab.name;
+                tabContentDiv.appendChild(tabTitle);
+
+                const formGrid = document.createElement('div');
+                formGrid.className = 'grid grid-cols-1 md:grid-cols-2 gap-4';
+                
+                tab.inputs.forEach(input => {
+                    const inputGroup = document.createElement('div');
+                    inputGroup.className = 'flex items-center';
+                    
+                    const label = document.createElement('label');
+                    label.setAttribute('for', input.id);
+                    label.className = 'w-48 text-right pr-4';
+                    label.innerText = input.label;
+                    inputGroup.appendChild(label);
+                    
+                    let inputElement;
+                    if (input.type === 'text' || input.type === 'number') {
+                        inputElement = document.createElement('input');
+                        inputElement.type = input.type;
+                        inputElement.id = input.id;
+                        inputElement.className = 'flex-1 p-2 rounded bg-gray-600 text-white border border-gray-500';
+                        inputElement.onkeyup = generateCommand;
+                        if (input.placeholder) {
+                            inputElement.placeholder = input.placeholder;
+                        }
+                    } else if (input.type === 'checkbox') {
+                        inputElement = document.createElement('input');
+                        inputElement.type = 'checkbox';
+                        inputElement.id = input.id;
+                        inputElement.className = 'form-checkbox h-5 w-5 text-blue-600 rounded bg-gray-600 border-gray-500';
+                        inputElement.onchange = generateCommand;
+                        label.className = 'ml-2'; // Adjust label for checkbox
+                        inputGroup.classList.remove('items-center');
+                        inputGroup.classList.add('items-start');
+                        
+                        const checkboxLabel = document.createElement('label');
+                        checkboxLabel.setAttribute('for', input.id);
+                        checkboxLabel.className = 'ml-2';
+                        checkboxLabel.innerText = input.label;
+                        
+                        inputGroup.innerHTML = ''; // Clear existing content
+                        inputGroup.appendChild(inputElement);
+                        inputGroup.appendChild(checkboxLabel);
+                        
+                    } else if (input.type === 'radio') {
+                        const radioGroup = document.createElement('div');
+                        radioGroup.className = 'flex-1 flex flex-col space-y-2';
+                        input.options.forEach(option => {
+                            const radioLabel = document.createElement('label');
+                            radioLabel.className = 'flex items-center';
+                            radioLabel.innerHTML = `
+                                <input type="radio" id="${input.id}_${option.value}" name="${input.id}" value="${option.value}" class="form-radio h-4 w-4 text-blue-600 bg-gray-600 border-gray-500" ${option.selected ? 'checked' : ''}>
+                                <span class="ml-2 text-gray-300">${option.label}</span>
+                            `;
+                            radioLabel.onchange = generateCommand;
+                            radioGroup.appendChild(radioLabel);
+                        });
+                        inputElement = radioGroup;
+                    } else if (input.type === 'textarea') {
+                        inputElement = document.createElement('textarea');
+                        inputElement.id = input.id;
+                        inputElement.rows = 4;
+                        inputElement.className = 'flex-1 p-2 rounded bg-gray-600 text-white border border-gray-500 resize-none custom-scrollbar';
+                        inputElement.onkeyup = generateCommand;
+                        if (input.placeholder) {
+                            inputElement.placeholder = input.placeholder;
+                        }
+                    } else if (input.type === 'select') {
+                        inputElement = document.createElement('select');
+                        inputElement.id = input.id;
+                        inputElement.className = 'flex-1 p-2 rounded bg-gray-600 text-white border border-gray-500';
+                        inputElement.onchange = generateCommand;
+                        input.options.forEach(option => {
+                            const optionElement = document.createElement('option');
+                            optionElement.value = option.value;
+                            optionElement.innerText = option.label;
+                            if (option.selected) {
+                                optionElement.selected = true;
+                            }
+                            inputElement.appendChild(optionElement);
+                        });
+                    } else if (input.type === 'file') {
+                        // Create a file input element with a file name display
+                        const fileContainer = document.createElement('div');
+                        fileContainer.className = 'flex-1 flex items-center space-x-2';
+
+                        inputElement = document.createElement('input');
+                        inputElement.type = 'file';
+                        inputElement.id = input.id;
+                        inputElement.className = 'flex-1 p-2 rounded bg-gray-600 text-white border border-gray-500';
+                        inputElement.onchange = () => {
+                            handleFileSelection(input.id);
+                            generateCommand();
+                        };
+                        fileContainer.appendChild(inputElement);
+                        
+                        const fileNameSpan = document.createElement('span');
+                        fileNameSpan.id = `${input.id}_name`;
+                        fileNameSpan.className = 'text-xs text-gray-400 truncate';
+                        fileContainer.appendChild(fileNameSpan);
+                        
+                        inputGroup.appendChild(fileContainer);
+                        
+                    }
+
+                    if (input.type !== 'checkbox' && input.type !== 'file' && input.type !== 'radio') {
+                        inputGroup.appendChild(inputElement);
+                    } else if (input.type === 'radio') {
+                        inputGroup.appendChild(inputElement);
+                    }
+                    
+                    if (input.help) {
+                        const helpButton = document.createElement('button');
+                        helpButton.className = 'ml-2 bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded';
+                        helpButton.innerText = '?';
+                        helpButton.onclick = () => showHelp(input.help);
+                        inputGroup.appendChild(helpButton);
+                    }
+                    // Store a reference to this element
+                    toolFormElements.push({ id: input.id, type: input.type });
+                    formGrid.appendChild(inputGroup);
+                });
+
+                tabContentDiv.appendChild(formGrid);
+                dynamicContentContainer.insertBefore(tabContentDiv, dynamicContentContainer.firstChild);
+            });
+            
+            // Show the first tool-specific tab by default
+            if (toolData.tabs.length > 0) {
+                showTab(toolData.tabs[0].id);
+            }
+            
+            // Render installation buttons
+            renderInstallationButtons();
+        }
+        
+        /**
+         * @brief Updates the UI with the selected file name.
+         * @param {string} inputId The ID of the file input element.
+         */
+        function handleFileSelection(inputId) {
+            const fileInput = document.getElementById(inputId);
+            const fileNameSpan = document.getElementById(`${inputId}_name`);
+            if (fileInput.files.length > 0) {
+                fileNameSpan.textContent = fileInput.files[0].name;
+            } else {
+                fileNameSpan.textContent = '';
+            }
+        }
+
+        /**
+         * @brief Renders the installation buttons for the selected tool.
+         */
+        function renderInstallationButtons() {
+            const installButtonsContainer = document.getElementById('installation_buttons_container');
+            installButtonsContainer.innerHTML = ''; // Clear existing buttons
+
+            const toolInstallations = allInstallations[currentTool];
+            if (toolInstallations) {
+                toolInstallations.install_methods.forEach(method => {
+                    const button = document.createElement('button');
+                    button.className = `px-4 py-2 rounded-md font-semibold text-white transition-colors duration-200 ${method.class}`;
+                    button.innerHTML = `<i data-lucide="${method.icon}" class="w-5 h-5 mr-2"></i> ${method.label}`;
+                    button.onclick = () => handleInstallation(method.command);
+                    installButtonsContainer.appendChild(button);
+                });
+            } else {
+                 installButtonsContainer.innerHTML = '';
+            }
+            lucide.createIcons();
+        }
+        
+        /**
+         * @brief Handles the installation process by showing a confirmation modal and running the command.
+         * @param {string} command The command to execute for installation.
+         */
+        function handleInstallation(command) {
+            showInstallConfirmModal(
+                'Confirm Installation',
+                `Are you sure you want to run the installation command: <strong>${escapeHtml(command)}</strong>?`,
+                () => {
+                    terminals[activeTerminalId].instance.write(`\r\nRunning installation command: ${command}\r\n`);
+                    socket.emit('run_command', { 'command': command, 'tool': 'system', 'terminalId': activeTerminalId });
+                }
+            );
+        }
+
+        /**
+         * @brief Shows a specific tab and hides the others.
+         * @param {string} tabId The ID of the tab to show.
+         */
+        function showTab(tabId) {
+            // Remove 'active' class from all tab content
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            // Remove 'active' class from all tab buttons
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            // Add 'active' class to the selected tab button and content
+            document.querySelector(`.tab-button[data-tab="${tabId}"]`).classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+            
+            // Regenerate the command whenever a tab is changed to ensure accuracy
+            generateCommand();
+            
+            // Special handling for tabs that need to load data dynamically
+            if (tabId === 'control-output') {
+                loadOutputFiles();
+            } else if (tabId === 'upload-output') {
+                loadUploadableFiles();
+            } else if (tabId === 'report') {
+                loadReportFiles();
+            } else if (tabId === 'tasks') {
+                getScheduledTasks();
+                populateTerminalSessions();
+            } else if (tabId === 'examples') {
+                 filterExamples();
+            } else if (tabId === 'paths') { // New Path tab loading
+                 loadPathConfig();
+            }
+        }
+
+        // Add event listeners to all default tab buttons
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', () => {
+                showTab(button.dataset.tab);
+            });
+        });
+        
+        /**
+         * @brief Switches the active tool in the GUI.
+         * @param {string} toolName The name of the tool to switch to.
+         */
+        function switchTool(toolName) {
+            currentTool = toolName;
+            lastSelectedTool = toolName;
+            
+            // Update active state in sidebar
+            document.querySelectorAll('.tool-list-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.getElementById(`tool_item_${toolName}`).classList.add('active');
+            
+            // Render the UI for the new tool
+            renderToolUI();
+            
+            // Reset command and terminal
+            clearAllInputs();
+            clearTerminal();
+            
+            // Show a welcome message for the new tool
+            const toolDisplayName = allTools[currentTool].name;
+            terminals[activeTerminalId].instance.write(`\r\nSwitched to: ${toolDisplayName}. Use the GUI to generate a command or type one directly.\r\n\r\n`);
+        }
+
+        /**
+         * @brief Loads tools, examples, and installations from the backend.
+         */
+        async function loadAllData() {
+            try {
+                const response = await fetch('/get_all_tools');
+                const data = await response.json();
+                allTools = data.tools;
+                allExamples = data.examples;
+                allInstallations = data.installations;
+                renderToolList();
+                
+                // Select Nmap by default on first load
+                if (allTools['nmap']) {
+                    switchTool('nmap');
+                } else {
+                    const firstTool = Object.keys(allTools)[0];
+                    if (firstTool) {
+                        switchTool(firstTool);
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading tool data:', error);
+                // Fallback to a simple message if the backend request fails
+                const toolList = document.getElementById('tool_list');
+                toolList.innerHTML = '<p class="text-red-400">Failed to load tools. Please check the server connection.</p>';
+            }
+        }
+
+        /**
+         * @brief Renders the list of tools in the sidebar.
+         */
+        function renderToolList() {
+            const toolList = document.getElementById('tool_list');
+            toolList.innerHTML = '';
+            const toolNames = Object.keys(allTools).sort();
+            
+            toolNames.forEach(toolName => {
+                const toolData = allTools[toolName];
+                const toolItem = document.createElement('div');
+                toolItem.id = `tool_item_${toolName}`;
+                toolItem.className = 'tool-list-item';
+                toolItem.innerHTML = `
+                    <span class="font-medium">${toolData.name}</span>
+                    <span class="text-xs text-gray-400">${toolData.version}</span>
+                `;
+                toolItem.onclick = () => switchTool(toolName);
+                toolList.appendChild(toolItem);
+            });
+            
+            filterTools();
+        }
+
+        /**
+         * @brief Filters the tool list based on the search box input.
+         */
+        function filterTools() {
+            const searchQuery = document.getElementById('tool_search_box').value.toLowerCase();
+            const toolItems = document.querySelectorAll('.tool-list-item');
+            
+            toolItems.forEach(item => {
+                const toolName = item.id.replace('tool_item_', '');
+                if (allTools[toolName] && (toolName.includes(searchQuery) || allTools[toolName].name.toLowerCase().includes(searchQuery))) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+        
+        /**
+         * @brief Shows a help modal with a given message.
+         * @param {string} message The help text to display.
+         */
+        function showHelp(message) {
+            showMessageModal('Help', message);
+        }
+        
+        /**
+         * @brief Shows a general-purpose modal.
+         * @param {string} title The title of the modal.
+         * @param {string} message The message content of the modal.
+         * @param {boolean} [isHtml=false] True if the message contains HTML, otherwise it's treated as plain text.
+         */
+        function showMessageModal(title, message, isHtml = false) {
+            document.getElementById('messageModalTitle').innerText = title;
+            const messageBody = document.getElementById('messageModalBody');
+            if (isHtml) {
+                messageBody.innerHTML = message;
+            } else {
+                messageBody.innerText = message;
+            }
+            document.getElementById('messageModal').style.display = 'flex';
+        }
+
+        /**
+         * @brief Closes the general-purpose modal.
+         */
+        function closeMessageModal() {
+            document.getElementById('messageModal').style.display = 'none';
+        }
+
+        /**
+         * @brief Shows a confirmation modal for installation.
+         * @param {string} title The title of the modal.
+         * @param {string} message The confirmation message.
+         * @param {Function} onConfirm The callback function to execute on confirmation.
+         */
+        function showInstallConfirmModal(title, message, onConfirm) {
+            document.getElementById('installConfirmModalTitle').innerText = title;
+            document.getElementById('installConfirmModalBody').innerHTML = message;
+            const confirmButton = document.getElementById('confirmInstallButton');
+            confirmButton.onclick = () => {
+                closeInstallConfirmModal();
+                onConfirm();
+            };
+            document.getElementById('installConfirmModal').style.display = 'flex';
+        }
+
+        /**
+         * @brief Closes the installation confirmation modal.
+         */
+        function closeInstallConfirmModal() {
+            document.getElementById('installConfirmModal').style.display = 'none';
+        }
+        
+        /**
+         * @brief Converts ANSI escape codes in a string to corresponding HTML spans for colored output.
+         * This improves the visual fidelity of the terminal output when displayed in a pre-formatted tag.
+         * @param {string} ansiString The input string with ANSI codes.
+         * @returns {string} The HTML string with inline styles.
+         */
+        function ansiToHtml(ansiString) {
+            const ansiRegex = /(?:\u001b\[(\d+(?:;\d+)*)m)/g;
+            let htmlString = '';
+            let lastIndex = 0;
+
+            ansiString.replace(ansiRegex, (match, p1, offset) => {
+                htmlString += escapeHtml(ansiString.substring(lastIndex, offset));
+                lastIndex = offset + match.length;
+
+                const codes = p1.split(';');
+                let styles = '';
+                
+                codes.forEach(code => {
+                    code = parseInt(code, 10);
+                    switch (code) {
+                        case 0: styles = ''; break;
+                        case 1: styles += 'font-weight: bold;'; break;
+                        case 4: styles += 'text-decoration: underline;'; break;
+                        case 30: styles += 'color: #7f8c8d;'; break;
+                        case 31: styles += 'color: #e74c3c;'; break;
+                        case 32: styles += 'color: #2ecc71;'; break;
+                        case 33: styles += 'color: #f1c40f;'; break;
+                        case 34: styles += 'color: #3498db;'; break;
+                        case 35: styles += 'color: #9b59b6;'; break;
+                        case 36: styles += 'color: #1abc9c;'; break;
+                        case 37: styles += 'color: #ecf0f1;'; break;
+                    }
+                });
+
+                if (styles) {
+                    htmlString += `<span style="${styles}">`;
+                } else {
+                    htmlString += '</span>';
+                }
+            });
+
+            htmlString += escapeHtml(ansiString.substring(lastIndex));
+            
+            let openTags = (htmlString.match(/<span/g) || []).length;
+            let closeTags = (htmlString.match(/<\/span>/g) || []).length;
+            while(openTags > closeTags) {
+                htmlString += '</span>';
+                closeTags++;
+            }
+
+            return htmlString;
+        }
+
+        /**
+         * @brief Shows a modal displaying example output.
+         * @param {string} title The title for the modal.
+         * @param {string} output The example output text.
+         */
+        function showExampleOutputModal(title, output) {
+            document.getElementById('exampleOutputModalTitle').innerText = title;
+            const outputPre = document.getElementById('exampleOutputModalText');
+            outputPre.innerHTML = ansiToHtml(output); 
+            document.getElementById('exampleOutputModal').style.display = 'flex';
+        }
+
+        /**
+         * @brief Closes the example output modal.
+         */
+        function closeExampleOutputModal() {
+            document.getElementById('exampleOutputModal').style.display = 'none';
+        }
+
+
+        /**
+         * @brief Collects all form data from the GUI to build the command.
+         * @returns {Object} An object containing the form data.
+         */
+        function getFormData() {
+            const formData = {};
+            // Iterate over all tabs to collect data
+            document.querySelectorAll('.tab-content').forEach(tabContent => {
+                tabContent.querySelectorAll('input, select, textarea').forEach(element => {
+                    const id = element.id;
+                    if (element.type === 'checkbox') {
+                        formData[id] = element.checked;
+                    } else if (element.type === 'radio') {
+                         if (element.checked) {
+                            formData[element.name] = element.value;
+                         }
+                    } else if (element.type === 'number') {
+                        formData[id] = element.value ? parseFloat(element.value) : '';
+                    } else if (element.type === 'file') {
+                         // Use the uploaded filename from the dataset, or the original filename if no upload happened.
+                        formData[id] = element.dataset.uploadedFilename || (element.files.length > 0 ? element.files[0].name : '');
+                    } else {
+                        formData[id] = element.value;
+                    }
+                });
+            });
+
+            return formData;
+        }
+
+        /**
+         * @brief Generates the command based on current form selections.
+         */
+        async function generateCommand() {
+            const formData = getFormData();
+            const tool = currentTool;
+            try {
+                const response = await fetch('/generate_command', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ tool, options: formData }),
+                });
+                const data = await response.json();
+                document.getElementById('command_text').value = data.command;
+            } catch (error) {
+                console.error('Error generating command:', error);
+                document.getElementById('command_text').value = 'Error generating command. Make sure a tool is selected and its options are properly defined.';
+            }
+        }
+        
+        /**
+         * @brief Handles manual changes to the command text area.
+         */
+        function onCommandChange() {
+            console.log("Command changed manually.");
+        }
+
+        /**
+         * @brief Copies the generated command to the user's clipboard.
+         */
+        function copyCommand() {
+            const commandText = document.getElementById('command_text');
+            commandText.select();
+            document.execCommand('copy');
+            showMessageModal('Command Copied', 'The command has been copied to your clipboard!');
+        }
+        
+        /**
+         * @brief Moves selected output files from the server's output directory to a specified path.
+         */
+        async function moveOutputFiles() {
+            const files = getSelectedOutputFiles();
+            const destination_path = document.getElementById('destination_path_entry').value;
+
+            if (files.length === 0 || !destination_path) {
+                showToast('Please select at least one file and provide a destination path.', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/move_files', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ files, destination_path }),
+                });
+                const result = await response.json();
+                if (result.success) {
+                    showToast('Success!', result.message, 'success');
+                    loadOutputFiles(); // Refresh the list
+                } else {
+                    showToast('Error!', result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error moving files:', error);
+                showToast('Error!', 'An error occurred while trying to move files.', 'error');
+            }
+        }
+        
+        /**
+         * @brief Copies selected output files from the server's output directory to a specified path.
+         */
+        async function copyOutputFiles() {
+            const files = getSelectedOutputFiles();
+            const destination_path = document.getElementById('destination_path_entry').value;
+
+            if (files.length === 0 || !destination_path) {
+                showToast('Please select at least one file and provide a destination path.', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/copy_files', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ files, destination_path }),
+                });
+                const result = await response.json();
+                if (result.success) {
+                    showToast('Success!', result.message, 'success');
+                } else {
+                    showToast('Error!', result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error copying files:', error);
+                showToast('Error!', 'An error occurred while trying to copy files.', 'error');
+            }
+        }
+        
+        /**
+         * @brief Gets the list of selected output files from the checkbox list.
+         * @returns {string[]} An array of selected filenames.
+         */
+        function getSelectedOutputFiles() {
+            const selectedFiles = [];
+            document.querySelectorAll('#output-files-list input[type="checkbox"]:checked').forEach(checkbox => {
+                selectedFiles.push(checkbox.value);
+            });
+            return selectedFiles;
+        }
+
+        /**
+         * @brief Executes the generated command by sending it to the backend via SocketIO.
+         */
+        async function runTool() {
+            // First, check for any file inputs in the form
+            const fileInputs = toolFormElements.filter(el => el.type === 'file');
+            let hasFileToUpload = false;
+
+            for (const input of fileInputs) {
+                const element = document.getElementById(input.id);
+                if (element && element.files.length > 0) {
+                    hasFileToUpload = true;
+                    // Upload the file first before proceeding
+                    const formData = new FormData();
+                    formData.append('file', element.files[0]);
+
+                    try {
+                        showToast('Uploading...', `Uploading ${element.files[0].name} to server.`, 'info');
+                        const response = await fetch('/upload_tool_file', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        const result = await response.json();
+                        if (result.success) {
+                            showToast('Upload Successful!', result.message, 'success');
+                            // The filename returned from the server should be used in the command
+                            // I'll update the form data to reflect this for command generation
+                            element.dataset.uploadedFilename = result.filename;
+                        } else {
+                            showToast('Upload Failed!', result.message, 'error');
+                            // Stop execution if upload fails
+                            return;
+                        }
+                    } catch (error) {
+                        console.error('File upload error:', error);
+                        showToast('Error!', 'An error occurred during file upload.', 'error');
+                        return;
+                    }
+                } else if (element) {
+                    // Clear any previous uploaded filename if no new file is selected
+                    delete element.dataset.uploadedFilename;
+                }
+            }
+            
+            // Now that all files are uploaded (or there were none to upload), generate and run the command
+            const command = document.getElementById('command_text').value;
+            if (!command) {
+                showMessageModal('Error', 'No command to run.');
+                return;
+            }
+            
+            terminals[activeTerminalId].instance.write(`\r\nRunning command: ${command}\r\n`);
+            socket.emit('run_command', { 'command': command, 'tool': currentTool, 'terminalId': activeTerminalId });
+        }
+        
+        /**
+         * @brief Saves the current content of the terminal to a text file on the server.
+         */
+        function saveTerminalOutput() {
+            let allContent = '';
+            const activeTerminal = terminals[activeTerminalId].instance;
+            for (let i = 0; i < activeTerminal.buffer.active.length; i++) {
+                allContent += activeTerminal.buffer.active.getLine(i).translateToString(true) + '\n';
+            }
+
+            fetch('/save_output', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    filename: 'output.txt',
+                    content: allContent
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Success!', data.message, "success");
+                } else {
+                    showToast('Error!', "Error: " + data.message, "error");
+                }
+            })
+            .catch(() => showToast('Error!', "Connection error while saving file.", "error"));
+        }
+        
+        /**
+         * @brief Displays a toast notification on the screen.
+         * @param {string} title The title of the toast.
+         * @param {string} message The message content of the toast.
+         * @param {string} [type='success'] The type of toast ('success' or 'error').
+         */
+        function showToast(title, message, type = "success") {
+            const container = document.getElementById("toast-container");
+
+            // Create toast div element
+            const toast = document.createElement("div");
+            toast.className = `flex flex-col space-y-1 px-4 py-3 rounded-lg shadow-lg text-white font-semibold transition-opacity duration-500 ${
+                type === "success" ? "bg-green-600" : "bg-red-600"
+            }`;
+
+            // Add title and icon using Lucide
+            const titleDiv = document.createElement("div");
+            titleDiv.className = "flex items-center space-x-2";
+            const icon = document.createElement("i");
+            icon.setAttribute("data-lucide", type === "success" ? "check-circle" : "alert-circle");
+            icon.className = "w-5 h-5";
+            const titleText = document.createElement("span");
+            titleText.textContent = title;
+            titleDiv.appendChild(icon);
+            titleDiv.appendChild(titleText);
+
+            // Add message content
+            const messageDiv = document.createElement("div");
+            messageDiv.className = "text-sm font-normal";
+            messageDiv.textContent = message;
+
+            toast.appendChild(titleDiv);
+            toast.appendChild(messageDiv);
+            container.appendChild(toast);
+
+            // Re-render Lucide icons for the new element
+            lucide.createIcons();
+
+            // Auto-hide the toast after 4 seconds
+            setTimeout(() => {
+                toast.style.opacity = "0";
+                setTimeout(() => toast.remove(), 500);
+            }, 4000);
+        }
+        
+        /**
+         * @brief Clears the terminal display.
+         */
+        function clearTerminal() {
+            terminals[activeTerminalId].instance.clear();
+        }
+        
+        // --- Functions for the Examples Tab ---
+
+        /**
+         * @brief Filters the list of examples based on the search query and renders them.
+         */
+        function filterExamples() {
+            const searchQuery = document.getElementById('example_search_entry').value.toLowerCase();
+            const examplesList = document.getElementById('examples_list');
+            examplesList.innerHTML = '';
+
+            const toolExamples = allExamples[currentTool] || [];
+            
+            const filteredExamples = toolExamples.filter(example => 
+                example.name.toLowerCase().includes(searchQuery) || example.description.toLowerCase().includes(searchQuery)
+            );
+
+            if (filteredExamples.length === 0) {
+                examplesList.innerHTML = '<p class="text-gray-400">No examples found for this tool or matching your search.</p>';
+            } else {
+                filteredExamples.forEach(example => {
+                    const exampleDiv = document.createElement('div');
+                    exampleDiv.className = 'bg-gray-800 p-4 rounded-lg shadow-md flex flex-col md:flex-row justify-between items-start md:items-center';
+                    exampleDiv.innerHTML = `
+                        <div>
+                            <h3 class="text-lg font-semibold text-blue-300">${escapeHtml(example.name)}</h3>
+                            <p class="text-sm text-gray-400 mb-2 md:mb-0">${escapeHtml(example.description)}</p>
+                        </div>
+                        <div class="flex mt-2 md:mt-0 space-x-2">
+                            <button class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md text-sm" onclick="loadExample('${escapeHtml(example.name)}')">Select</button>
+                            <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded-md text-sm" onclick="showExampleOutputModal('${escapeHtml(example.name)} Output', ${escapeHtml(JSON.stringify(example.example_output))})">Output</button>
+                        </div>
+                    `;
+                    examplesList.appendChild(exampleDiv);
+                });
+            }
+            
+            lucide.createIcons();
+        }
+
+        /**
+         * @brief Clears the example search input and re-filters the list.
+         */
+        function clearExampleSearch() {
+            document.getElementById('example_search_entry').value = '';
+            filterExamples();
+        }
+
+        /**
+         * @brief Loads the options of a selected example into the main form.
+         * @param {string} exampleName The name of the example to load.
+         */
+        function loadExample(exampleName) {
+            clearAllInputs();
+            const toolExamples = allExamples[currentTool] || [];
+            const example = toolExamples.find(e => e.name === exampleName);
+
+            if (example) {
+                for (const key in example.options) {
+                    const element = document.getElementById(key);
+                    if (element) {
+                        if (element.type === 'checkbox') {
+                            element.checked = example.options[key];
+                        } else if (element.tagName === 'TEXTAREA') {
+                            element.value = example.options[key];
+                        } else {
+                            element.value = example.options[key];
+                        }
+                    } else {
+                        // Handle radio buttons
+                        const radioElement = document.querySelector(`input[name="${key}"][value="${example.options[key]}"]`);
+                        if (radioElement) {
+                            radioElement.checked = true;
+                        }
+                    }
+                }
+                
+                // Show a welcome message for the new tool
+                const toolDisplayName = allTools[currentTool].name;
+                terminals[activeTerminalId].instance.write(`\r\nExample loaded for: ${toolDisplayName}. The command has been generated below. Change to another tab to see the fields that have been populated.\r\n\r\n`);
+            }
+            generateCommand();
+            showMessageModal('Example Loaded', 'Example options have been loaded. Check other tabs and the generated command.');
+        }
+
+
+        /**
+         * @brief Fetches the list of output files from the server and populates the control output tab.
+         */
+        async function loadOutputFiles() {
+            const outputFilesList = document.getElementById('output-files-list');
+            outputFilesList.innerHTML = '';
+            try {
+                const response = await fetch('/get_output_files');
+                const files = await response.json();
+                if (files.length === 0) {
+                    outputFilesList.innerHTML = '<p class="text-gray-400">No output files found.</p>';
+                } else {
+                    files.forEach(filename => {
+                        const fileDiv = document.createElement('div');
+                        fileDiv.className = 'flex items-center';
+                        fileDiv.innerHTML = `
+                            <label class="checkbox-label">
+                                <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 rounded bg-gray-600 border-gray-500" value="${escapeHtml(filename)}">
+                                <span class="ml-2 text-gray-300">${escapeHtml(filename)}</span>
+                            </label>
+                        `;
+                        outputFilesList.appendChild(fileDiv);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading output files:', error);
+                outputFilesList.innerHTML = '<p class="text-red-400">Error loading files.</p>';
+            }
+        }
+        
+        /**
+         * @brief Fetches and filters output files, populating the upload output tab.
+         */
+        async function loadUploadableFiles() {
+            const uploadFilesList = document.getElementById('upload-files-list');
+            uploadFilesList.innerHTML = '';
+            try {
+                const response = await fetch('/get_output_files');
+                const files = await response.json();
+                const txtFiles = files.filter(f => f.endsWith('.txt'));
+
+                if (txtFiles.length === 0) {
+                    uploadFilesList.innerHTML = '<p class="text-gray-400">No .txt files found to upload.</p>';
+                } else {
+                    txtFiles.forEach(filename => {
+                        const fileDiv = document.createElement('div');
+                        fileDiv.className = 'flex items-center';
+                        fileDiv.innerHTML = `
+                            <label class="checkbox-label">
+                                <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 rounded bg-gray-600 border-gray-500" value="${escapeHtml(filename)}">
+                                <span class="ml-2 text-gray-300">${escapeHtml(filename)}</span>
+                            </label>
+                        `;
+                        uploadFilesList.appendChild(fileDiv);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading uploadable files:', error);
+                uploadFilesList.innerHTML = '<p class="text-red-400">Error loading files for upload.</p>';
+            }
+        }
+        
+        /**
+         * @brief Uploads selected output files to a specified URL using a backend proxy.
+         */
+        async function uploadOutputFiles() {
+            const uploadUrl = document.getElementById('upload_url_entry').value;
+            const filesToUpload = getSelectedUploadFiles();
+
+            if (!uploadUrl || filesToUpload.length === 0) {
+                showToast('Validation Error', 'Please enter a valid URL and select at least one file.', 'error');
+                return;
+            }
+            
+            showToast('Uploading...', `Starting upload of ${filesToUpload.length} file(s).`, 'info');
+
+            try {
+                const response = await fetch('/upload_files', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url: uploadUrl, files: filesToUpload })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showToast('Success!', result.message, 'success');
+                } else {
+                    showToast('Error!', result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                showToast('Error!', `An error occurred during the upload process: ${error.message}`, 'error');
+            }
+        }
+        
+        /**
+         * @brief Gets the list of selected files from the upload output tab.
+         * @returns {string[]} An array of selected filenames.
+         */
+        function getSelectedUploadFiles() {
+            const selectedFiles = [];
+            document.querySelectorAll('#upload-files-list input[type="checkbox"]:checked').forEach(checkbox => {
+                selectedFiles.push(checkbox.value);
+            });
+            return selectedFiles;
+        }
+
+
+        /**
+         * @brief Helper function to escape HTML special characters for safe display.
+         * @param {string} text The string to escape.
+         * @returns {string} The escaped string.
+         */
+        function escapeHtml(text) {
+            if (typeof text !== 'string') {
+                text = String(text);
+            }
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+        }
+
+        /**
+         * @brief Clears all input fields in the GUI.
+         */
+        function clearAllInputs() {
+            document.querySelectorAll('#tab-content-container input[type="text"], #tab-content-container input[type="number"], #tab-content-container textarea, #tab-content-container input[type="datetime-local"]').forEach(element => {
+                element.value = '';
+            });
+            document.querySelectorAll('#tab-content-container input[type="checkbox"]').forEach(element => {
+                element.checked = false;
+            });
+            document.querySelectorAll('#tab-content-container select').forEach(element => {
+                element.value = '';
+            });
+             document.querySelectorAll('#tab-content-container input[type="radio"]').forEach(element => {
+                 element.checked = false;
+             });
+             document.querySelectorAll('#tab-content-container input[type="file"]').forEach(element => {
+                 element.value = null; // Reset file input
+                 delete element.dataset.uploadedFilename;
+                 const fileNameSpan = document.getElementById(`${element.id}_name`);
+                 if (fileNameSpan) {
+                     fileNameSpan.textContent = '';
+                 }
+             });
+
+            // Reset tool-specific inputs based on their JSON definition
+            const toolData = allTools[currentTool];
+            if (toolData) {
+                toolData.tabs.forEach(tab => {
+                    tab.inputs.forEach(input => {
+                        if (input.type === 'select' && input.options.some(opt => opt.selected)) {
+                           document.getElementById(input.id).value = input.options.find(opt => opt.selected).value;
+                        } else if (input.type === 'radio' && input.options.some(opt => opt.selected)) {
+                            const selectedRadio = document.querySelector(`input[name="${input.id}"][value="${input.options.find(opt => opt.selected).value}"]`);
+                            if (selectedRadio) {
+                                selectedRadio.checked = true;
+                            }
+                        } else if (input.default) {
+                           document.getElementById(input.id).value = input.default;
+                        } else if (input.type === 'checkbox') {
+                            document.getElementById(input.id).checked = false;
+                        } else {
+                            document.getElementById(input.id).value = '';
+                        }
+                    });
+                });
+            }
+            
+            generateCommand();
+        }
+        
+        // --- Functions for the new Report tab ---
+
+        /**
+         * @brief Fetches and displays a list of .txt files for reporting.
+         */
+        async function loadReportFiles() {
+            const reportFilesList = document.getElementById('report-files-list');
+            reportFilesList.innerHTML = '<p class="text-gray-400">Loading files...</p>';
+            try {
+                const response = await fetch('/get_report_files');
+                const files = await response.json();
+                reportFilesList.innerHTML = '';
+                if (files.length === 0) {
+                    reportFilesList.innerHTML = '<p class="text-gray-400">No report files found (.txt files).</p>';
+                } else {
+                    files.forEach(filename => {
+                        const fileItem = document.createElement('div');
+                        fileItem.className = 'flex justify-between items-center bg-gray-700 p-3 rounded-md shadow-sm';
+                        fileItem.innerHTML = `
+                            <span class="text-gray-200 font-medium">${escapeHtml(filename)}</span>
+                            <div class="flex space-x-2">
+                                <button class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md text-sm flex items-center" onclick="viewFile('${escapeHtml(filename)}')">
+                                    <i data-lucide="eye" class="w-4 h-4 mr-1"></i> View
+                                </button>
+                                <button class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm flex items-center" onclick="deleteFile('${escapeHtml(filename)}')">
+                                    <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i> Delete
+                                </button>
+                                <button class="bg-yellow-600 hover:bg-yellow-700 text-white px-3 py-1 rounded-md text-sm flex items-center" onclick="editFile('${escapeHtml(filename)}')">
+                                    <i data-lucide="edit-2" class="w-4 h-4 mr-1"></i> Edit
+                                </button>
+                            </div>
+                        `;
+                        reportFilesList.appendChild(fileItem);
+                    });
+                    lucide.createIcons();
+                }
+            } catch (error) {
+                console.error('Error loading report files:', error);
+                reportFilesList.innerHTML = '<p class="text-red-400">Error loading report files.</p>';
+            }
+        }
+
+        /**
+         * @brief Deletes a file from the server.
+         * @param {string} filename The name of the file to delete.
+         */
+        async function deleteFile(filename) {
+            // Replaced alert/confirm with a custom modal function if needed
+            if (!confirm(`Are you sure you want to delete ${filename}?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/delete_file', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ filename: `output/${filename}` }) // Report files are in output/
+                });
+                const result = await response.json();
+                if (result.success) {
+                    showToast('Deleted!', result.message, 'success');
+                    loadReportFiles(); // Refresh the list
+                } else {
+                    showToast('Error!', result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error deleting file:', error);
+                showToast('Error!', 'An error occurred while trying to delete the file.', 'error');
+            }
+        }
+
+        /**
+         * @brief Opens a modal to view a file's content.
+         * @param {string} filename The name of the file to view.
+         */
+        async function viewFile(filename) {
+            try {
+                const response = await fetch('/get_file_content', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ filename: `output/${filename}` })
+                });
+                const result = await response.json();
+                if (result.success) {
+                    document.getElementById('reportFileModalTitle').innerText = `Viewing: ${filename}`;
+                    document.getElementById('reportFileContent').value = result.content;
+                    document.getElementById('reportFileContent').readOnly = true;
+                    document.getElementById('saveFileButton').style.display = 'none';
+                    document.getElementById('reportFileModal').style.display = 'flex';
+                } else {
+                    showToast('Error!', result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error viewing file:', error);
+                showToast('Error!', 'An error occurred while trying to view the file.', 'error');
+            }
+        }
+
+        /**
+         * @brief Opens a modal to edit a file's content.
+         * @param {string} filename The name of the file to edit.
+         */
+        async function editFile(filename) {
+            currentFileInModal = `output/${filename}`;
+            try {
+                const response = await fetch('/get_file_content', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ filename: `output/${filename}` })
+                });
+                const result = await response.json();
+                if (result.success) {
+                    document.getElementById('reportFileModalTitle').innerText = `Editing: ${filename}`;
+                    document.getElementById('reportFileContent').value = result.content;
+                    document.getElementById('reportFileContent').readOnly = false;
+                    document.getElementById('saveFileButton').style.display = 'inline-flex';
+                    document.getElementById('reportFileModal').style.display = 'flex';
+                } else {
+                    showToast('Error!', result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error editing file:', error);
+                showToast('Error!', 'An error occurred while trying to edit the file.', 'error');
+            }
+        }
+
+        /**
+         * @brief Saves the edited content of a file.
+         */
+        async function saveFileContent() {
+            if (!currentFileInModal) {
+                showToast('Error!', 'No file selected for saving.', 'error');
+                return;
+            }
+
+            const content = document.getElementById('reportFileContent').value;
+
+            try {
+                const response = await fetch('/edit_file', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ filename: currentFileInModal, content })
+                });
+                const result = await response.json();
+                if (result.success) {
+                    showToast('Saved!', result.message, 'success');
+                    closeReportFileModal();
+                } else {
+                    showToast('Error!', result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error saving file:', error);
+                showToast('Error!', 'An error occurred while trying to save the file.', 'error');
+            }
+        }
+
+        /**
+         * @brief Closes the report file modal and resets state.
+         */
+        function closeReportFileModal() {
+            document.getElementById('reportFileModal').style.display = 'none';
+            document.getElementById('reportFileContent').value = '';
+            currentFileInModal = null;
+        }
+
+        // --- Functions for the new Tasks tab ---
+
+        /**
+         * @brief Populates the terminal session dropdowns in the tasks tab.
+         */
+        function populateTerminalSessions() {
+            const taskSelect = document.getElementById('task_terminal_session_entry');
+            const editTaskSelect = document.getElementById('edit_task_terminal_session_entry');
+            taskSelect.innerHTML = '';
+            editTaskSelect.innerHTML = '';
+
+            Object.keys(terminalNames).forEach(id => {
+                const option = document.createElement('option');
+                option.value = id;
+                option.text = terminalNames[id];
+                taskSelect.appendChild(option);
+                
+                const editOption = document.createElement('option');
+                editOption.value = id;
+                editOption.text = terminalNames[id];
+                editTaskSelect.appendChild(editOption);
+            });
+        }
+
+        /**
+         * @brief Sends a request to the backend to schedule a new task.
+         */
+        function scheduleTask() {
+            const taskName = document.getElementById('task_name_entry').value;
+            const command = document.getElementById('task_command_entry').value;
+            const time = document.getElementById('task_time_entry').value;
+            const status = document.getElementById('task_status_entry').value;
+            const terminalId = document.getElementById('task_terminal_session_entry').value;
+
+
+            if (!taskName || !command || !time) {
+                showToast('Validation Error', 'Please enter a task name, command, and a valid time.', 'error');
+                return;
+            }
+            
+            socket.emit('schedule_task', { task_name: taskName, command: command, schedule_time: time, status: status, terminalId: terminalId, tool: currentTool });
+        }
+        
+        /**
+         * @brief Renders the list of scheduled tasks from the `scheduledTasks` array.
+         */
+        function renderScheduledTasks() {
+            const listContainer = document.getElementById('scheduled_tasks_list');
+            listContainer.innerHTML = ''; // Clear the current list
+
+            if (scheduledTasks.length === 0) {
+                listContainer.innerHTML = '<p class="text-gray-400">No tasks scheduled.</p>';
+                return;
+            }
+
+            scheduledTasks.forEach(task => {
+                const terminalName = terminalNames[task.terminalId] || task.terminalId;
+                const taskItem = document.createElement('div');
+                taskItem.className = 'flex justify-between items-center bg-gray-700 p-3 rounded-md shadow-sm';
+                taskItem.innerHTML = `
+                    <div class="flex-1 overflow-hidden pr-4">
+                        <span class="block text-gray-200 font-bold">${escapeHtml(task.task_name)}</span>
+                        <span class="block text-gray-300 whitespace-nowrap overflow-ellipsis overflow-hidden">Tool: ${escapeHtml(task.tool)} | Command: ${escapeHtml(task.command)}</span>
+                        <span class="block text-xs text-gray-400">Scheduled for: ${escapeHtml(new Date(task.time).toLocaleString())}</span>
+                        <span class="block text-xs text-gray-400">Status: ${escapeHtml(task.status)}</span>
+                        <span class="block text-xs text-gray-400">Terminal: ${escapeHtml(terminalName)}</span>
+                    </div>
+                    <div class="flex space-x-2">
+                         <button class="bg-yellow-600 hover:bg-yellow-700 text-white px-3 py-1 rounded-md text-sm flex items-center" onclick="openEditTaskModal('${escapeHtml(task.taskId)}')">
+                            <i data-lucide="edit-2" class="w-4 h-4 mr-1"></i> Edit
+                        </button>
+                        <button class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm flex items-center" onclick="cancelTask('${escapeHtml(task.taskId)}')">
+                            <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i> Cancel
+                        </button>
+                    </div>
+                `;
+                listContainer.appendChild(taskItem);
+            });
+            lucide.createIcons();
+        }
+
+        /**
+         * @brief Opens the edit task modal and populates it with existing task data.
+         * @param {string} taskId The ID of the task to edit.
+         */
+        function openEditTaskModal(taskId) {
+            const task = scheduledTasks.find(t => t.taskId === taskId);
+            if (!task) {
+                showToast('Error', 'Task not found.', 'error');
+                return;
+            }
+
+            document.getElementById('edit_task_id').value = task.taskId;
+            document.getElementById('edit_task_name_entry').value = task.task_name;
+            document.getElementById('edit_task_command_entry').value = task.command;
+            document.getElementById('edit_task_status_entry').value = task.status;
+            
+            // Format datetime-local input correctly
+            const date = new Date(task.time);
+            const formattedDate = date.toISOString().slice(0, 16);
+            document.getElementById('edit_task_time_entry').value = formattedDate;
+            
+            // Select the correct terminal session
+            document.getElementById('edit_task_terminal_session_entry').value = task.terminalId;
+
+            document.getElementById('editTaskModal').style.display = 'flex';
+        }
+
+        /**
+         * @brief Closes the edit task modal.
+         */
+        function closeEditTaskModal() {
+            document.getElementById('editTaskModal').style.display = 'none';
+        }
+
+        /**
+         * @brief Saves the edited task details.
+         */
+        function saveEditedTask() {
+            const taskId = document.getElementById('edit_task_id').value;
+            const taskName = document.getElementById('edit_task_name_entry').value;
+            const command = document.getElementById('edit_task_command_entry').value;
+            const time = document.getElementById('edit_task_time_entry').value;
+            const status = document.getElementById('edit_task_status_entry').value;
+            const terminalId = document.getElementById('edit_task_terminal_session_entry').value;
+
+
+            if (!taskName || !command || !time) {
+                showToast('Validation Error', 'All fields are required for editing.', 'error');
+                return;
+            }
+
+            socket.emit('edit_task', {
+                taskId: taskId,
+                task_name: taskName,
+                command: command,
+                schedule_time: time,
+                status: status,
+                terminalId: terminalId,
+                tool: currentTool
+            });
+            closeEditTaskModal();
+        }
+
+        /**
+         * @brief Sends a request to the backend to cancel a scheduled task.
+         * @param {string} taskId The ID of the task to cancel.
+         */
+        function cancelTask(taskId) {
+            socket.emit('cancel_task', { taskId: taskId });
+        }
+        
+        /**
+         * @brief Requests the list of scheduled tasks from the server.
+         */
+        function getScheduledTasks() {
+            const listContainer = document.getElementById('scheduled_tasks_list');
+            listContainer.innerHTML = '<p class="text-gray-400">Loading tasks...</p>';
+            socket.emit('get_scheduled_tasks');
+        }
+        
+        /**
+         * @brief Handles the download file button click, constructing a command for curl or wget.
+         */
+        function downloadFile() {
+            const url = document.getElementById('download_url_entry').value;
+            const fileName = document.getElementById('download_name_entry').value;
+            const path = document.getElementById('download_path_entry').value;
+            const useCurl = document.getElementById('download_curl').checked;
+            const useWget = document.getElementById('download_wget').checked;
+            
+            if (!url) {
+                showToast('Validation Error', 'Please enter a valid URL.', 'error');
+                return;
+            }
+            
+            if (!useCurl && !useWget) {
+                 showToast('Validation Error', 'Please select a download method (cURL or wget).', 'error');
+                 return;
+            }
+            
+            let command = '';
+            let savePath = path || './';
+            let saveFile = fileName;
+            
+            if (!saveFile) {
+                saveFile = url.split('/').pop();
+                if (!saveFile) {
+                    showToast('Error', 'Could not determine file name from URL. Please provide one.', 'error');
+                    return;
+                }
+            }
+            
+            let fullFilePath = `${savePath.endsWith('/') ? savePath : savePath + '/'}${saveFile}`;
+            
+            if (useCurl) {
+                command = `curl -o "${fullFilePath}" ${url}`;
+            } else if (useWget) {
+                command = `wget -O "${fullFilePath}" ${url}`;
+            }
+            
+            if (command) {
+                terminals[activeTerminalId].instance.write(`\r\nRunning command: ${command}\r\n`);
+                socket.emit('run_command', { 'command': command, 'tool': 'system', 'terminalId': activeTerminalId });
+            }
+        }
+        
+        // --- Functions for the new Upload Tab ---
+
+        /**
+         * @brief Sets up drag and drop functionality for the upload area.
+         */
+        function setupDragAndDrop() {
+            const dropArea = document.getElementById('drop-area');
+            const fileInput = document.getElementById('file-input');
+            const uploadStatus = document.getElementById('upload-status');
+            const uploadPath = document.getElementById('upload_path_entry');
+            
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, preventDefaults, false);
+                document.body.addEventListener(eventName, preventDefaults, false);
+            });
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropArea.addEventListener(eventName, () => dropArea.classList.add('border-blue-500', 'bg-gray-700'), false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, () => dropArea.classList.remove('border-blue-500', 'bg-gray-700'), false);
+            });
+
+            dropArea.addEventListener('drop', handleDrop, false);
+
+            dropArea.addEventListener('click', () => fileInput.click(), false);
+
+            fileInput.addEventListener('change', (e) => handleFiles(e.target.files), false);
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            async function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                handleFiles(files);
+            }
+
+            async function handleFiles(files) {
+                if (files.length === 0) return;
+                
+                uploadStatus.textContent = `Uploading ${files.length} file(s)...`;
+
+                const formData = new FormData();
+                for (const file of files) {
+                    formData.append('file', file);
+                }
+                
+                const path = uploadPath.value.trim();
+                if (path) {
+                    formData.append('path', path);
+                }
+
+                    // Append path to formData
+                const uploadPathEntry = document.getElementById('upload_path_entry').value.trim();
+                if (uploadPathEntry) {
+                    formData.append('path', uploadPathEntry);
+                }
+
+                try {
+                    const response = await fetch('/upload_file', {
+                        method: 'POST',
+                        body: formData,
+                    });
+
+                    const result = await response.json();
+                    if (result.success) {
+                        uploadStatus.textContent = result.message;
+                        showToast('Upload Successful', result.message, 'success');
+                    } else {
+                        uploadStatus.textContent = result.message;
+                        showToast('Upload Failed', result.message, 'error');
+                    }
+                } catch (error) {
+                    console.error('Upload error:', error);
+                    uploadStatus.textContent = 'An error occurred during the upload.';
+                    showToast('Upload Error', 'An error occurred during the upload.', 'error');
+                }
+            }
+        }
+        
+        // --- Functions for the new Create File Tab ---
+        
+        /**
+         * @brief Toggles the visibility of the custom path input based on dropdown selection.
+         */
+        function toggleCustomPath() {
+            const select = document.getElementById('create_path_select');
+            const customContainer = document.getElementById('custom_path_container');
+            if (select.value === 'custom') {
+                customContainer.classList.remove('hidden');
+            } else {
+                customContainer.classList.add('hidden');
+            }
+        }
+
+        /**
+         * @brief Saves a new file to the server.
+         */
+        async function saveNewFile() {
+            const fileName = document.getElementById('file_name_entry').value;
+            const fileContent = document.getElementById('file_content_entry').value;
+            const pathSelect = document.getElementById('create_path_select').value;
+            let path = '';
+            
+            if (pathSelect === 'custom') {
+                 path = document.getElementById('create_path_entry').value;
+            } else if (pathSelect === 'commands_folder') {
+                // For configured folders, pass the key to the backend
+                path = 'commands'; 
+            } else if (pathSelect === 'notes_folder') {
+                path = 'notes';
+            } else if (pathSelect === 'output') {
+                path = 'output';
+            }
+            
+            if (!fileName) {
+                showToast('Validation Error', 'Please enter a file name.', 'error');
+                return;
+            }
+            
+            if (pathSelect === 'custom' && !path) {
+                showToast('Validation Error', 'Please enter a custom path.', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/create_file', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ file_name: fileName, file_content: fileContent, path: path })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showToast('Success!', result.message, 'success');
+                    document.getElementById('file_name_entry').value = '';
+                    document.getElementById('file_content_entry').value = '';
+                    document.getElementById('create_path_entry').value = '';
+                    
+                    if (path === 'commands') loadCommandFiles();
+                    if (path === 'notes') loadNoteFiles();
+                    
+                } else {
+                    showToast('Error!', result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error creating file:', error);
+                showToast('Error!', 'An error occurred while creating the file.', 'error');
+            }
+        }
+        
+        // --- Functions for the new Get Files tab ---
+        
+        /**
+         * @brief Fetches and displays a list of files from a specified path.
+         */
+        async function getFilesFromPath() {
+            const path = document.getElementById('get_files_path_entry').value;
+            const fileListContainer = document.getElementById('file-list');
+            fileListContainer.innerHTML = '<p class="text-gray-400">Loading files...</p>';
+
+            try {
+                const response = await fetch('/get_files_from_path', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ path: path })
+                });
+                const result = await response.json();
+                
+                fileListContainer.innerHTML = '';
+
+                if (result.success) {
+                    if (result.files.length === 0) {
+                        fileListContainer.innerHTML = '<p class="text-gray-400">No files found in this path.</p>';
+                    } else {
+                        result.files.forEach(filename => {
+                            const fileItem = document.createElement('div');
+                            fileItem.className = 'flex items-center';
+                            fileItem.innerHTML = `
+                                <label class="checkbox-label">
+                                    <input type="checkbox" class="file-checkbox form-checkbox h-5 w-5 text-blue-600 rounded bg-gray-600 border-gray-500" value="${escapeHtml(filename)}">
+                                    <span class="ml-2 text-gray-300">${escapeHtml(filename)}</span>
+                                </label>
+                            `;
+                            fileListContainer.appendChild(fileItem);
+                        });
+                        lucide.createIcons();
+                    }
+                } else {
+                    fileListContainer.innerHTML = `<p class="text-red-400">Error: ${escapeHtml(result.message)}</p>`;
+                    showToast('Error', result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error getting files:', error);
+                fileListContainer.innerHTML = '<p class="text-red-400">An unexpected error occurred.</p>';
+                showToast('Error', 'An unexpected error occurred.', 'error');
+            }
+        }
+        
+        /**
+         * @brief Copies selected files to a new destination.
+         * @param {string} action The action to perform ('copy' or 'move').
+         */
+        async function handleFileAction(action) {
+            const selectedFiles = Array.from(document.querySelectorAll('#file-list .file-checkbox:checked'))
+                                       .map(cb => cb.value);
+            const sourcePath = document.getElementById('get_files_path_entry').value;
+            const destinationPath = document.getElementById('destination_path_get_files').value;
+            
+            if (selectedFiles.length === 0) {
+                showToast('Validation Error', 'Please select at least one file.', 'error');
+                return;
+            }
+            
+            const endpoint = action === 'copy' ? '/copy_files_from_path' : '/move_files_from_path';
+            const body = {
+                source_path: sourcePath,
+                destination_path: destinationPath,
+                files: selectedFiles
+            };
+            
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    showToast('Success!', result.message, 'success');
+                    if (action === 'move') {
+                        getFilesFromPath();
+                    }
+                } else {
+                    showToast('Error!', result.message, 'error');
+                }
+            } catch (error) {
+                console.error(`Error during ${action} operation:`, error);
+                showToast('Error!', `An unexpected error occurred during the ${action} operation.`, 'error');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize main terminal
+            const mainTerminalContainer = document.getElementById('main_terminal');
+            
+            mainTerminal.open(mainTerminalContainer);
+            fitAddon.fit();
+            
+            terminals['main_terminal'] = {
+                instance: mainTerminal,
+                fitAddon: fitAddon,
+                name: 'Terminal 1'
+            };
+            terminalNames['main_terminal'] = 'Terminal 1';
+            terminalCounter = 1;
+
+            // Initially show the main terminal
+            document.getElementById('main_terminal_wrapper').classList.add('active');
+            
+            // Set the initial terminal title
+            document.getElementById('terminal_title').innerText = terminalNames['main_terminal'];
+
+            mainTerminal.onData(data => {
+                socket.emit('terminal_input', { 'command': data, 'terminalId': activeTerminalId });
+            });
+
+            socket = io();
+            
+            socket.on('connect', () => {
+                socket.emit('new_terminal_session', { terminalId: 'main_terminal' });
+            });
+            
+            // Handle incoming terminal output for any terminal
+            socket.on('terminal_output', (data) => {
+                const targetTerminal = terminals[data.terminalId];
+                if (targetTerminal) {
+                    targetTerminal.instance.write(data.data);
+                }
+            });
+
+            // Handle scheduled task events
+            document.getElementById('schedule_task_button').addEventListener('click', scheduleTask);
+            document.getElementById('add_last_session_button').addEventListener('click', () => {
+                socket.emit('replace_task_sids');
+            });
+            socket.on('connect', () => {
+                socket.emit('update_task_sids');
+            });
+            socket.on('update_tasks_result', (data) => {
+                showToast(data.success ? 'Success!' : 'Error!', data.message, data.success ? 'success' : 'error');
+                if (data.success) {
+                    getScheduledTasks();
+                }
+            });
+            socket.on('task_scheduled_result', (data) => {
+                showToast(data.success ? 'Success!' : 'Error!', data.message, data.success ? 'success' : 'error');
+                if (data.success) {
+                    getScheduledTasks();
+                }
+            });
+            socket.on('edit_task_result', (data) => {
+                showToast(data.success ? 'Success!' : 'Error!', data.message, data.success ? 'success' : 'error');
+                if (data.success) {
+                    getScheduledTasks();
+                }
+            });
+            socket.on('task_cancelled', (data) => {
+                showToast('Cancelled', data.message);
+                getScheduledTasks();
+            });
+            socket.on('task_completed', (data) => {
+                showToast('Completed', data.message, 'success');
+                getScheduledTasks();
+            });
+            socket.on('scheduled_tasks_list', (data) => {
+                scheduledTasks = data.tasks;
+                renderScheduledTasks();
+            });
+            socket.on('session_replace_result', (data) => {
+                showToast(data.success ? 'Success!' : 'Error!', data.message, data.success ? 'success' : 'error');
+                if (data.success) {
+                    getScheduledTasks();
+                }
+            });
+            
+            // Handle terminal creation event
+            document.getElementById('new_terminal_button').addEventListener('click', () => {
+                const newTerminalId = createNewTerminal();
+                terminals[newTerminalId].instance.write('New terminal session created. Welcome!\r\n');
+            });
+            
+            renderTerminalButtons();
+            populateTerminalSessions();
+
+
+            window.addEventListener('resize', () => {
+                // Find the active terminal and resize it
+                const activeTerminal = terminals[activeTerminalId];
+                if (activeTerminal) {
+                    activeTerminal.fitAddon.fit();
+                }
+            });
+
+            mainTerminal.write('Welcome to the interactive Web GUI!\r\n\r\n');
+            
+            loadAllData();
+            loadPathConfig(); // Load initial path config
+            setupDragAndDrop();
+            
+            // Event listeners for the main action buttons
+            document.getElementById('run_tool_button').addEventListener('click', runTool);
+            document.getElementById('save_new_file_button').addEventListener('click', saveNewFile);
+            document.getElementById('download_file_button').addEventListener('click', downloadFile);
+            document.getElementById('get_files_button').addEventListener('click', getFilesFromPath);
+            document.getElementById('copy_files_button').addEventListener('click', () => handleFileAction('copy'));
+            document.getElementById('move_files_button').addEventListener('click', () => handleFileAction('move'));
+
+            // New event listeners for Commands and Notes
+            document.getElementById('new_command_button').addEventListener('click', createCommandFile);
+            document.getElementById('command_search_box').addEventListener('keyup', filterCommandFiles);
+            document.getElementById('new_note_button').addEventListener('click', createNoteFile);
+            document.getElementById('note_search_box').addEventListener('keyup', filterNoteFiles);
+            
+            // Initial load of command and note files
+            loadCommandFiles();
+            loadNoteFiles();
+
+            // Handle save buttons for new modals
+            document.getElementById('saveCommandFileButton').addEventListener('click', saveCommandFile);
+            document.getElementById('saveNoteFileButton').addEventListener('click', saveNoteFile);
+            
+            // Initial state for Create File tab
+            toggleCustomPath();
+        });
+
+        // --- GLOBAL FILE HELPER FUNCTION ---
+        
+        /**
+         * @brief Extracts the display name (filename without extension) from a full path or alias/filename string.
+         * @param {string} fullPath The string (e.g., 'commands/notetest.txt' or '/path/to/file.txt').
+         * @returns {string} The filename without extension (e.g., 'notetest').
+         */
+        function getDisplayFilename(fullPath) {
+            // 1. Get the filename with extension (e.g., 'notetest.txt')
+            // This handles both / and \ separators by popping the last element after splitting by either.
+            let filenameWithExt = fullPath.split('/').pop().split('\\').pop();
+
+            // 2. Remove the extension (.txt, .cmd, etc.)
+            const parts = filenameWithExt.split('.');
+            if (parts.length > 1 && parts[parts.length - 1].length <= 5) { // Simple heuristic to avoid removing dots in complex filenames, only remove short extensions
+                parts.pop(); // Remove the last part (the extension)
+                return parts.join('.'); // Re-join if the filename had multiple dots
+            }
+            return filenameWithExt;
+        }
+
+        // --- Functions for Commands section ---
+
+        /**
+         * @brief Renders the list of command files from the `commands` directory.
+         */
+        async function loadCommandFiles() {
+            const commandList = document.getElementById('commands_list');
+            commandList.innerHTML = '<p class="text-gray-400">Loading commands...</p>';
+            try {
+                // Pass a specific flag to the backend to aggregate files from all configured paths
+                const response = await fetch('/get_files_from_path', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ path: 'commands', aggregate: true }) 
+                });
+                const result = await response.json();
+                commandList.innerHTML = '';
+                if (result.success && result.files.length > 0) {
+                    result.files.forEach(filename => {
+                        const fileItem = document.createElement('div');
+                        fileItem.className = 'flex justify-between items-center bg-gray-700 p-3 rounded-md shadow-sm';
+                        
+                        // FIX: Use the new helper function to display only the filename without extension
+                        const displayFilename = getDisplayFilename(filename); 
+                        
+                        fileItem.innerHTML = `
+                            <span class="text-gray-200 font-medium cursor-pointer" data-full-path="${escapeHtml(filename)}" onclick="viewCommandContent('${escapeHtml(filename)}')">${escapeHtml(displayFilename)}</span>
+                            <div class="flex space-x-2">
+                                <button class="text-white px-1 py-1 rounded-md text-sm flex items-center" onclick="editCommandFile('${escapeHtml(filename)}')">
+                                    <i data-lucide="edit-2" class="w-4 h-4 text-yellow-400"></i>
+                                </button>
+                                <button class="text-white px-1 py-1 rounded-md text-sm flex items-center" onclick="deleteFileInFolder('commands', '${escapeHtml(filename)}')">
+                                    <i data-lucide="trash-2" class="w-4 h-4 text-red-400"></i>
+                                </button>
+                            </div>
+                        `;
+                        commandList.appendChild(fileItem);
+                    });
+                    lucide.createIcons();
+                } else {
+                    commandList.innerHTML = '<p class="text-gray-400">No command files found.</p>';
+                }
+            } catch (error) {
+                console.error('Error loading command files:', error);
+                commandList.innerHTML = '<p class="text-red-400">Error loading command files.</p>';
+            }
+        }
+
+        /**
+         * @brief Filters the command list based on the search box input.
+         */
+        function filterCommandFiles() {
+            const searchQuery = document.getElementById('command_search_box').value.toLowerCase();
+            const fileItems = document.querySelectorAll('#commands_list > div');
+            
+            fileItems.forEach(item => {
+                // Use the display name for filtering (which is now the name without extension)
+                const fileName = item.querySelector('span').innerText.toLowerCase(); 
+                if (fileName.includes(searchQuery)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        /**
+         * @brief Opens the modal to create a new command file.
+         */
+        function createCommandFile() {
+            document.getElementById('commandFileModalTitle').innerText = 'Create New Command File';
+            document.getElementById('command_file_name_entry').value = '';
+            document.getElementById('command_file_content_entry').value = '';
+            document.getElementById('command_file_id').value = ''; // Clear ID for new file
+            
+            renderSavePathSelect('commands_folder', 'command_save_path_select_container', 'command_save_path_select');
+            
+            document.getElementById('commandFileModal').style.display = 'flex';
+        }
+
+        /**
+         * @brief Saves a new or edited command file.
+         */
+        async function saveCommandFile() {
+            const id = document.getElementById('command_file_id').value; // Full path: FolderAlias/filename.txt
+            const fileName = document.getElementById('command_file_name_entry').value; // New filename.txt
+            const fileContent = document.getElementById('command_file_content_entry').value;
+            
+            const savePathSelect = document.getElementById('command_save_path_select');
+            const selectedSavePath = savePathSelect ? savePathSelect.value : 'commands'; // Default to 'commands' key if select is missing
+
+            if (!fileName) {
+                showToast('Validation Error', 'File name cannot be empty.', 'error');
+                return;
+            }
+            
+            let originalFilename = id ? id.split('/').pop() : null; // Get original filename if editing
+            let originalPathAlias = id ? id.split('/')[0] : null; // Get original folder alias
+
+            try {
+                let result;
+                if (id) {
+                    // This is an edit operation. Check if filename changed or content changed.
+                    if (originalFilename !== fileName) {
+                         // Delete old file. Use the alias/filename combination for deletion lookup.
+                         await fetch('/delete_file', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ filename: `${originalPathAlias}/${originalFilename}` }) 
+                         });
+                         // Create new file at the selected path.
+                         const response = await fetch('/create_file', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ file_name: fileName, file_content: fileContent, path: selectedSavePath }) 
+                         });
+                         result = await response.json();
+                    } else {
+                        // Same file name, update content. Use the alias/filename combination for file lookup.
+                        const response = await fetch('/edit_file', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ filename: `${originalPathAlias}/${originalFilename}`, content: fileContent })
+                        });
+                        result = await response.json();
+                    }
+
+                } else {
+                    // This is a new file creation.
+                    const response = await fetch('/create_file', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ file_name: fileName, file_content: fileContent, path: selectedSavePath }) 
+                    });
+                    result = await response.json();
+                }
+                
+                if (result.success) {
+                    showToast('Success!', result.message, 'success');
+                    closeCommandFileModal();
+                    loadCommandFiles();
+                } else {
+                    showToast('Error!', result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error saving command file:', error);
+                showToast('Error!', 'An error occurred while saving the command file.', 'error');
+            }
+        }
+        
+        /**
+         * @brief Opens the modal to edit a command file.
+         * @param {string} fullPath The full path alias/filename (e.g., Commands/file.txt).
+         */
+        async function editCommandFile(fullPath) {
+            document.getElementById('commandFileModalTitle').innerText = 'Edit Command File';
+            document.getElementById('command_file_id').value = fullPath;
+            
+            // Get filename WITH extension for the input box
+            const filename = fullPath.split('/').pop();
+            
+            renderSavePathSelect('commands_folder', 'command_save_path_select_container', 'command_save_path_select');
+
+            try {
+                // Pass the full path/filename to the backend for content retrieval
+                const response = await fetch('/get_file_content', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ filename: fullPath }) 
+                });
+                const result = await response.json();
+                if (result.success) {
+                    document.getElementById('command_file_name_entry').value = filename;
+                    document.getElementById('command_file_content_entry').value = result.content;
+                    
+                    // The path selection is tricky here as the file could be in any of the configured paths.
+                    // The dropdown should be set to the folder where the file was found, but the BE only gives
+                    // us the alias/filename. For simplicity, we just leave it at the first path.
+                    
+                    document.getElementById('commandFileModal').style.display = 'flex';
+                } else {
+                    showToast('Error!', result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error editing command file:', error);
+                showToast('Error!', 'An error occurred while editing the command file.', 'error');
+            }
+        }
+
+        /**
+         * @brief Closes the command file modal.
+         */
+        function closeCommandFileModal() {
+            document.getElementById('commandFileModal').style.display = 'none';
+        }
+
+        /**
+         * @brief Loads the content of a command file into the generated command textarea.
+         * @param {string} fullPath The full path alias/filename (e.g., Commands/file.txt).
+         */
+        async function viewCommandContent(fullPath) {
+            try {
+                // Pass the full path/filename to the backend for content retrieval
+                const response = await fetch('/get_file_content', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ filename: fullPath }) 
+                });
+                const result = await response.json();
+                if (result.success) {
+                    document.getElementById('command_text').value = result.content;
+                    showToast('Command Loaded', `${getDisplayFilename(fullPath)} content loaded into command box.`, 'success');
+                } else {
+                    showToast('Error!', result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error loading command content:', error);
+                showToast('Error!', 'An error occurred while loading the command content.', 'error');
+            }
+        }
+
+        // --- Functions for Notes section ---
+
+        /**
+         * @brief Renders the list of note files from the `notes` directory.
+         */
+        async function loadNoteFiles() {
+            const notesList = document.getElementById('notes_list');
+            notesList.innerHTML = '<p class="text-gray-400">Loading notes...</p>';
+            try {
+                // Pass a specific flag to the backend to aggregate files from all configured paths
+                const response = await fetch('/get_files_from_path', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ path: 'notes', aggregate: true }) 
+                });
+                const result = await response.json();
+                notesList.innerHTML = '';
+                if (result.success && result.files.length > 0) {
+                    result.files.forEach(filename => {
+                        const fileItem = document.createElement('div');
+                        fileItem.className = 'flex justify-between items-center bg-gray-700 p-3 rounded-md shadow-sm';
+                        
+                        // FIX: Use the new helper function to display only the filename without extension
+                        const displayFilename = getDisplayFilename(filename); 
+
+                        fileItem.innerHTML = `
+                            <span class="text-gray-200 font-medium cursor-pointer" data-full-path="${escapeHtml(filename)}" onclick="viewNoteContent('${escapeHtml(filename)}')">${escapeHtml(displayFilename)}</span>
+                            <div class="flex space-x-2">
+                                <button class="text-white px-1 py-1 rounded-md text-sm flex items-center" onclick="editNoteFile('${escapeHtml(filename)}')">
+                                    <i data-lucide="edit-2" class="w-4 h-4 text-yellow-400"></i>
+                                </button>
+                                <button class="text-white px-1 py-1 rounded-md text-sm flex items-center" onclick="deleteFileInFolder('notes', '${escapeHtml(filename)}')">
+                                    <i data-lucide="trash-2" class="w-4 h-4 text-red-400"></i>
+                                </button>
+                            </div>
+                        `;
+                        notesList.appendChild(fileItem);
+                    });
+                    lucide.createIcons();
+                } else {
+                    notesList.innerHTML = '<p class="text-gray-400">No note files found.</p>';
+                }
+            } catch (error) {
+                console.error('Error loading note files:', error);
+                notesList.innerHTML = '<p class="text-red-400">Error loading note files.</p>';
+            }
+        }
+
+        /**
+         * @brief Filters the notes list based on the search box input.
+         */
+        function filterNoteFiles() {
+            const searchQuery = document.getElementById('note_search_box').value.toLowerCase();
+            const fileItems = document.querySelectorAll('#notes_list > div');
+            
+            fileItems.forEach(item => {
+                const fileName = item.querySelector('span').innerText.toLowerCase();
+                if (fileName.includes(searchQuery)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+        
+        /**
+         * @brief Opens a modal to view a note file's content in a read-only format.
+         * @param {string} fullPath The full path alias/filename (e.g., Notes/file.txt).
+         */
+        async function viewNoteContent(fullPath) {
+            try {
+                const response = await fetch('/get_file_content', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ filename: fullPath })
+                });
+                const result = await response.json();
+                if (result.success) {
+                    document.getElementById('exampleOutputModalTitle').innerText = `Note: ${getDisplayFilename(fullPath)}`;
+                    document.getElementById('exampleOutputModalText').innerHTML = escapeHtml(result.content); 
+                    document.getElementById('exampleOutputModal').style.display = 'flex';
+                } else {
+                    showToast('Error!', result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error viewing note content:', error);
+                showToast('Error!', 'An error occurred while viewing the note content.', 'error');
+            }
+        }
+        
+        /**
+         * @brief Opens a modal to create a new note file.
+         */
+        function createNoteFile() {
+             document.getElementById('noteFileModalTitle').innerText = 'Create New Note File';
+            document.getElementById('note_file_name_entry').value = '';
+            document.getElementById('note_file_content_entry').value = '';
+            document.getElementById('note_file_id').value = ''; // Clear ID for new file
+            
+            renderSavePathSelect('notes_folder', 'note_save_path_select_container', 'note_save_path_select');
+            
+            document.getElementById('noteFileModal').style.display = 'flex';
+        }
+        
+        /**
+         * @brief Opens the modal to edit a note file.
+         * @param {string} fullPath The full path alias/filename (e.g., Notes/file.txt).
+         */
+        async function editNoteFile(fullPath) {
+            document.getElementById('noteFileModalTitle').innerText = 'Edit Note File';
+            document.getElementById('note_file_id').value = fullPath;
+            
+            // Get filename WITH extension for the input box
+            const filename = fullPath.split('/').pop();
+            
+            renderSavePathSelect('notes_folder', 'note_save_path_select_container', 'note_save_path_select');
+
+            try {
+                // Pass the full path/filename to the backend for content retrieval
+                const response = await fetch('/get_file_content', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ filename: fullPath }) 
+                });
+                const result = await response.json();
+                if (result.success) {
+                    document.getElementById('note_file_name_entry').value = filename;
+                    document.getElementById('note_file_content_entry').value = result.content;
+                    document.getElementById('noteFileModal').style.display = 'flex';
+                } else {
+                    showToast('Error!', result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error editing note file:', error);
+                showToast('Error!', 'An error occurred while editing the note file.', 'error');
+            }
+        }
+
+        /**
+         * @brief Saves a new or edited note file.
+         */
+        async function saveNoteFile() {
+            const id = document.getElementById('note_file_id').value; // Full path: FolderAlias/filename.txt
+            const fileName = document.getElementById('note_file_name_entry').value; // New filename.txt
+            const fileContent = document.getElementById('note_file_content_entry').value;
+            
+            const savePathSelect = document.getElementById('note_save_path_select');
+            const selectedSavePath = savePathSelect ? savePathSelect.value : 'notes';
+
+            if (!fileName) {
+                showToast('Validation Error', 'File name cannot be empty.', 'error');
+                return;
+            }
+
+            let originalFilename = id ? id.split('/').pop() : null; // Get original filename if editing
+            let originalPathAlias = id ? id.split('/')[0] : null;
+
+            try {
+                let result;
+                if (id) {
+                    // This is an edit operation. Check if filename changed.
+                    if (originalFilename !== fileName) {
+                         // Delete old file. Use the alias/filename combination for deletion lookup.
+                         await fetch('/delete_file', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ filename: `${originalPathAlias}/${originalFilename}` }) 
+                         });
+                         // Create new file at the selected path.
+                         const response = await fetch('/create_file', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ file_name: fileName, file_content: fileContent, path: selectedSavePath })
+                         });
+                         result = await response.json();
+                    } else {
+                        // Same file name, update content. Use the alias/filename combination for file lookup.
+                        const response = await fetch('/edit_file', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ filename: `${originalPathAlias}/${originalFilename}`, content: fileContent })
+                        });
+                        result = await response.json();
+                    }
+
+                } else {
+                    // This is a new file creation
+                    const response = await fetch('/create_file', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ file_name: fileName, file_content: fileContent, path: selectedSavePath })
+                    });
+                    result = await response.json();
+                }
+                
+                if (result.success) {
+                    showToast('Success!', result.message, 'success');
+                    closeNoteFileModal();
+                    loadNoteFiles();
+                } else {
+                    showToast('Error!', result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error saving note file:', error);
+                showToast('Error!', 'An error occurred while saving the note file.', 'error');
+            }
+        }
+
+        /**
+         * @brief Closes the note file modal.
+         */
+        function closeNoteFileModal() {
+            document.getElementById('noteFileModal').style.display = 'none';
+        }
+
+        /**
+         * @brief Deletes a file from a specified folder.
+         * @param {string} folder The name of the folder alias (e.g., 'commands', 'notes').
+         * @param {string} fullPath The full path alias/filename (e.g., Commands/file.txt).
+         */
+        async function deleteFileInFolder(folder, fullPath) {
+             // Extract the display name for the confirmation message (without extension)
+             const displayName = getDisplayFilename(fullPath);
+             
+             if (!confirm(`Are you sure you want to delete '${displayName}' from the '${folder}' folder?`)) {
+                return;
+            }
+            
+            // Pass the fullPath (which is the alias/filename.ext) for deletion lookup
+            // This is the correct identifier for the backend to resolve the path
+            const fileIdentifier = fullPath; 
+
+            try {
+                const response = await fetch('/delete_file', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ filename: fileIdentifier })
+                });
+                const result = await response.json();
+                if (result.success) {
+                    showToast('Deleted!', result.message, 'success');
+                    if (folder === 'commands') {
+                        loadCommandFiles();
+                    } else if (folder === 'notes') {
+                        loadNoteFiles();
+                    }
+                } else {
+                    showToast('Error!', result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error deleting file:', error);
+                showToast('Error!', 'An error occurred while trying to delete the file.', 'error');
+            }
+        }
+
+        // --- Functions for the new Paths tab and Path Browser Modal (UPDATED FOR MULTI-PATH) ---
+
+        /**
+         * @brief Fetches and populates the current path configurations.
+         */
+        async function loadPathConfig() {
+            try {
+                const response = await fetch('/get_path_config');
+                const data = await response.json();
+                pathConfig = data;
+                renderPathList('commands_folder');
+                renderPathList('notes_folder');
+                
+                // RENDER DYNAMIC SELECTS FOR MODALS
+                renderSavePathSelect('commands_folder', 'command_save_path_select_container', 'command_save_path_select');
+                renderSavePathSelect('notes_folder', 'note_save_path_select_container', 'note_save_path_select');
+                
+                console.log('Path config loaded:', pathConfig);
+            } catch (error) {
+                console.error('Error loading path config:', error);
+                showToast('Error', 'Failed to load path configurations from server.', 'error');
+            }
+        }
+
+        /**
+         * @brief Renders the list of path inputs for a given category.
+         * @param {string} key 'commands_folder' or 'notes_folder'.
+         */
+        function renderPathList(key) {
+            const container = document.getElementById(`${key}_paths`);
+            container.innerHTML = '';
+            
+            const paths = pathConfig[key] || [];
+
+            paths.forEach((path, index) => {
+                const pathGroup = document.createElement('div');
+                pathGroup.className = 'flex items-center space-x-2';
+                pathGroup.setAttribute('data-path-index', index);
+                
+                // ADDED: Create unique ID for the input field
+                const inputId = `${key}_path_input_${index}`; 
+
+                const input = document.createElement('input');
+                input.id = inputId; // SET unique ID
+                input.type = 'text';
+                input.value = path;
+                input.className = 'flex-1 p-2 rounded bg-gray-600 text-white border border-gray-500 path-input';
+                input.setAttribute('data-path-key', key);
+                input.setAttribute('data-path-index', index);
+                
+                const browseButton = document.createElement('button');
+                browseButton.className = 'bg-yellow-500 hover:bg-yellow-600 text-black px-2 py-2 rounded flex-shrink-0';
+                browseButton.innerHTML = '<i data-lucide="folder-open" class="w-5 h-5"></i>';
+                // MODIFIED: Pass the new unique inputId
+                browseButton.onclick = () => openPathBrowser(key, index, path, inputId); 
+
+                const deleteButton = document.createElement('button');
+                deleteButton.className = 'bg-red-500 hover:bg-red-600 text-white px-2 py-2 rounded flex-shrink-0';
+                deleteButton.innerHTML = '<i data-lucide="trash-2" class="w-5 h-5"></i>';
+                deleteButton.onclick = () => deletePathEntry(key, index);
+
+                pathGroup.appendChild(input);
+                pathGroup.appendChild(browseButton);
+                pathGroup.appendChild(deleteButton);
+                container.appendChild(pathGroup);
+            });
+            lucide.createIcons();
+        }
+        
+        /**
+         * @brief Renders the save path select element for a given folder type.
+         * @param {string} key 'commands_folder' or 'notes_folder'.
+         * @param {string} containerId The ID of the container element.
+         * @param {string} selectId The ID for the new select element.
+         */
+        function renderSavePathSelect(key, containerId, selectId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            const select = document.createElement('select');
+            select.id = selectId;
+            select.className = 'w-full p-2 rounded bg-gray-600 text-white border border-gray-500';
+            
+            const paths = pathConfig[key] || [];
+
+            if (paths.length === 0) {
+                // Fallback to a disabled option if no paths are configured
+                const option = document.createElement('option');
+                option.text = 'No paths configured. Check Paths tab.';
+                option.value = key.replace('_folder', ''); // Send alias key as fallback
+                option.disabled = true;
+                select.appendChild(option);
+            } else {
+                paths.forEach((path, index) => {
+                    const option = document.createElement('option');
+                    // The value is the raw path string (e.g., 'commands' or 'my_custom_commands')
+                    option.value = path; 
+                    // The display text is the path string, plus an indicator if it's the default
+                    option.text = `${path} (${index === 0 ? 'Default' : 'Configured'})`; 
+                    select.appendChild(option);
+                });
+            }
+            
+            container.appendChild(select);
+        }
+
+        /**
+         * @brief Adds a new, empty path entry to the list.
+         * @param {string} key 'commands_folder' or 'notes_folder'.
+         */
+        function addPathEntry(key) {
+            pathConfig[key].push('');
+            renderPathList(key);
+        }
+
+        /**
+         * @brief Deletes a path entry from the list.
+         * @param {string} key 'commands_folder' or 'notes_folder'.
+         * @param {number} index The index of the path to delete.
+         */
+        function deletePathEntry(key, index) {
+            if (pathConfig[key].length === 1) {
+                showToast('Error', 'Cannot delete the last path. You must have at least one folder configured.', 'error');
+                return;
+            }
+            pathConfig[key].splice(index, 1);
+            renderPathList(key);
+        }
+
+        /**
+         * @brief Saves all path configurations for a specific folder group.
+         * @param {string} key The key in path_config (e.g., 'commands_folder').
+         */
+        async function saveAllPathConfig(key) {
+            const container = document.getElementById(`${key}_paths`);
+            const inputs = container.querySelectorAll('.path-input');
+            const pathsToSave = [];
+
+            inputs.forEach(input => {
+                const path = input.value.trim();
+                if (path) {
+                    pathsToSave.push(path);
+                }
+            });
+
+            if (pathsToSave.length === 0) {
+                 showToast('Validation Error', 'You must have at least one non-empty path.', 'error');
+                 return;
+            }
+
+            try {
+                const response = await fetch('/set_path_config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ key: key, paths: pathsToSave })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showToast('Success!', result.message, 'success');
+                    await loadPathConfig(); // Reload to get server-validated paths and re-render path lists/selects
+                    loadCommandFiles(); // Refresh sidebar lists
+                    loadNoteFiles(); // Refresh sidebar lists
+                } else {
+                    showToast('Error!', result.message, 'error');
+                    await loadPathConfig(); // Re-render original paths on error
+                }
+            } catch (error) {
+                console.error('Error saving path config:', error);
+                showToast('Error!', 'An unexpected error occurred while saving the path.', 'error');
+            }
+        }
+
+        /**
+         * @brief Opens the path browser modal.
+         * @param {string} key The path category key.
+         * @param {number} index The index of the path being edited.
+         * @param {string} currentPath The current path value from the input.
+         * @param {string} inputId The unique ID of the target input field.
+         */
+        function openPathBrowser(key, index, currentPath, inputId) {
+            // MODIFIED: Store the target input ID directly
+            document.getElementById('path_browser_target_id').value = inputId;
+            const path = currentPath || '/';
+            document.getElementById('pathBrowserModalTitle').innerText = `Browse Folder for: ${key.replace('_folder', '')} [${index}]`;
+            document.getElementById('pathBrowserModal').style.display = 'flex';
+            browsePath(path);
+        }
+        
+        /**
+         * @brief Sets the selected path from the browser to the target input field.
+         */
+        function selectPathFromBrowser() {
+            const targetId = document.getElementById('path_browser_target_id').value; // Now holds the input ID (e.g., 'commands_folder_path_input_0')
+            const selectedPath = document.getElementById('current_path_display').value;
+            
+            if (targetId && selectedPath) {
+                const targetInput = document.getElementById(targetId); // Direct lookup by ID
+
+                if (targetInput) {
+                    targetInput.value = selectedPath; // Direct update to the input field
+                    
+                    // Update the in-memory config to keep state consistent for the next save
+                    // We need to parse key and index from the ID: e.g., 'commands_folder_path_input_0'
+                    const parts = targetId.split('_');
+                    const indexStr = parts[parts.length - 1]; 
+                    // The key is everything before the last 3 parts (_path_input_index)
+                    const key = parts.slice(0, parts.length - 3).join('_'); 
+                    
+                    const index = parseInt(indexStr, 10);
+                    if (pathConfig[key] && !isNaN(index)) {
+                         pathConfig[key][index] = selectedPath;
+                    } else {
+                         console.error('Failed to parse key/index from ID for pathConfig update:', targetId);
+                    }
+                }
+                
+                closePathBrowserModal();
+                showToast('Path Selected', `Path set to: ${selectedPath}`, 'success');
+            } else {
+                showToast('Error', 'Could not select path.', 'error');
+            }
+        }
+        
+        /**
+         * @brief Closes the path browser modal.
+         */
+        function closePathBrowserModal() {
+            document.getElementById('pathBrowserModal').style.display = 'none';
+        }
+
+        /**
+         * @brief Fetches and displays the contents of a directory in the browser modal.
+         * @param {string} path The path to browse.
+         */
+        async function browsePath(path) {
+            const listContainer = document.getElementById('path_browser_list');
+            listContainer.innerHTML = '<p class="text-gray-400">Loading directory contents...</p>';
+            
+            try {
+                const response = await fetch('/browse_path', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ path: path })
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    renderPathBrowser(result.contents, result.current_path);
+                } else {
+                    listContainer.innerHTML = `<p class="text-red-400">Error: ${escapeHtml(result.message)}</p>`;
+                    document.getElementById('current_path_display').value = path;
+                }
+            } catch (error) {
+                console.error('Error browsing path:', error);
+                listContainer.innerHTML = '<p class="text-red-400">An error occurred while accessing the file system.</p>';
+            }
+        }
+
+        /**
+         * @brief Renders the directory contents in the path browser modal.
+         * @param {Array} contents The list of files and folders.
+         * @param {string} currentPath The current path displayed.
+         */
+        function renderPathBrowser(contents, currentPath) {
+            const listContainer = document.getElementById('path_browser_list');
+            listContainer.innerHTML = '';
+            document.getElementById('current_path_display').value = currentPath;
+            
+            contents.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'flex items-center p-1 rounded-md cursor-pointer transition-colors duration-150';
+                
+                if (item.type === 'folder') {
+                    itemDiv.classList.add('hover:bg-gray-600', 'font-medium', 'text-blue-400');
+                    itemDiv.innerHTML = `<i data-lucide="folder" class="w-4 h-4 mr-2 text-yellow-500"></i> ${escapeHtml(item.name)}`;
+                    itemDiv.onclick = () => browsePath(item.full_path);
+                } else {
+                    itemDiv.classList.add('hover:bg-gray-600', 'text-gray-300');
+                    itemDiv.innerHTML = `<i data-lucide="file" class="w-4 h-4 mr-2 text-gray-400"></i> ${escapeHtml(item.name)}`;
+                    // File items are not clickable for navigation
+                }
+                listContainer.appendChild(itemDiv);
+            });
+            lucide.createIcons();
+        }
+
+    </script>
+</body>
+</html>

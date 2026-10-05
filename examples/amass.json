@@ -1,0 +1,92 @@
+[
+  {
+    "name": "Basic Passive Enumeration",
+    "description": "Performs a basic, passive enumeration of a single domain without making any active requests to the target.",
+    "options": {
+      "domain_entry": "example.com",
+      "passive_mode_var": true,
+      "output_file_entry": "output/amass_passive_scan.txt"
+    },
+    "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Starting the Amass passive discovery engine\n\u001b[1m\u001b[34m[INFO]\u001b[0m Found 120 names from 25 data sources\n\u001b[1m\u001b[32m[+] example.com\u001b[0m\n\u001b[1m\u001b[32m[+] www.example.com\u001b[0m\n\u001b[1m\u001b[32m[+] blog.example.com\u001b[0m\n\u001b[1m\u001b[32m[+] api.example.com\u001b[0m\n\u001b[1m\u001b[33m[+] mail.example.com\u001b[0m\n\u001b[1m\u001b[34m[INFO]\u001b[0m Passive scan completed in 3.54 minutes."
+  },
+  {
+    "name": "Active Enumeration with Brute Force",
+    "description": "Performs an active, more aggressive scan that includes brute-forcing subdomains to discover more hosts.",
+    "options": {
+      "domain_entry": "example.com",
+      "active_mode_var": true,
+      "brute_force_var": true,
+      "output_file_entry": "output/amass_active_scan.txt"
+    },
+    "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Starting the Amass active discovery engine\n\u001b[1m\u001b[34m[INFO]\u001b[0m Found 250 names from 32 data sources\n\u001b[1m\u001b[32m[+] example.com\u001b[0m\n\u001b[1m\u001b[32m[+] www.example.com\u001b[0m\n\u001b[1m\u001b[32m[+] dev.example.com\u001b[0m\n\u001b[1m\u001b[32m[+] test.example.com\u001b[0m\n\u001b[1m\u001b[33m[+] staging.example.com\u001b[0m\n\u001b[1m\u001b[34m[INFO]\u001b[0m Active scan completed in 12.18 minutes."
+  },
+  {
+    "name": "DNS and IP Resolution",
+    "description": "Enumerates a domain and resolves the discovered subdomains to their IP addresses.",
+    "options": {
+      "domain_entry": "example.com",
+      "show_ips_var": true,
+      "output_file_entry": "output/amass_ip_scan.txt"
+    },
+    "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Starting Amass discovery\n\u001b[1m\u001b[32m[+] example.com\t192.0.2.1\u001b[0m\n\u001b[1m\u001b[32m[+] www.example.com\t192.0.2.1\u001b[0m\n\u001b[1m\u001b[32m[+] blog.example.com\t192.0.2.2\u001b[0m\n\u001b[1m\u001b[33m[+] api.example.com\t203.0.113.5\u001b[0m\n\u001b[1m\u001b[34m[INFO]\u001b[0m Scan completed. 150 names found, 140 IPs resolved."
+  },
+  {
+    "name": "Specific DNS Servers",
+    "description": "Uses a custom list of DNS resolvers for the enumeration.",
+    "options": {
+      "domain_entry": "example.com",
+      "dns_servers_entry": "1.1.1.1,8.8.8.8,9.9.9.9",
+      "output_file_entry": "output/amass_custom_dns.txt"
+    },
+    "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Starting Amass discovery using custom DNS resolvers\n\u001b[1m\u001b[34m[INFO]\u001b[0m Found 150 names from 28 data sources\n\u001b[1m\u001b[32m[+] example.com\u001b[0m\n\u001b[1m\u001b[32m[+] cdn.example.com\u001b[0m\n\u001b[1m\u001b[33m[+] support.example.com\u001b[0m\n\u001b[1m\u001b[34m[INFO]\u001b[0m Scan completed in 4.10 minutes."
+  },
+  {
+    "name": "Enumeration with Verbose Output",
+    "description": "Shows detailed information about each step of the enumeration process.",
+    "options": {
+      "domain_entry": "example.com",
+      "verbose_var": true,
+      "output_file_entry": "output/amass_verbose.txt"
+    },
+    "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Starting Amass discovery engine\n\u001b[1m\u001b[34m[INFO]\u001b[0m Using DNS server 1.1.1.1\n\u001b[1m\u001b[34m[INFO]\u001b[0m Running VirusTotal source\n\u001b[1m\u001b[32m[+] www.example.com\t203.0.113.10\u001b[0m\n\u001b[1m\u001b[34m[INFO]\u001b[0m Running Sublist3r source\n\u001b[1m\u001b[32m[+] cdn.example.com\u001b[0m\n\u001b[1m\u001b[33m[+] mail.example.com\u001b[0m\n\u001b[1m\u001b[34m[INFO]\u001b[0m Passive scan completed in 5.25 minutes."
+  },
+  {
+    "name": "Exclude Specific Sources",
+    "description": "Performs enumeration while excluding specified data sources, such as VirusTotal.",
+    "options": {
+      "domain_entry": "example.com",
+      "excluded_sources_entry": "virustotal,crtsh",
+      "output_file_entry": "output/amass_exclude.txt"
+    },
+    "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Starting Amass discovery engine\n\u001b[1m\u001b[34m[INFO]\u001b[0m Excluding sources: virustotal, crtsh\n\u001b[1m\u001b[34m[INFO]\u001b[0m Found 115 names from 23 data sources\n\u001b[1m\u001b[32m[+] example.com\u001b[0m\n\u001b[1m\u001b[32m[+] blog.example.com\u001b[0m\n\u001b[1m\u001b[34m[INFO]\u001b[0m Passive scan completed in 3.12 minutes."
+  },
+  {
+    "name": "Using a Domain List File",
+    "description": "Reads a list of domains from a file and enumerates each one.",
+    "options": {
+      "domain_list_file_entry": "input/domains.txt",
+      "output_file_entry": "output/amass_list_scan.txt"
+    },
+    "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Starting Amass discovery from file: input/domains.txt\n\u001b[1m\u001b[34m[INFO]\u001b[0m Enumerating example1.com\n\u001b[1m\u001b[32m[+] www.example1.com\u001b[0m\n\u001b[1m\u001b[34m[INFO]\u001b[0m Enumerating example2.com\n\u001b[1m\u001b[32m[+] test.example2.com\u001b[0m\n\u001b[1m\u001b[34m[INFO]\u001b[0m All domains from list have been processed."
+  },
+  {
+    "name": "Subdomain Brute-force",
+    "description": "Performs a brute-force attack to discover subdomains using a wordlist.",
+    "options": {
+      "domain_entry": "example.com",
+      "brute_force_var": true,
+      "wordlist_path_entry": "input/wordlist.txt",
+      "output_file_entry": "output/amass_brute_force.txt"
+    },
+    "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Starting brute-force for example.com\n\u001b[1m\u001b[34m[INFO]\u001b[0m Using wordlist: input/wordlist.txt\n\u001b[1m\u001b[32m[+] dev.example.com\u001b[0m\n\u001b[1m\u001b[32m[+] ftp.example.com\u001b[0m\n\u001b[1m\u001b[33m[+] mail.example.com\u001b[0m\n\u001b[1m\u001b[34m[INFO]\u001b[0m Brute-force completed in 1.5 minutes."
+  },
+  {
+    "name": "ASN and CIDR Enumeration",
+    "description": "Discovers subdomains and IP addresses associated with a specific ASN (Autonomous System Number).",
+    "options": {
+      "additional_args_entry": "-asn 12345",
+      "output_file_entry": "output/amass_asn_scan.txt"
+    },
+    "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Starting ASN enumeration for AS12345\n\u001b[1m\u001b[34m[INFO]\u001b[0m Found 200 IPs in AS12345\n\u001b[1m\u001b[32m[+] 198.51.100.1\u001b[0m\n\u001b[1m\u001b[32m[+] 198.51.100.2\u001b[0m\n\u001b[1m\u001b[32m[+] 198.51.100.5\u001b[0m\n\u001b[1m\u001b[34m[INFO]\u001b[0m ASN scan completed."
+  }
+]

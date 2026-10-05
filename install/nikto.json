@@ -1,0 +1,26 @@
+{
+  "tool": "nikto",
+  "install_methods": [
+    {
+      "platform": "Linux (Debian/Ubuntu)",
+      "label": "Install on Linux",
+      "command": "sudo apt update && sudo apt install nikto -y",
+      "icon": "download",
+      "class": "bg-red-600 hover:bg-red-700"
+    },
+    {
+      "platform": "Termux",
+      "label": "Install on Termux",
+      "command": "pkg update && pkg install nikto -y",
+      "icon": "download",
+      "class": "bg-orange-600 hover:bg-orange-700"
+    },
+    {
+      "platform": "Windows (Download)",
+      "label": "Download for Windows",
+      "command": "start https://cirt.net/Nikto2",
+      "icon": "download",
+      "class": "bg-purple-600 hover:bg-purple-700"
+    }
+  ]
+}

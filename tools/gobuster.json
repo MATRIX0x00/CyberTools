@@ -1,0 +1,109 @@
+{
+  "name": "Gobuster",
+  "version": "3.6.0",
+  "executable": "gobuster",
+  "description": "Gobuster is a tool used to brute-force URIs (directories and files) in web sites, DNS subdomains, and virtual host names.",
+  "tabs": [
+    {
+      "id": "mode",
+      "name": "Mode & Target",
+      "inputs": [
+        {
+          "id": "mode_select",
+          "label": "Mode:",
+          "type": "select",
+          "flag": "",
+          "options": [
+            { "value": "dir", "label": "Directory (dir)", "selected": true },
+            { "value": "dns", "label": "DNS (dns)", "selected": false },
+            { "value": "vhost", "label": "VHost (vhost)", "selected": false },
+            { "value": "fuzz", "label": "Fuzzing (fuzz)", "selected": false }
+          ],
+          "help": "Select the Gobuster mode."
+        },
+        {
+          "id": "url_entry",
+          "label": "Target URL/Domain (-u/-d):",
+          "type": "text",
+          "flag": "-u",
+          "placeholder": "e.g., http://example.com",
+          "help": "The target URL or domain depending on the mode."
+        },
+        {
+          "id": "wordlist_entry",
+          "label": "Wordlist (-w):",
+          "type": "text",
+          "flag": "-w",
+          "placeholder": "e.g., /usr/share/wordlists/dirb/common.txt",
+          "help": "Path to the wordlist."
+        }
+      ]
+    },
+    {
+      "id": "options",
+      "name": "Options",
+      "inputs": [
+        {
+          "id": "threads_entry",
+          "label": "Threads (-t):",
+          "type": "number",
+          "flag": "-t",
+          "placeholder": "e.g., 10",
+          "help": "Number of concurrent threads."
+        },
+        {
+          "id": "extensions_entry",
+          "label": "Extensions (-x):",
+          "type": "text",
+          "flag": "-x",
+          "placeholder": "e.g., php,html,txt",
+          "help": "File extensions to search for (dir mode only)."
+        },
+        {
+          "id": "hide_status_entry",
+          "label": "Hide Status Codes (-b):",
+          "type": "text",
+          "flag": "-b",
+          "placeholder": "e.g., 404,500",
+          "help": "Comma separated status codes to exclude."
+        },
+        {
+          "id": "cookies_entry",
+          "label": "Cookies (-c):",
+          "type": "text",
+          "flag": "-c",
+          "placeholder": "e.g., session=1234",
+          "help": "Cookies to use for the requests."
+        }
+      ]
+    },
+    {
+      "id": "output",
+      "name": "Output",
+      "inputs": [
+        {
+          "id": "output_file_entry",
+          "label": "Output File (-o):",
+          "type": "text",
+          "flag": "-o",
+          "placeholder": "e.g., gobuster_out.txt",
+          "help": "Output file to write results to."
+        },
+        {
+          "id": "quiet_var",
+          "label": "Quiet (-q)",
+          "type": "checkbox",
+          "flag": "-q",
+          "help": "Don't print the banner and other noise."
+        },
+        {
+          "id": "verbose_var",
+          "label": "Verbose (-v)",
+          "type": "checkbox",
+          "flag": "-v",
+          "help": "Verbose output (errors)."
+        }
+      ]
+    }
+  ]
+}

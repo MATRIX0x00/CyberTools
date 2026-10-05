@@ -1,0 +1,304 @@
+{
+  "name": "ffuf",
+  "version": "1.3.1",
+  "executable": "ffuf",
+  "description": "ffuf (Fuzz Faster U Fool) is a fast web fuzzer written in Go. It can be used for directory and file enumeration, virtual host discovery, and more.",
+  "tabs": [
+    {
+      "id": "fuzzing",
+      "name": "Fuzzing",
+      "inputs": [
+        {
+          "id": "url_entry",
+          "label": "Target URL (-u):",
+          "type": "text",
+          "flag": "-u",
+          "placeholder": "e.g., http://example.com/FUZZ",
+          "help": "The target URL to fuzz. Use 'FUZZ' to specify the position for the wordlist."
+        },
+        {
+          "id": "wordlist_file_entry",
+          "label": "Wordlist File (-w):",
+          "type": "text",
+          "flag": "-w",
+          "placeholder": "e.g., /usr/share/wordlists/dirb/common.txt",
+          "help": "Path to the wordlist file. Can use multiple comma-separated wordlists (e.g., '/path1/wordlist1.txt:PATH1,/path2/wordlist2.txt:PATH2')."
+        },
+        {
+          "id": "wordlist_file_upload",
+          "label": "Upload Wordlist File:",
+          "type": "file",
+          "flag": "-w",
+          "help": "Upload a wordlist file to use for fuzzing."
+        },
+        {
+          "id": "request_file_path_entry",
+          "label": "Request File Path (-request):",
+          "type": "text",
+          "flag": "-request",
+          "placeholder": "e.g., /path/to/request.txt",
+          "help": "Load HTTP request from a text file. FUZZ keyword can be used in the file."
+        },
+        {
+          "id": "request_file_upload",
+          "label": "Upload Request File:",
+          "type": "file",
+          "flag": "-request",
+          "help": "Upload a file containing a raw HTTP request."
+        },
+        {
+          "id": "recursion_var",
+          "label": "Enable Recursion (-recursion)",
+          "type": "checkbox",
+          "flag": "-recursion",
+          "help": "Recursively fuzz found directories."
+        },
+        {
+          "id": "recursion_depth_entry",
+          "label": "Recursion Depth (-recursion-depth):",
+          "type": "number",
+          "flag": "-recursion-depth",
+          "placeholder": "e.g., 2",
+          "help": "Maximum recursion depth."
+        },
+        {
+          "id": "recursion_wordlist_entry",
+          "label": "Recursion Wordlist (-recursion-wordlist):",
+          "type": "text",
+          "flag": "-recursion-wordlist",
+          "placeholder": "e.g., /path/to/recursive_wordlist.txt",
+          "help": "Wordlist to use for recursive fuzzing. If not specified, uses the main wordlist."
+        }
+      ]
+    },
+    {
+      "id": "filters",
+      "name": "Filters",
+      "inputs": [
+        {
+          "id": "filter_status_entry",
+          "label": "Filter by Status Code (-fc):",
+          "type": "text",
+          "flag": "-fc",
+          "placeholder": "e.g., 200,301,403",
+          "help": "Filter out results by status code. Use comma-separated values. Can use ranges (e.g., '200-299')."
+        },
+        {
+          "id": "filter_size_entry",
+          "label": "Filter by Size (-fs):",
+          "type": "text",
+          "flag": "-fs",
+          "placeholder": "e.g., 123,456",
+          "help": "Filter out results by response size. Use comma-separated values."
+        },
+        {
+          "id": "filter_words_entry",
+          "label": "Filter by Word Count (-fw):",
+          "type": "text",
+          "flag": "-fw",
+          "placeholder": "e.g., 100",
+          "help": "Filter out results by word count. Use comma-separated values."
+        },
+        {
+          "id": "filter_lines_entry",
+          "label": "Filter by Line Count (-fl):",
+          "type": "text",
+          "flag": "-fl",
+          "placeholder": "e.g., 10,20",
+          "help": "Filter out results by line count. Use comma-separated values."
+        },
+        {
+          "id": "filter_chars_entry",
+          "label": "Filter by Character Count (-fx):",
+          "type": "text",
+          "flag": "-fx",
+          "placeholder": "e.g., 500",
+          "help": "Filter out results by character count. Use comma-separated values."
+        },
+        {
+          "id": "match_status_entry",
+          "label": "Match by Status Code (-mc):",
+          "type": "text",
+          "flag": "-mc",
+          "placeholder": "e.g., 200,301",
+          "help": "Match results by status code. Use comma-separated values."
+        },
+        {
+          "id": "match_size_entry",
+          "label": "Match by Size (-ms):",
+          "type": "text",
+          "flag": "-ms",
+          "placeholder": "e.g., 123",
+          "help": "Match results by response size. Use comma-separated values."
+        },
+        {
+          "id": "match_words_entry",
+          "label": "Match by Word Count (-mw):",
+          "type": "text",
+          "flag": "-mw",
+          "placeholder": "e.g., 100",
+          "help": "Match results by word count. Use comma-separated values."
+        },
+        {
+          "id": "match_lines_entry",
+          "label": "Match by Line Count (-ml):",
+          "type": "text",
+          "flag": "-ml",
+          "placeholder": "e.g., 10,20",
+          "help": "Match results by line count. Use comma-separated values."
+        },
+        {
+          "id": "match_chars_entry",
+          "label": "Match by Character Count (-mx):",
+          "type": "text",
+          "flag": "-mx",
+          "placeholder": "e.g., 500",
+          "help": "Match results by character count. Use comma-separated values."
+        }
+      ]
+    },
+    {
+      "id": "http-settings",
+      "name": "HTTP Settings",
+      "inputs": [
+        {
+          "id": "cookie_entry",
+          "label": "HTTP Cookie (-cookie):",
+          "type": "text",
+          "flag": "-cookie",
+          "placeholder": "e.g., 'PHPSESSID=abcdefg'",
+          "help": "HTTP Cookie header."
+        },
+        {
+          "id": "data_entry",
+          "label": "POST Data (-d):",
+          "type": "text",
+          "flag": "-d",
+          "placeholder": "e.g., 'username=FUZZ&password=test'",
+          "help": "POST data string."
+        },
+        {
+          "id": "headers_entry",
+          "label": "HTTP Headers (-H):",
+          "type": "textarea",
+          "flag": "-H",
+          "placeholder": "e.g., 'Content-Type: application/json\nReferer: http://example.com'",
+          "help": "Extra HTTP headers separated by newline."
+        },
+        {
+          "id": "proxy_entry",
+          "label": "Proxy (-proxy):",
+          "type": "text",
+          "flag": "-proxy",
+          "placeholder": "e.g., 'http://127.0.0.1:8080'",
+          "help": "Use a proxy to connect to the target URL."
+        },
+        {
+          "id": "threads_entry",
+          "label": "Threads (-t):",
+          "type": "number",
+          "flag": "-t",
+          "placeholder": "e.g., 40",
+          "help": "Number of concurrent threads (default is 40)."
+        },
+        {
+          "id": "timeout_entry",
+          "label": "Timeout (-timeout):",
+          "type": "number",
+          "flag": "-timeout",
+          "placeholder": "e.g., 10",
+          "help": "HTTP request timeout in seconds."
+        },
+        {
+          "id": "follow_redirects_var",
+          "label": "Follow Redirects (-followredirects)",
+          "type": "checkbox",
+          "flag": "-followredirects",
+          "help": "Follow HTTP redirects."
+        }
+      ]
+    },
+    {
+      "id": "output",
+      "name": "Output",
+      "inputs": [
+        {
+          "id": "verbose_var",
+          "label": "Verbose (-v)",
+          "type": "checkbox",
+          "flag": "-v",
+          "help": "Show verbose output."
+        },
+        {
+          "id": "output_file_entry",
+          "label": "Output File (-o):",
+          "type": "text",
+          "flag": "-o",
+          "placeholder": "e.g., fuzz_results.json",
+          "help": "Output file name."
+        },
+        {
+          "id": "output_format_select",
+          "label": "Output Format (-of):",
+          "type": "select",
+          "flag": "-of",
+          "options": [
+            { "value": "json", "label": "JSON" },
+            { "value": "html", "label": "HTML" },
+            { "value": "csv", "label": "CSV" },
+            { "value": "md", "label": "Markdown" },
+            { "value": "ejson", "label": "Extended JSON" },
+            { "value": "all", "label": "All Formats" }
+          ],
+          "help": "Output file format."
+        }
+      ]
+    },
+    {
+      "id": "advanced",
+      "name": "Advanced",
+      "inputs": [
+        {
+          "id": "max_time_entry",
+          "label": "Max Time (-maxtime):",
+          "type": "number",
+          "flag": "-maxtime",
+          "placeholder": "e.g., 60",
+          "help": "Maximum amount of time to run the scan in seconds."
+        },
+        {
+          "id": "rate_entry",
+          "label": "Request Rate (-rate):",
+          "type": "number",
+          "flag": "-rate",
+          "placeholder": "e.g., 100",
+          "help": "Limit the number of requests per second."
+        },
+        {
+          "id": "delay_entry",
+          "label": "Delay (-delay):",
+          "type": "text",
+          "flag": "-delay",
+          "placeholder": "e.g., 1s",
+          "help": "Delay between requests (e.g., '1s', '500ms')."
+        },
+        {
+          "id": "host_entry",
+          "label": "Host Header (-H 'Host: ...'):",
+          "type": "text",
+          "flag": "-H",
+          "placeholder": "e.g., 'Host: admin.example.com'",
+          "help": "Specify a custom Host header for virtual host fuzzing."
+        },
+        {
+          "id": "wordlist_input",
+          "label": "Custom Wordlist Input:",
+          "type": "textarea",
+          "flag": "-w",
+          "placeholder": "e.g.,\nadmin\nbackup\nrobots.txt",
+          "help": "Enter a custom wordlist directly into the text box. The file will be created and uploaded automatically."
+        }
+      ]
+    }
+  ]
+}

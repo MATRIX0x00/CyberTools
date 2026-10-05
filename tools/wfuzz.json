@@ -1,0 +1,193 @@
+{
+  "name": "Wfuzz",
+  "version": "3.1.0",
+  "executable": "wfuzz",
+  "description": "Wfuzz is a tool designed for web application security testing. It can be used for various tasks like brute-force attacking web forms, discovering hidden resources, and testing for vulnerabilities.",
+  "tabs": [
+    {
+      "id": "target-and-wordlist",
+      "name": "Target & Wordlist",
+      "inputs": [
+        {
+          "id": "target_url_entry",
+          "label": "Target URL:",
+          "type": "text",
+          "flag": "",
+          "placeholder": "e.g., http://example.com/FUZZ",
+          "help": "The target URL with the FUZZ keyword to indicate where the payload will be injected."
+        },
+        {
+          "id": "wordlist_path_entry",
+          "label": "Wordlist Path (-z file):",
+          "type": "text",
+          "flag": "-z",
+          "placeholder": "e.g., /usr/share/wordlists/dirb/common.txt",
+          "help": "Path to the wordlist file to be used for fuzzing."
+        },
+        {
+          "id": "wordlist_upload_entry",
+          "label": "Upload Wordlist File:",
+          "type": "file",
+          "flag": "-z",
+          "help": "Upload a wordlist file to be used for fuzzing."
+        },
+        {
+          "id": "data_entry",
+          "label": "POST Data (-d):",
+          "type": "text",
+          "flag": "-d",
+          "placeholder": "e.g., 'username=FUZZ&password=pass'",
+          "help": "Data to send with a POST request. Use FUZZ to specify injection points."
+        },
+        {
+          "id": "proxy_entry",
+          "label": "Proxy (-p):",
+          "type": "text",
+          "flag": "-p",
+          "placeholder": "e.g., http://127.0.0.1:8080",
+          "help": "Use an HTTP/SOCKS proxy."
+        },
+        {
+          "id": "threads_entry",
+          "label": "Threads (-t):",
+          "type": "number",
+          "flag": "-t",
+          "placeholder": "e.g., 20",
+          "help": "Number of concurrent connections."
+        },
+        {
+          "id": "delay_entry",
+          "label": "Delay (-c):",
+          "type": "number",
+          "flag": "-c",
+          "placeholder": "e.g., 100",
+          "help": "Delay between requests in milliseconds."
+        }
+      ]
+    },
+    {
+      "id": "filters-and-modes",
+      "name": "Filters & Modes",
+      "inputs": [
+        {
+          "id": "hide_status_codes_entry",
+          "label": "Hide Status Codes (--hc):",
+          "type": "text",
+          "flag": "--hc",
+          "placeholder": "e.g., 404,500",
+          "help": "Hide responses with these status codes."
+        },
+        {
+          "id": "hide_size_entry",
+          "label": "Hide by Size (--hs):",
+          "type": "text",
+          "flag": "--hs",
+          "placeholder": "e.g., 123",
+          "help": "Hide responses with a specific size."
+        },
+        {
+          "id": "hide_lines_entry",
+          "label": "Hide by Lines (--hl):",
+          "type": "text",
+          "flag": "--hl",
+          "placeholder": "e.g., 10",
+          "help": "Hide responses with a specific number of lines."
+        },
+        {
+          "id": "hide_chars_entry",
+          "label": "Hide by Chars (--hw):",
+          "type": "text",
+          "flag": "--hw",
+          "placeholder": "e.g., 300",
+          "help": "Hide responses with a specific number of characters."
+        },
+        {
+          "id": "filter_string_entry",
+          "label": "Filter by String (--fs):",
+          "type": "text",
+          "flag": "--fs",
+          "placeholder": "e.g., 'Not Found'",
+          "help": "Filter responses by a specific string."
+        },
+        {
+          "id": "word_mode_var",
+          "label": "Word Mode",
+          "type": "radio",
+          "flag": "-c",
+          "options": [
+            { "value": "FUZZ", "label": "FUZZ" },
+            { "value": "Wfuzz", "label": "Wfuzz" },
+            { "value": "FUZ22", "label": "FUZ22" }
+          ],
+          "help": "Wfuzz word mode."
+        }
+      ]
+    },
+    {
+      "id": "advanced-options",
+      "name": "Advanced Options",
+      "inputs": [
+        {
+          "id": "request_file_path_entry",
+          "label": "Request File Path (-r):",
+          "type": "text",
+          "flag": "-r",
+          "placeholder": "e.g., /path/to/request.txt",
+          "help": "Load a full HTTP request from a file."
+        },
+        {
+          "id": "request_file_upload_entry",
+          "label": "Upload Request File:",
+          "type": "file",
+          "flag": "-r",
+          "help": "Upload a file containing a raw HTTP request."
+        },
+        {
+          "id": "cookie_entry",
+          "label": "Cookie (-b):",
+          "type": "text",
+          "flag": "-b",
+          "placeholder": "e.g., 'PHPSESSID=1234'",
+          "help": "Specify a cookie for the requests."
+        },
+        {
+          "id": "user_agent_entry",
+          "label": "User-Agent (-H):",
+          "type": "text",
+          "flag": "-H",
+          "placeholder": "e.g., 'User-Agent: Mozilla/5.0...'",
+          "help": "Specify a custom User-Agent header."
+        },
+        {
+          "id": "follow_redirects_var",
+          "label": "Follow Redirects (-L)",
+          "type": "checkbox",
+          "flag": "-L",
+          "help": "Follow HTTP redirects."
+        },
+        {
+          "id": "recursion_var",
+          "label": "Recursive (-R)",
+          "type": "checkbox",
+          "flag": "-R",
+          "help": "Follow redirects and try to find more URLs."
+        },
+        {
+          "id": "output_file_entry",
+          "label": "Output File Path (-o):",
+          "type": "text",
+          "flag": "-o",
+          "placeholder": "e.g., results.html",
+          "help": "Save the output to a file."
+        },
+        {
+          "id": "additional_args_entry",
+          "label": "Additional Arguments:",
+          "type": "textarea",
+          "flag": "",
+          "help": "Any other wfuzz arguments not covered by the GUI. Enter them exactly as you would on the command line."
+        }
+      ]
+    }
+  ]
+}

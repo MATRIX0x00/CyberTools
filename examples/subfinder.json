@@ -1,0 +1,21 @@
+[
+  {
+    "name": "Basic Domain Enum",
+    "description": "Enumerate subdomains for a single domain.",
+    "options": {
+      "domain_entry": "example.com"
+    },
+    "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Running subfinder for example.com\n\u001b[32mwww.example.com\u001b[0m\n\u001b[32mdev.example.com\u001b[0m\n\u001b[32mapi.example.com\u001b[0m"
+  },
+  {
+    "name": "All Sources with JSON Output",
+    "description": "Use all sources and output in JSON format.",
+    "options": {
+      "domain_entry": "example.com",
+      "all_sources_var": true,
+      "json_var": true,
+      "output_file_entry": "output/subfinder.json"
+    },
+    "example_output": "{\"host\":\"www.example.com\",\"source\":\"alienvault\"}\n{\"host\":\"api.example.com\",\"source\":\"crtsh\"}"
+  }
+]

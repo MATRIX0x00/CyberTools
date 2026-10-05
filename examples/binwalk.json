@@ -1,0 +1,37 @@
+[
+    {
+        "name": "Basic Scan",
+        "description": "Performs a basic scan to identify embedded file signatures within a binary file.",
+        "options": {
+            "target_file_path_entry": "firmware.bin"
+        },
+        "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Starting binwalk scan on firmware.bin...\n\nDECIMAL    HEX        DESCRIPTION\n--------------------------------------------------------------------------------\n0          0x0        Squashfs filesystem, little endian, version 4.0\n1024       0x400      LZMA compressed data, properties: 0x5D, dictionary size: 8388608 bytes, uncompressed size: 6868608 bytes\n2048       0x800      LZMA compressed data, properties: 0x5D, dictionary size: 8388608 bytes, uncompressed size: 1228800 bytes\n2074320    0x1FD750   JPEG image data, JFIF standard 1.01\n3145728    0x300000   Zip archive data, at least v2.0 to extract\n\n\u001b[1m\u001b[32m[SUCCESS]\u001b[0m Scan completed."
+    },
+    {
+        "name": "Extract All Files",
+        "description": "Extracts all identified files from the target binary into a new directory.",
+        "options": {
+            "target_file_path_entry": "firmware.bin",
+            "extract_all_var": true
+        },
+        "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Starting binwalk extraction on firmware.bin...\n\nDECIMAL    HEX        DESCRIPTION\n--------------------------------------------------------------------------------\n0          0x0        Squashfs filesystem, little endian, version 4.0\n1024       0x400      LZMA compressed data, properties: 0x5D\n\u001b[1m\u001b[32m[SUCCESS]\u001b[0m Extraction succeeded: 'firmware.bin.extracted/_firmware.bin.squashfs'\n2074320    0x1FD750   JPEG image data, JFIF standard 1.01\n\u001b[1m\u001b[32m[SUCCESS]\u001b[0m Extraction succeeded: 'firmware.bin.extracted/1FD750.jpeg'\n3145728    0x300000   Zip archive data, at least v2.0 to extract\n\u001b[1m\u001b[32m[SUCCESS]\u001b[0m Extraction succeeded: 'firmware.bin.extracted/300000.zip'\n\n\u001b[1m\u001b[34m[INFO]\u001b[0m Extracted files have been saved to 'firmware.bin.extracted'."
+    },
+    {
+        "name": "Entropy Scan",
+        "description": "Performs an entropy analysis to identify areas of high randomness, which may indicate compressed or encrypted data.",
+        "options": {
+            "target_file_path_entry": "firmware.bin",
+            "entropy_scan_var": true
+        },
+        "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Starting binwalk entropy analysis on firmware.bin...\n\nDECIMAL    HEX        DESCRIPTION\n--------------------------------------------------------------------------------\n0          0x0        Entropy data, high probability of being compressed/encrypted data\n\u001b[1m\u001b[33m[WARNING]\u001b[0m Significant entropy increase at offset 0x300000\n\u001b[1m\u001b[33m[WARNING]\u001b[0m Significant entropy decrease at offset 0x420000\n\n\u001b[1m\u001b[32m[SUCCESS]\u001b[0m Entropy analysis completed. Run a basic scan for file signatures."
+    },
+    {
+        "name": "Search for a String",
+        "description": "Searches for a specific string within the binary file.",
+        "options": {
+            "target_file_path_entry": "firmware.bin",
+            "search_string_entry": "default_password"
+        },
+        "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Searching for string 'default_password' in firmware.bin...\n\nDECIMAL    HEX        DESCRIPTION\n--------------------------------------------------------------------------------\n4096       0x1000     ASCII text, 'Default password: default_password'\n\n\u001b[1m\u001b[32m[SUCCESS]\u001b[0m String found at offset 0x1000."
+    }
+]

@@ -1,0 +1,57 @@
+[
+    {
+        "name": "Basic Remote Execution",
+        "description": "Connects and executes 'ls -la' command, then exits.",
+        "options": {
+            "user_entry": "kali",
+            "host_entry": "192.168.1.10",
+            "command_to_execute_entry": "ls -la /var/log"
+        },
+        "example_output": "\u001b[1m\u001b[34mkali@192.168.1.10's password: \u001b[0m\n\u001b[32mtotal 204\u001b[0m\n\u001b[36mdrwxr-xr-x 13 root      root       4096 Jul 29 10:00 .\u001b[0m\n\u001b[36mdrwxr-xr-x 14 root      root       4096 Jul 29 10:00 ..\u001b[0m\n\u001b[32m-rw-r----- 1 syslog    adm      159981 Jul 29 10:27 auth.log\u001b[0m\n\u001b[32m-rw-rw---- 1 root      utmp       3456 Jul 29 10:27 btmp\u001b[0m\n\u001b[1m\u001b[34mConnection to 192.168.1.10 closed.\u001b[0m"
+    },
+    {
+        "name": "Key-based Authentication and Port",
+        "description": "Uses a specific identity file and a non-standard port (2222).",
+        "options": {
+            "user_entry": "user",
+            "host_entry": "target.vm",
+            "port_entry": "2222",
+            "identity_file_path_entry": "~/keys/target_key",
+            "no_execute_var": true
+        },
+        "example_output": "\u001b[1m\u001b[34mWarning: Permanently added 'target.vm:2222' (RSA) to the list of known hosts.\u001b[0m\n\u001b[1m\u001b[32mAuthenticated to target.vm via Publickey.\u001b[0m\n\n\u001b[36mLast login: Mon Jul 29 10:30:00 2025 from 192.168.1.1\u001b[0m\n\u001b[1m\u001b[34muser@target.vm:~\u001b[0m$ \u001b[32mexit\u001b[0m\n\u001b[1m\u001b[34mConnection to target.vm closed.\u001b[0m"
+    },
+    {
+        "name": "Local Port Forwarding (Web Server)",
+        "description": "Forwards local port 8080 to the remote host's web server (port 80).",
+        "options": {
+            "user_entry": "sysadmin",
+            "host_entry": "203.0.113.5",
+            "local_forwarding_entry": "8080:localhost:80",
+            "no_execute_var": true
+        },
+        "example_output": "\u001b[1m\u001b[34msysadmin@203.0.113.5's password: \u001b[0m\n\u001b[1m\u001b[32mLocal forwarding port 8080 opened to localhost:80 on remote server.\u001b[0m\n\u001b[36m(Now accessing remote web server at http://localhost:8080)\u001b[0m\n\n\u001b[1m\u001b[33mPress Ctrl+C to close the tunnel.\u001b[0m\n\u001b[1m\u001b[34m^CConnection to 203.0.113.5 closed.\u001b[0m"
+    },
+    {
+        "name": "Dynamic Port Forwarding (SOCKS Proxy)",
+        "description": "Sets up a SOCKS proxy on local port 9090 for all traffic through the remote host.",
+        "options": {
+            "user_entry": "proxyuser",
+            "host_entry": "172.16.1.1",
+            "dynamic_forwarding_entry": "9090",
+            "no_execute_var": true
+        },
+        "example_output": "\u001b[1m\u001b[34mproxyuser@172.16.1.1's password: \u001b[0m\n\u001b[1m\u001b[32mDynamic forwarding port 9090 opened.\u001b[0m\n\u001b[36m(SOCKS proxy available at localhost:9090)\u001b[0m\n\n\u001b[1m\u001b[33mSession active for proxying traffic.\u001b[0m\n\u001b[1m\u001b[34mConnection to 172.16.1.1 closed.\u001b[0m"
+    },
+    {
+        "name": "Force Verbose Debugging",
+        "description": "Connects with maximum verbosity to troubleshoot connection issues.",
+        "options": {
+            "user_entry": "test",
+            "host_entry": "10.0.0.1",
+            "log_level_select": "-vvv",
+            "connection_timeout_entry": "10"
+        },
+        "example_output": "\u001b[1m\u001b[34mdebug1: Reading configuration data /etc/ssh/ssh_config\u001b[0m\n\u001b[1m\u001b[34mdebug2: resolve_canonicalize: host 10.0.0.1 is address\u001b[0m\n\u001b[1m\u001b[34mdebug3: ssh_connect_internal: connect to 10.0.0.1 port 22: Connection refused\u001b[0m\n\u001b[1m\u001b[31mssh: connect to host 10.0.0.1 port 22: Connection refused\u001b[0m\n\u001b[1m\u001b[33m[WARNING] Connection timeout reached (10s).\u001b[0m"
+    }
+]

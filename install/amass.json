@@ -1,0 +1,33 @@
+{
+  "tool": "amass",
+  "install_methods": [
+    {
+      "platform": "Linux (Snap)",
+      "label": "Install via Snap",
+      "command": "sudo snap install amass",
+      "icon": "download",
+      "class": "bg-red-600 hover:bg-red-700"
+    },
+    {
+      "platform": "Linux (Go)",
+      "label": "Install via Go",
+      "command": "sudo apt update && sudo apt install -y golang && go install -v github.com/owasp-amass/amass/v4/...@main",
+      "icon": "download",
+      "class": "bg-orange-600 hover:bg-orange-700"
+    },
+    {
+      "platform": "Termux (Go)",
+      "label": "Install on Termux",
+      "command": "pkg update && pkg install -y golang git && git clone https://github.com/owasp-amass/amass.git && cd amass && go mod tidy && go build -o $PREFIX/bin/amass",
+      "icon": "download",
+      "class": "bg-yellow-600 hover:bg-yellow-700"
+    },
+    {
+      "platform": "Windows",
+      "label": "Download for Windows",
+      "command": "start https://github.com/owasp-amass/amass/releases",
+      "icon": "download",
+      "class": "bg-purple-600 hover:bg-purple-700"
+    }
+  ]
+}

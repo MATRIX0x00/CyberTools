@@ -1,0 +1,229 @@
+{
+  "name": "Binwalk",
+  "version": "2.3.2",
+  "executable": "binwalk",
+  "description": "Binwalk is a fast, easy-to-use tool for analyzing, reverse engineering, and extracting files from binary images, especially firmware files. It can find embedded files and executable code, and can even extract them from the image.",
+  "tabs": [
+    {
+      "id": "target",
+      "name": "Target",
+      "inputs": [
+        {
+          "id": "target_file_path_entry",
+          "label": "Target File Path:",
+          "type": "text",
+          "flag": "",
+          "placeholder": "e.g., firmware.bin",
+          "help": "Path to the target binary file for analysis."
+        },
+        {
+          "id": "target_file_upload",
+          "label": "Upload Target File:",
+          "type": "file",
+          "flag": "",
+          "help": "Upload the target binary file directly."
+        },
+        {
+          "id": "exclude_signature_entry",
+          "label": "Exclude Signature (-E):",
+          "type": "text",
+          "flag": "-E",
+          "placeholder": "e.g., 'gzip'",
+          "help": "Exclude a specific signature (e.g., 'gzip', 'jpeg')."
+        },
+        {
+          "id": "list_signatures_var",
+          "label": "List Signatures (-A):",
+          "type": "checkbox",
+          "flag": "-A",
+          "help": "List all known file signatures."
+        }
+      ]
+    },
+    {
+      "id": "extraction",
+      "name": "Extraction",
+      "inputs": [
+        {
+          "id": "extract_all_var",
+          "label": "Extract All (-e)",
+          "type": "checkbox",
+          "flag": "-e",
+          "help": "Automatically extract all files found during the scan."
+        },
+        {
+          "id": "directory_entry",
+          "label": "Output Directory (-C):",
+          "type": "text",
+          "flag": "-C",
+          "placeholder": "e.g., /tmp/firmware_extracted",
+          "help": "Specify a directory for extracted files."
+        },
+        {
+          "id": "matryoshka_var",
+          "label": "Matryoshka Scan (-M)",
+          "type": "checkbox",
+          "flag": "-M",
+          "help": "Recursively scan and extract files (a 'matryoshka' scan)."
+        },
+        {
+          "id": "extract_signatures_entry",
+          "label": "Extract Signatures (-s):",
+          "type": "text",
+          "flag": "-s",
+          "placeholder": "e.g., 'lzma,squashfs'",
+          "help": "Extract files matching specific signatures."
+        },
+        {
+          "id": "no_extract_var",
+          "label": "No Extraction (-I)",
+          "type": "checkbox",
+          "flag": "-I",
+          "help": "Do not extract anything, just identify."
+        }
+      ]
+    },
+    {
+      "id": "analysis",
+      "name": "Analysis",
+      "inputs": [
+        {
+          "id": "entropy_scan_var",
+          "label": "Entropy Scan (-E)",
+          "type": "checkbox",
+          "flag": "-E",
+          "help": "Perform an entropy analysis on the file."
+        },
+        {
+          "id": "show_hexdump_var",
+          "label": "Show Hexdump (-X)",
+          "type": "checkbox",
+          "flag": "-X",
+          "help": "Show a hexdump of the file."
+        },
+        {
+          "id": "search_string_entry",
+          "label": "Search for String (-y):",
+          "type": "text",
+          "flag": "-y",
+          "placeholder": "e.g., 'password'",
+          "help": "Search for a specific string within the file."
+        },
+        {
+          "id": "file_info_var",
+          "label": "Show File Info (-W)",
+          "type": "checkbox",
+          "flag": "-W",
+          "help": "Show a summary of the file's file system information."
+        },
+        {
+          "id": "hide_hexdump_var",
+          "label": "Hide Hexdump (-q)",
+          "type": "checkbox",
+          "flag": "-q",
+          "help": "Suppress the default hexdump output."
+        },
+        {
+          "id": "follow_links_var",
+          "label": "Follow Symbolic Links (-r)",
+          "type": "checkbox",
+          "flag": "-r",
+          "help": "Follow symbolic links."
+        }
+      ]
+    },
+    {
+      "id": "output",
+      "name": "Output",
+      "inputs": [
+        {
+          "id": "output_file_entry",
+          "label": "Output File (-o):",
+          "type": "text",
+          "flag": "-o",
+          "placeholder": "e.g., binwalk_report.txt",
+          "help": "Write results to a file instead of standard output."
+        },
+        {
+          "id": "terse_var",
+          "label": "Terse Output (-t)",
+          "type": "checkbox",
+          "flag": "-t",
+          "help": "Display terse, CSV-formatted results."
+        },
+        {
+          "id": "quiet_var",
+          "label": "Quiet (-q)",
+          "type": "checkbox",
+          "flag": "-q",
+          "help": "Suppress non-essential output."
+        },
+        {
+          "id": "verbose_var",
+          "label": "Verbose (-v)",
+          "type": "checkbox",
+          "flag": "-v",
+          "help": "Display verbose output."
+        }
+      ]
+    },
+    {
+      "id": "advanced",
+      "name": "Advanced",
+      "inputs": [
+        {
+          "id": "endian_var",
+          "label": "Endianness (--endian)",
+          "type": "radio",
+          "flag": "--endian",
+          "options": [
+            { "value": "", "label": "None (Default: Big Endian)", "selected": true },
+            { "value": "be", "label": "Big Endian (be)", "selected": false },
+            { "value": "le", "label": "Little Endian (le)", "selected": false }
+          ],
+          "help": "Specify the endianness of the file."
+        },
+        {
+          "id": "block_size_entry",
+          "label": "Block Size (-b):",
+          "type": "number",
+          "flag": "-b",
+          "placeholder": "e.g., 512",
+          "help": "Set the block size for reads."
+        },
+        {
+          "id": "offset_entry",
+          "label": "Scan at Offset (-o):",
+          "type": "text",
+          "flag": "-o",
+          "placeholder": "e.g., 0x1000",
+          "help": "Begin scan at a specific offset."
+        },
+        {
+          "id": "count_entry",
+          "label": "Count (-c):",
+          "type": "number",
+          "flag": "-c",
+          "placeholder": "e.g., 100",
+          "help": "Only scan the first N files or bytes."
+        },
+        {
+          "id": "raw_string_entry",
+          "label": "Raw Search (-R):",
+          "type": "text",
+          "flag": "-R",
+          "placeholder": "e.g., 'my_secret_string'",
+          "help": "Search for a raw string in the file."
+        },
+        {
+          "id": "custom_rules_entry",
+          "label": "Custom Rules File (-r):",
+          "type": "text",
+          "flag": "-r",
+          "placeholder": "e.g., custom_rules.magic",
+          "help": "Use a custom file of magic byte rules."
+        }
+      ]
+    }
+  ]
+}

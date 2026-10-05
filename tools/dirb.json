@@ -1,0 +1,80 @@
+{
+  "name": "Dirb",
+  "version": "2.22",
+  "executable": "dirb",
+  "description": "DIRB is a Web Content Scanner. It looks for existing (and/or hidden) Web Objects.",
+  "tabs": [
+    {
+      "id": "target",
+      "name": "Target & Wordlist",
+      "inputs": [
+        {
+          "id": "url_entry",
+          "label": "Target URL:",
+          "type": "text",
+          "flag": "",
+          "placeholder": "e.g., http://example.com/",
+          "help": "The target base URL."
+        },
+        {
+          "id": "wordlist_entry",
+          "label": "Wordlist:",
+          "type": "text",
+          "flag": "",
+          "placeholder": "e.g., /usr/share/wordlists/dirb/common.txt",
+          "help": "Path to the wordlist."
+        }
+      ]
+    },
+    {
+      "id": "options",
+      "name": "Options",
+      "inputs": [
+        {
+          "id": "extensions_entry",
+          "label": "Extensions (-X):",
+          "type": "text",
+          "flag": "-X",
+          "placeholder": "e.g., .php,.html",
+          "help": "Append each word with these extensions."
+        },
+        {
+          "id": "ignore_warning_var",
+          "label": "Ignore Warnings (-w)",
+          "type": "checkbox",
+          "flag": "-w",
+          "help": "Don't stop on WARNING messages."
+        },
+        {
+          "id": "silent_var",
+          "label": "Silent Mode (-S)",
+          "type": "checkbox",
+          "flag": "-S",
+          "help": "Silent Mode. Don't show tested words."
+        },
+        {
+          "id": "username_password_entry",
+          "label": "Auth (-u):",
+          "type": "text",
+          "flag": "-u",
+          "placeholder": "username:password",
+          "help": "HTTP Authentication."
+        }
+      ]
+    },
+    {
+      "id": "output",
+      "name": "Output",
+      "inputs": [
+        {
+          "id": "output_file_entry",
+          "label": "Output File (-o):",
+          "type": "text",
+          "flag": "-o",
+          "placeholder": "e.g., dirb_output.txt",
+          "help": "Save output to disk."
+        }
+      ]
+    }
+  ]
+}

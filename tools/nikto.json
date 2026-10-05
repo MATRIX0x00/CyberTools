@@ -1,0 +1,306 @@
+{
+  "name": "Nikto Web Scanner",
+  "version": "2.1.6",
+  "executable": "nikto",
+  "description": "Nikto is an open-source web server scanner that performs comprehensive tests against web servers for multiple items, including over 6700 potentially dangerous files/programs, checks for outdated server versions, and other problem specific to servers.",
+  "tabs": [
+    {
+      "id": "target",
+      "name": "Target",
+      "inputs": [
+        {
+          "id": "host_entry",
+          "label": "Target Host (-h):",
+          "type": "text",
+          "flag": "-h",
+          "placeholder": "e.g., example.com or 192.168.1.1",
+          "help": "Host to scan (IP, hostname, or list file)."
+        },
+        {
+          "id": "port_entry",
+          "label": "Ports (-p):",
+          "type": "text",
+          "flag": "-p",
+          "placeholder": "e.g., 80,443 or 80-88",
+          "help": "Ports to scan."
+        },
+        {
+          "id": "ssl_var",
+          "label": "Use SSL (-ssl)",
+          "type": "checkbox",
+          "flag": "-ssl",
+          "help": "Force use of SSL on the scan."
+        },
+        {
+          "id": "config_file_path_entry",
+          "label": "Config File Path (-config):",
+          "type": "text",
+          "flag": "-config",
+          "placeholder": "e.g., /path/to/nikto.conf",
+          "help": "Use an alternative config file. This is a file path."
+        },
+        {
+          "id": "config_file_upload_entry",
+          "label": "Upload Config File:",
+          "type": "file",
+          "flag": "-config",
+          "help": "Upload and use an alternative config file."
+        }
+      ]
+    },
+    {
+      "id": "scan-options",
+      "name": "Scan Options",
+      "inputs": [
+        {
+          "id": "tuning_select",
+          "label": "Tuning (-T):",
+          "type": "select",
+          "flag": "-T",
+          "options": [
+            { "value": "", "label": "None (Default Tuning)", "selected": true },
+            { "value": "0", "label": "0 (File Upload)", "selected": false },
+            { "value": "1", "label": "1 (Interesting File/Dir)", "selected": false },
+            { "value": "2", "label": "2 (Misconfiguration)", "selected": false },
+            { "value": "3", "label": "3 (Info Leakage)", "selected": false },
+            { "value": "4", "label": "4 (Injection)", "selected": false },
+            { "value": "5", "label": "5 (Remote File Retrieval)", "selected": false },
+            { "value": "6", "label": "6 (Denial of Service)", "selected": false },
+            { "value": "7", "label": "7 (Remote File Inclusion)", "selected": false },
+            { "value": "8", "label": "8 (Web Server Issues)", "selected": false },
+            { "value": "9", "label": "9 (Everything else)", "selected": false },
+            { "value": "A", "label": "A (All checks)", "selected": false }
+          ],
+          "help": "Control the types of tests to run (A is all, 1-9 specific types)."
+        },
+        {
+          "id": "mutations_radio",
+          "label": "Mutations (-mutate):",
+          "type": "radio",
+          "flag": "-mutate",
+          "options": [
+            { "value": "1", "label": "1 (root dir plus 404)", "selected": false },
+            { "value": "2", "label": "2 (trailing slash)", "selected": false },
+            { "value": "3", "label": "3 (file extensions)", "selected": false },
+            { "value": "4", "label": "4 (headers and values)", "selected": false },
+            { "value": "5", "label": "5 (all)", "selected": false },
+            { "value": "6", "label": "6 (headers with random values)", "selected": false },
+            { "value": "", "label": "None", "selected": true }
+          ],
+          "help": "Perform more advanced checks on discovered files."
+        },
+        {
+          "id": "find_crlf_var",
+          "label": "Find CRLF Injection (-findcrlf)",
+          "type": "checkbox",
+          "flag": "-findcrlf",
+          "help": "Test for CRLF injection in headers."
+        },
+        {
+          "id": "limit_scan_time_entry",
+          "label": "Max Scan Time (-max-time):",
+          "type": "text",
+          "flag": "-max-time",
+          "placeholder": "e.g., 3600s or 1h",
+          "help": "Maximum time to spend on the scan."
+        },
+        {
+          "id": "skip_404_var",
+          "label": "Skip 404 Check (-skip404)",
+          "type": "checkbox",
+          "flag": "-skip404",
+          "help": "Skip the 'no 404 handler' check."
+        }
+      ]
+    },
+    {
+      "id": "tuning-options",
+      "name": "Tuning",
+      "inputs": [
+        {
+          "id": "proxies_file_path_entry",
+          "label": "Proxy File Path (-proxies):",
+          "type": "text",
+          "flag": "-proxies",
+          "placeholder": "e.g., /path/to/proxies.txt",
+          "help": "Use a list of proxies from a file."
+        },
+        {
+          "id": "proxies_file_upload_entry",
+          "label": "Upload Proxies List:",
+          "type": "file",
+          "flag": "-proxies",
+          "help": "Upload a list of proxies to use for the scan."
+        },
+        {
+          "id": "db_check_var",
+          "label": "Database Check (-dbcheck)",
+          "type": "checkbox",
+          "flag": "-dbcheck",
+          "help": "Check database for updates (requires network connection)."
+        },
+        {
+          "id": "scan_delay_entry",
+          "label": "Scan Delay (-delay):",
+          "type": "number",
+          "flag": "-delay",
+          "placeholder": "e.g., 5",
+          "help": "Delay between requests in seconds (use float for milliseconds)."
+        },
+        {
+          "id": "timeout_entry",
+          "label": "Request Timeout (-timeout):",
+          "type": "number",
+          "flag": "-timeout",
+          "placeholder": "e.g., 10",
+          "help": "Timeout for requests in seconds."
+        },
+        {
+          "id": "max_threads_entry",
+          "label": "Max Threads (-max-threads):",
+          "type": "number",
+          "flag": "-max-threads",
+          "placeholder": "e.g., 20",
+          "help": "Maximum number of threads to use."
+        }
+      ]
+    },
+    {
+      "id": "authentication",
+      "name": "Auth",
+      "inputs": [
+        {
+          "id": "auth_id_entry",
+          "label": "Basic/NTLM Auth (-id):",
+          "type": "text",
+          "flag": "-id",
+          "placeholder": "e.g., username:password",
+          "help": "HTTP authentication credentials (user:pass)."
+        },
+        {
+          "id": "cookies_entry",
+          "label": "Cookies (-Cgidirs):",
+          "type": "text",
+          "flag": "-Cgidirs",
+          "placeholder": "e.g., /cgi-bin,/_vti_bin",
+          "help": "Test CGI directories with custom cookies."
+        },
+        {
+          "id": "cert_entry",
+          "label": "Client Cert (-cert):",
+          "type": "text",
+          "flag": "-cert",
+          "placeholder": "e.g., /path/to/cert.pem",
+          "help": "Use a client certificate for authentication."
+        },
+        {
+          "id": "key_entry",
+          "label": "Client Key (-key):",
+          "type": "text",
+          "flag": "-key",
+          "placeholder": "e.g., /path/to/key.pem",
+          "help": "Use a client key for authentication."
+        }
+      ]
+    },
+    {
+      "id": "evasion",
+      "name": "Evasion",
+      "inputs": [
+        {
+          "id": "evasion_radio",
+          "label": "Evasion (-evasion):",
+          "type": "radio",
+          "flag": "-evasion",
+          "options": [
+            { "value": "1", "label": "1 (Random URI encoding)", "selected": false },
+            { "value": "2", "label": "2 (Directory self-reference)", "selected": false },
+            { "value": "3", "label": "3 (Premature URL ending)", "selected": false },
+            { "value": "4", "label": "4 (Fake parameters)", "selected": false },
+            { "value": "5", "label": "5 (Long random strings)", "selected": false },
+            { "value": "6", "label": "6 (Break up requests)", "selected": false },
+            { "value": "7", "label": "7 (Case changes)", "selected": false },
+            { "value": "8", "label": "8 (Tab space separation)", "selected": false },
+            { "value": "9", "label": "9 (All above)", "selected": false },
+            { "value": "", "label": "None", "selected": true }
+          ],
+          "help": "Specify intrusion detection system (IDS) evasion techniques."
+        },
+        {
+          "id": "user_agent_entry",
+          "label": "User Agent (-useragent):",
+          "type": "text",
+          "flag": "-useragent",
+          "placeholder": "e.g., 'Mozilla/5.0 ...'",
+          "help": "Spoof the User-Agent header."
+        },
+        {
+          "id": "host_header_entry",
+          "label": "Host Header (-host-header):",
+          "type": "text",
+          "flag": "-host-header",
+          "placeholder": "e.g., 'other.example.com'",
+          "help": "Specify a custom Host header for the request."
+        },
+        {
+          "id": "skip_redirect_var",
+          "label": "Skip Redirect (-norefollow)",
+          "type": "checkbox",
+          "flag": "-norefollow",
+          "help": "Do not follow redirects."
+        }
+      ]
+    },
+    {
+      "id": "output",
+      "name": "Output",
+      "inputs": [
+        {
+          "id": "output_file_entry",
+          "label": "Output File (-o):",
+          "type": "text",
+          "flag": "-o",
+          "placeholder": "e.g., nikto_results.txt",
+          "help": "Save output to a file."
+        },
+        {
+          "id": "format_select",
+          "label": "Output Format (-Format):",
+          "type": "select",
+          "flag": "-Format",
+          "options": [
+            { "value": "", "label": "None (Default: Plain Text)", "selected": true },
+            { "value": "txt", "label": "Plain Text", "selected": false },
+            { "value": "htm", "label": "HTML", "selected": false },
+            { "value": "csv", "label": "CSV", "selected": false },
+            { "value": "xml", "label": "XML", "selected": false },
+            { "value": "nmap", "label": "Nmap format", "selected": false }
+          ],
+          "help": "Output file format."
+        },
+        {
+          "id": "verbose_var",
+          "label": "Verbose (-v)",
+          "type": "checkbox",
+          "flag": "-v",
+          "help": "Increase verbosity (can be -vvv for more)."
+        },
+        {
+          "id": "debug_entry",
+          "label": "Debug Level (-D):",
+          "type": "number",
+          "flag": "-D",
+          "placeholder": "e.g., 1",
+          "help": "Debug output level (1-3)."
+        },
+        {
+          "id": "additional_args_entry",
+          "label": "Additional Arguments:",
+          "type": "textarea",
+          "flag": "",
+          "help": "Any other Nikto arguments not covered by the GUI. Enter them exactly as you would on the command line (e.g., '-port 8080 -ask auto')."
+        }
+      ]
+    }
+  ]
+}
